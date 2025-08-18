@@ -130,6 +130,7 @@ const DashboardView = () => {
           <table className="data-table">
             <thead>
               <tr>
+                <th>Thời gian</th>
                 <th>Tên hoạt động</th>
                 <th>Điểm cộng</th>
                 <th>File</th>
@@ -139,6 +140,7 @@ const DashboardView = () => {
             <tbody>
               {userData.map((data) => (
                 <tr key={data.id}>
+                  <td>{data['Thời gian'] && data['Thời gian'].toDate ? data['Thời gian'].toDate().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }) : data['Thời gian']}</td>
                   <td>{data['Tên hoạt động']}</td>
                   <td>{data['Điểm cộng']}</td>
                   <td>

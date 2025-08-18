@@ -49,14 +49,23 @@ const AdminView = () => {
     const activityToUpdate = activities.find(activity => activity.id === id);
     if (!activityToUpdate) return;
 
+    // Condition: If Status is 'Không duyệt', 'Chi tiết' must not be empty
+    if (activityToUpdate.Status === 'Không duyệt' && (!activityToUpdate['Chi tiết'] || activityToUpdate['Chi tiết'].trim() === '')) {
+      setError('When Status is "Không duyệt", the "Chi tiết" field cannot be empty.');
+      setNotification(''); // Clear any previous success notification
+      return;
+    }
+
     try {
       const activityDocRef = doc(db, 'users', selectedSemester, 'students', id);
       const { id: docId, ...dataToUpdate } = activityToUpdate; // Exclude id from the data to be updated
       await updateDoc(activityDocRef, dataToUpdate);
       setNotification(`Activity ${activityToUpdate['Tên hoạt động']} (${id}) updated successfully.`);
+      setError(''); // Clear any previous error notification
     } catch (err) {
       console.error("Error updating document: ", err);
       setError(`Failed to update activity ${id}.`);
+      setNotification(''); // Clear any previous success notification
     }
   };
 
@@ -192,6 +201,7 @@ const AdminView = () => {
                   <th>Points</th>
                   <th>File</th>
                   <th>Status</th>
+                  <th>Chi tiết</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -208,7 +218,7 @@ const AdminView = () => {
                     <td>
                       <input
                         type="email"
-                        value={activity.Email}
+                        value={activity.Email || ''}
                         onChange={(e) => handleFieldChange(activity.id, 'Email', e.target.value)}
                         className="table-input"
                       />
@@ -216,7 +226,7 @@ const AdminView = () => {
                     <td>
                       <input
                         type="text"
-                        value={activity['Tên hoạt động']}
+                        value={activity['Tên hoạt động'] || ''}
                         onChange={(e) => handleFieldChange(activity.id, 'Tên hoạt động', e.target.value)}
                         className="table-input"
                       />
@@ -224,8 +234,8 @@ const AdminView = () => {
                     <td>
                       <input
                         type="number"
-                        value={activity['Điểm cộng']}
-                        onChange={(e) => handleFieldChange(activity.id, 'Điểm cộng', e.target.value)}
+                        value={activity['Điểm cộng'] || 0}
+                        onChange={(e) => handleFieldChange(activity.id, 'Điểm cộng', Number(e.target.value))}
                         className="table-input"
                       />
                     </td>
@@ -235,11 +245,19 @@ const AdminView = () => {
                       </a>
                     </td>
                     <td>
-                      <select value={activity.Status} onChange={(e) => handleFieldChange(activity.id, 'Status', e.target.value)} className="status-select">
+                      <select value={activity.Status || 'Đang chờ'} onChange={(e) => handleFieldChange(activity.id, 'Status', e.target.value)} className="status-select">
                         <option value="Đang chờ">Đang chờ</option>
                         <option value="Phê duyệt">Phê duyệt</option>
                         <option value="Không duyệt">Không duyệt</option>
                       </select>
+                    </td>
+                    <td>
+                      <textarea
+                        value={activity['Chi tiết'] || ''}
+                        onChange={(e) => handleFieldChange(activity.id, 'Chi tiết', e.target.value)}
+                        className="table-textarea"
+                        rows="2"
+                      />
                     </td>
                     <td className="actions-cell">
                       <button onClick={() => handleUpdate(activity.id)} className="btn btn-primary">Update</button>

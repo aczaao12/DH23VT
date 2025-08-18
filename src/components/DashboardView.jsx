@@ -15,6 +15,8 @@ const DashboardView = () => {
   const [totalBonusPoints, setTotalBonusPoints] = useState(0);
   const [finalScore, setFinalScore] = useState(0);
   const [selectedSemester, setSelectedSemester] = useState('HK1N3');
+  const [showDetailModal, setShowDetailModal] = useState(false); // New state for modal visibility
+  const [selectedActivityDetail, setSelectedActivityDetail] = useState(null); // New state for activity details in modal
   const user = auth.currentUser;
 
   useEffect(() => {
@@ -71,6 +73,16 @@ const DashboardView = () => {
     } catch (error) {
       console.error('Error signing out: ', error);
     }
+  };
+
+  const handleRowClick = (activity) => {
+    setSelectedActivityDetail(activity);
+    setShowDetailModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowDetailModal(false);
+    setSelectedActivityDetail(null);
   };
 
   if (loading) {
@@ -139,12 +151,12 @@ const DashboardView = () => {
             </thead>
             <tbody>
               {userData.map((data) => (
-                <tr key={data.id}>
+                <tr key={data.id} onClick={() => handleRowClick(data)} className="data-row">
                   <td>{data['Thời gian'] && data['Thời gian'].toDate ? data['Thời gian'].toDate().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }) : data['Thời gian']}</td>
                   <td>{data['Tên hoạt động']}</td>
                   <td>{data['Điểm cộng']}</td>
                   <td>
-                    <a href={data['File upload']} target="_blank" rel="noopener noreferrer" className="file-link">
+                    <a href={data['File upload']} target="_blank" rel="noopener noreferrer" className="file-link" onClick={(e) => e.stopPropagation()}>
                       View File
                     </a>
                   </td>
@@ -156,6 +168,36 @@ const DashboardView = () => {
         </div>
       ) : (
         !notification && <p className="centered-text">No activity data to display for this semester.</p>
+      )}
+
+      {/* Activity Detail Modal */}
+      {showDetailModal && selectedActivityDetail && (
+        <div className="modal-overlay" onClick={handleCloseModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2>Activity Details</h2>
+            <div className="detail-item">
+              <strong>Thời gian:</strong> {selectedActivityDetail['Thời gian'] && selectedActivityDetail['Thời gian'].toDate ? selectedActivityDetail['Thời gian'].toDate().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }) : selectedActivityDetail['Thời gian']}
+            </div>
+            <div className="detail-item">
+              <strong>Tên hoạt động:</strong> {selectedActivityDetail['Tên hoạt động']}
+            </div>
+            <div className="detail-item">
+              <strong>Điểm cộng:</strong> {selectedActivityDetail['Điểm cộng']}
+            </div>
+            <div className="detail-item">
+              <strong>File:</strong> <a href={selectedActivityDetail['File upload']} target="_blank" rel="noopener noreferrer">View File</a>
+            </div>
+            <div className="detail-item">
+              <strong>Status:</strong> {selectedActivityDetail.Status}
+            </div>
+            {selectedActivityDetail['Chi tiết'] && (
+              <div className="detail-item">
+                <strong>Chi tiết:</strong> {selectedActivityDetail['Chi tiết']}
+              </div>
+            )}
+            <button onClick={handleCloseModal} className="modal-close-btn">Close</button>
+          </div>
+        </div>
       )}
     </div>
   );

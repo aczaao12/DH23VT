@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { auth } from './firebase';
-// Removed onAuthStateChanged, getRedirectResult, signOut as they are not used directly in App.jsx
 import LoginView from './components/LoginView';
 import DashboardView from './components/DashboardView';
 import UploadView from './components/UploadView';

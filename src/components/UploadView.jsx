@@ -59,6 +59,7 @@ const UploadView = () => {
         'Điểm cộng': activityData.points,
         'File upload': fileUrl,
         Status: 'Đang chờ',
+        'Thời gian': new Date(),
       });
 
       setNotification('Upload successful! Redirecting to dashboard...');

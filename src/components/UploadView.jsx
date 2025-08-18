@@ -10,7 +10,7 @@ const UploadView = () => {
   const [activities, setActivities] = useState({});
   const [selectedActivity, setSelectedActivity] = useState('');
   const [file, setFile] = useState(null);
-  const [loading, setLoading] = false;
+  const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();

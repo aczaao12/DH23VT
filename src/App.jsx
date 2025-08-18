@@ -1,66 +1,49 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { auth } from './firebase';
-import { onAuthStateChanged, getRedirectResult, signOut } from 'firebase/auth';
+// Removed onAuthStateChanged, getRedirectResult, signOut as they are not used directly in App.jsx
 import LoginView from './components/LoginView';
 import DashboardView from './components/DashboardView';
 import UploadView from './components/UploadView';
+import AdminView from './components/AdminView';
+import AdminRoute from './components/AdminRoute';
 import './App.css';
 
 function App() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true); // Fixed initialization
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = auth.onAuthStateChanged(async user => { // Added 'async'
       if (user) {
-        const validDomain = "@st.hcmuaf.edu.vn";
-        const allowedEmail = "aczaao12@gmail.com";
-        if (user.email.endsWith(validDomain) || user.email === allowedEmail) {
-          setUser(user);
-        } else {
-          signOut(auth).then(() => {
-            alert("Chỉ account có domain @st.hcmuaf.edu.vn đựoc phép đăng nhập");
-          }).catch((error) => {
-            console.error("Error signing out:", error);
-          });
-          setUser(null);
+        try {
+          const idTokenResult = await user.getIdTokenResult(true); // Force refresh
+          const isAdmin = idTokenResult.claims.admin || false; // Get admin claim
+          setCurrentUser({ ...user, isAdmin }); // Set enhanced user object
+        } catch (error) {
+          console.error("Error getting ID token result:", error);
+          setCurrentUser(user); // Fallback to original user if error
         }
       } else {
-        setUser(null);
+        setCurrentUser(null);
       }
       setLoading(false);
     });
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
-
-  useEffect(() => {
-    const handleRedirectResult = async () => {
-      try {
-        const result = await getRedirectResult(auth);
-        if (result) {
-          setUser(result.user);
-        }
-      } catch (error) {
-        console.error("Error getting redirect result:", error);
-      }
-    };
-
-    handleRedirectResult();
+    return unsubscribe;
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>Loading authentication...</div>;
   }
 
   return (
+    // Removed <Router> as App is already wrapped by BrowserRouter in main.jsx
     <Routes>
-      <Route path="/" element={!user ? <LoginView /> : <Navigate to="/dashboard" />} />
-      <Route path="/dashboard" element={user ? <DashboardView /> : <Navigate to="/" />} />
-      <Route path="/upload" element={user ? <UploadView /> : <Navigate to="/" />} />
+      <Route path="/" element={currentUser ? <Navigate to="/dashboard" /> : <LoginView />} />
+      <Route path="/dashboard" element={currentUser ? <DashboardView /> : <Navigate to="/" />} />
+      <Route path="/upload" element={currentUser ? <UploadView /> : <Navigate to="/" />} />
+      <Route path="/admin" element={<AdminRoute user={currentUser}><AdminView /></AdminRoute>} /> {/* Passed user prop */}
+      {/* Add new route here */}
     </Routes>
   );
 }

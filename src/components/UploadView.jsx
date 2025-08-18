@@ -4,13 +4,15 @@ import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage
 import { collection, addDoc } from 'firebase/firestore';
 import { auth, db, rtdb, storage } from '../firebase';
 import { useNavigate } from 'react-router-dom';
+import './UploadView.css';
 
 const UploadView = () => {
   const [activities, setActivities] = useState({});
   const [selectedActivity, setSelectedActivity] = useState('');
   const [file, setFile] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = false;
   const [notification, setNotification] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
   const user = auth.currentUser;
 
@@ -30,13 +32,15 @@ const UploadView = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setNotification('');
+
     if (!selectedActivity || !file) {
-      setNotification('Please select an activity and a file.');
+      setError('Please select an activity and a file.');
       return;
     }
 
     setLoading(true);
-    setNotification('');
 
     try {
       const semester = 'HK1N3'; // As specified
@@ -57,24 +61,24 @@ const UploadView = () => {
         Status: 'Đang chờ',
       });
 
-      setNotification('Upload successful!');
-      navigate('/dashboard');
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      setNotification('Error uploading file.');
+      setNotification('Upload successful! Redirecting to dashboard...');
+      setTimeout(() => navigate('/dashboard'), 2000);
+    } catch (err) {
+      console.error('Error uploading file:', err);
+      setError(`Upload failed: ${err.message}`);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div>
-      <h1>Upload Activity</h1>
+    <div className="upload-container">
+      <h1 className="upload-header">Upload Activity</h1>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="activity-select">Tên hoạt động:</label>
-          <select id="activity-select" value={selectedActivity} onChange={(e) => setSelectedActivity(e.target.value)}>
-            <option value="">--Please choose an activity--</option>
+        <div className="form-group">
+          <label htmlFor="activity-select" className="form-label">Tên hoạt động:</label>
+          <select id="activity-select" value={selectedActivity} onChange={(e) => setSelectedActivity(e.target.value)} className="form-select" required>
+            <option value="" disabled>-- Please choose an activity --</option>
             {Object.keys(activities).map((key) => (
               <option key={key} value={key}>
                 {activities[key].name}
@@ -82,20 +86,25 @@ const UploadView = () => {
             ))}
           </select>
         </div>
+
         {selectedActivity && (
-          <div>
+          <div className="points-display">
             <p>Điểm cộng: {activities[selectedActivity].points}</p>
           </div>
         )}
-        <div>
-          <label htmlFor="file-upload">File:</label>
-          <input id="file-upload" type="file" onChange={handleFileChange} />
+
+        <div className="form-group">
+          <label htmlFor="file-upload" className="form-label">File:</label>
+          <input id="file-upload" type="file" onChange={handleFileChange} className="form-file-input" required />
         </div>
-        <button type="submit" disabled={loading}>
+
+        <button type="submit" className="submit-btn" disabled={loading}>
           {loading ? 'Uploading...' : 'Submit'}
         </button>
       </form>
-      {notification && <p>{notification}</p>}
+
+      {notification && <div className="notification success">{notification}</div>}
+      {error && <div className="notification error">{error}</div>}
     </div>
   );
 };

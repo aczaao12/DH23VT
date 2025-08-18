@@ -123,7 +123,7 @@ const DashboardView = () => {
         </div>
       </div>
 
-      {notification && <p className="centered-text" style={{color: 'red'}}>{notification}</p>}
+      {notification && <div className="notification centered-text">{notification}</div>}
       
       {userData.length > 0 ? (
         <div className="table-container">

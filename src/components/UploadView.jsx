@@ -4,6 +4,7 @@ import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage
 import { collection, addDoc } from 'firebase/firestore';
 import { auth, db, rtdb, storage } from '../firebase';
 import { useNavigate } from 'react-router-dom';
+import SearchableSelect from './SearchableSelect'; // Import the new component
 import './UploadView.css';
 
 const UploadView = () => {
@@ -78,14 +79,12 @@ const UploadView = () => {
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="activity-select" className="form-label">Tên hoạt động:</label>
-          <select id="activity-select" value={selectedActivity} onChange={(e) => setSelectedActivity(e.target.value)} className="form-select" required>
-            <option value="" disabled>-- Please choose an activity --</option>
-            {Object.keys(activities).map((key) => (
-              <option key={key} value={key}>
-                {activities[key].name}
-              </option>
-            ))}
-          </select>
+          <SearchableSelect
+            options={activities}
+            value={selectedActivity}
+            onChange={setSelectedActivity}
+            placeholder="Search for activity..."
+          />
         </div>
 
         {selectedActivity && (

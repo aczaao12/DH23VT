@@ -3,77 +3,103 @@
 .upload-container {
   max-width: 600px;
   margin: 40px auto;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  padding: 35px;
+  border-radius: 15px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
   background: #ffffff;
   font-family: 'Segoe UI', Arial, sans-serif;
+  border: 1px solid #eee;
 }
 
 .upload-header {
   text-align: center;
   color: #333;
-  margin-bottom: 30px;
+  margin-bottom: 35px;
+  font-size: 2.2em;
+  font-weight: bold;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .form-label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   color: #555;
   font-weight: bold;
+  font-size: 1.1em;
 }
 
 .form-select,
-.form-file-input {
+.form-file-input,
+.form-input-search {
   width: 100%;
-  padding: 12px;
-  border-radius: 8px;
+  padding: 14px;
+  border-radius: 10px;
   border: 1px solid #ccc;
-  font-size: 16px;
-  box-sizing: border-box; /* Added for consistent sizing */
+  font-size: 17px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-select:focus,
+.form-file-input:focus,
+.form-input-search:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    outline: none;
 }
 
 .form-file-input {
     cursor: pointer;
+    background-color: #f9f9f9;
 }
 
 .points-display {
-  padding: 10px;
-  margin: 10px 0;
-  background: #f8f9fa;
-  border-radius: 8px;
-  color: #333;
+  padding: 15px;
+  margin: 20px 0;
+  background: #e9f7ef; /* Light green background */
+  border-radius: 10px;
+  color: #28a745; /* Green text */
   font-weight: bold;
+  text-align: center;
+  border: 1px solid #d4edda;
 }
 
 .submit-btn {
   width: 100%;
-  padding: 15px;
-  border-radius: 8px;
+  padding: 16px;
+  border-radius: 30px; /* Pill-shaped button */
   border: none;
   background: #007bff;
   color: white;
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+}
+
+.submit-btn:hover {
+  background: #0056b3;
+  box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
 }
 
 .submit-btn:disabled {
-  background: #ccc;
+  background: #cccccc;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 .notification {
-  margin-top: 20px;
-  padding: 12px;
-  border-radius: 8px;
+  margin-top: 25px;
+  padding: 15px;
+  border-radius: 10px;
   text-align: center;
   font-weight: bold;
   color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .notification.success {
@@ -88,6 +114,6 @@
 @media (max-width: 768px) {
   .upload-container {
     margin: 20px;
-    padding: 20px;
+    padding: 25px;
   }
 }

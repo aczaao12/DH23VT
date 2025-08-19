@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { auth } from './firebase';
+import { signOut } from 'firebase/auth';
 import LoginView from './components/LoginView';
 import DashboardView from './components/DashboardView';
 import UploadView from './components/UploadView';
@@ -13,6 +14,16 @@ import './App.css';
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out: ', error);
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async user => {
@@ -41,9 +52,9 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={currentUser ? <Navigate to="/dashboard" /> : <LoginView />} />
-        <Route path="/dashboard" element={currentUser ? <DashboardView /> : <Navigate to="/" />} />
+        <Route path="/dashboard" element={currentUser ? <DashboardView handleLogout={handleLogout} /> : <Navigate to="/" />} />
         <Route path="/upload" element={currentUser ? <UploadView /> : <Navigate to="/" />} />
-        <Route path="/settings" element={currentUser ? <SettingsView /> : <Navigate to="/" />} />
+        <Route path="/settings" element={currentUser ? <SettingsView handleLogout={handleLogout} /> : <Navigate to="/" />} />
         <Route path="/admin" element={<AdminRoute user={currentUser}><AdminView /></AdminRoute>} />
       </Routes>
       {currentUser && <BottomNavBar />}

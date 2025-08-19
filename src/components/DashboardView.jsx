@@ -1,37 +1,52 @@
 import { useState, useEffect } from 'react';
 import { auth, db } from '../firebase';
-import { signOut } from 'firebase/auth';
 import { useNavigate, Link } from 'react-router-dom';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { calculateFinalScore, calculateConditionalScore } from '../utils';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCloudArrowUp, faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { useResponsive } from '../hooks/useResponsive';
 import './DashboardView.css';
 
-const DashboardDesktopView = ({ user, userData, totalActivities, totalBonusPoints, finalScore, selectedSemester, setSelectedSemester, handleLogout, handleRowClick, showDetailModal, selectedActivityDetail, handleCloseModal, notification }) => {
+const UserDropdown = ({ user, handleLogout }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="user-dropdown">
+      <button onClick={() => setIsOpen(!isOpen)} className="avatar-button">
+        <img src={user.photoURL || 'https://via.placeholder.com/40'} alt="User Avatar" className="avatar" />
+      </button>
+      {isOpen && (
+        <div className="dropdown-menu">
+          <div className="user-info">
+            <p className="user-name">{user.displayName || 'No Name'}</p>
+            <p className="user-email">{user.email}</p>
+          </div>
+          <button onClick={handleLogout} className="dropdown-item">Sign out</button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const DashboardDesktopView = ({ user, userData, totalActivities, totalBonusPoints, finalScore, selectedSemester, setSelectedSemester, handleLogout, handleRowClick, showDetailModal, selectedActivityDetail, handleCloseModal, notification, searchTerm, setSearchTerm }) => {
+  const filteredUserData = userData.filter(data =>
+    data['Tên hoạt động'].toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
-        {user ? (
-          <div className="welcome-message">
-            <h1>Welcome, {user.displayName || user.email}!</h1>
-            <p>Here is your activity summary.</p>
-          </div>
-        ) : <p>Please log in.</p>}
-        <div className="header-actions">
-          <Link to="/upload">
-            <button className="btn btn-primary btn-animated">
-              <FontAwesomeIcon icon={faCloudArrowUp} className="btn-icon" />
-              <span className="btn-text">Upload Activity</span>
-            </button>
-          </Link>
-          <button onClick={handleLogout} className="btn btn-secondary btn-animated">
-            <FontAwesomeIcon icon={faArrowRightFromBracket} className="btn-icon" />
-            <span className="btn-text">Sign out</span>
-          </button>
+        <div className="welcome-message">
+          <h1>Welcome, {user.displayName || user.email}!</h1>
+          <p>Here is your activity summary.</p>
         </div>
+        <UserDropdown user={user} handleLogout={handleLogout} />
       </header>
+
+      <div className="dashboard-actions">
+        <Link to="/upload">
+            <button className="btn btn-primary btn-animated">Upload Activity</button>
+        </Link>
+      </div>
       
       <div className="semester-selector">
         <label htmlFor="semester-select">Select Semester: </label>
@@ -62,11 +77,21 @@ const DashboardDesktopView = ({ user, userData, totalActivities, totalBonusPoint
         </div>
       </div>
 
+      <div className="search-bar-container">
+        <input
+          type="text"
+          placeholder="Search activities..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-bar"
+        />
+      </div>
+
       {notification && <div className="notification centered-text">{notification}</div>}
       
-      {userData.length > 0 ? (
+      {filteredUserData.length > 0 ? (
         <div className="activities-list">
-          {userData.map((data) => (
+          {filteredUserData.map((data) => (
             <div key={data.id} className="activity-card" onClick={() => handleRowClick(data)}>
               <div className="card-content">
                 <h3>{data['Tên hoạt động']}</h3>
@@ -111,25 +136,20 @@ const DashboardDesktopView = ({ user, userData, totalActivities, totalBonusPoint
   );
 };
 
-const DashboardMobileView = ({ user, userData, totalActivities, totalBonusPoints, finalScore, selectedSemester, setSelectedSemester, handleLogout, handleRowClick, showDetailModal, selectedActivityDetail, handleCloseModal, notification }) => {
+const DashboardMobileView = ({ user, userData, totalActivities, totalBonusPoints, finalScore, selectedSemester, setSelectedSemester, handleRowClick, showDetailModal, selectedActivityDetail, handleCloseModal, notification, searchTerm, setSearchTerm }) => {
+    const filteredUserData = userData.filter(data =>
+        data['Tên hoạt động'].toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
         <div className="dashboard-container-mobile">
             <header className="dashboard-header-mobile">
-                {user ? (
-                <div className="welcome-message-mobile">
-                    <h1>Welcome, {user.displayName || user.email}!</h1>
-                    <p>Here is your activity summary.</p>
-                </div>
-                ) : <p>Please log in.</p>}
-                <div className="header-actions-mobile">
-                <Link to="/upload">
-                    <button className="btn btn-primary btn-animated">
-                    <span>Upload Activity</span>
-                    </button>
-                </Link>
-                <button onClick={handleLogout} className="btn btn-secondary btn-animated">
-                    <span>Sign out</span>
-                </button>
+                <div className="user-info-mobile">
+                    <img src={user.photoURL || 'https://via.placeholder.com/40'} alt="User Avatar" className="avatar-mobile" />
+                    <div className="user-details-mobile">
+                        <p className="user-name-mobile">{user.displayName || 'No Name'}</p>
+                        <p className="user-email-mobile">{user.email}</p>
+                    </div>
                 </div>
             </header>
             
@@ -162,11 +182,21 @@ const DashboardMobileView = ({ user, userData, totalActivities, totalBonusPoints
                 </div>
             </div>
 
+            <div className="search-bar-container">
+                <input
+                type="text"
+                placeholder="Search activities..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-bar"
+                />
+            </div>
+
             {notification && <div className="notification centered-text">{notification}</div>}
             
-            {userData.length > 0 ? (
+            {filteredUserData.length > 0 ? (
                 <div className="activities-list-mobile">
-                {userData.map((data) => (
+                {filteredUserData.map((data) => (
                     <div key={data.id} className="activity-card-mobile" onClick={() => handleRowClick(data)}>
                     <div className="card-content-mobile">
                         <h3>{data['Tên hoạt động']}</h3>
@@ -211,7 +241,7 @@ const DashboardMobileView = ({ user, userData, totalActivities, totalBonusPoints
     );
 };
 
-const DashboardView = () => {
+const DashboardView = ({ handleLogout }) => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -222,6 +252,7 @@ const DashboardView = () => {
   const [selectedSemester, setSelectedSemester] = useState('HK1N3');
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedActivityDetail, setSelectedActivityDetail] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
   const user = auth.currentUser;
   const { isMobile } = useResponsive();
 
@@ -267,15 +298,6 @@ const DashboardView = () => {
     }
   }, [selectedSemester, user]);
 
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      navigate('/');
-    } catch (error) {
-      console.error('Error signing out: ', error);
-    }
-  };
-
   const handleRowClick = (activity) => {
     setSelectedActivityDetail(activity);
     setShowDetailModal(true);
@@ -304,6 +326,8 @@ const DashboardView = () => {
     selectedActivityDetail,
     handleCloseModal,
     notification,
+    searchTerm,
+    setSearchTerm,
   };
 
   return isMobile ? <DashboardMobileView {...viewProps} /> : <DashboardDesktopView {...viewProps} />;

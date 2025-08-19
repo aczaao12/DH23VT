@@ -20,6 +20,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 20px;
   flex-wrap: wrap; /* Allow wrapping on small screens */
   margin-bottom: 30px;
   padding: 0;
@@ -407,7 +408,7 @@ Mobile-Specific Styles
   flex: 1;
   padding: 10px;
   border-radius: 10px;
-  background: var(--background-color);
+  background: var(--card-background-color);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   text-align: center;
   border: 1px solid #eee;

@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import './BottomNavBar.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse, faCloudArrowUp, faGear } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faCloudArrowUp, faGear, faCalculator } from '@fortawesome/free-solid-svg-icons';
 
 const BottomNavBar = () => {
   return (
@@ -13,6 +13,10 @@ const BottomNavBar = () => {
       <NavLink to="/upload" className="nav-link">
         <FontAwesomeIcon icon={faCloudArrowUp} />
         <span>Upload</span>
+      </NavLink>
+      <NavLink to="/calculator" className="nav-link">
+        <FontAwesomeIcon icon={faCalculator} />
+        <span>Calculator</span>
       </NavLink>
       <NavLink to="/settings" className="nav-link">
         <FontAwesomeIcon icon={faGear} />

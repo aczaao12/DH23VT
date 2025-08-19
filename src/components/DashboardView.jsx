@@ -20,6 +20,7 @@ const UserDropdown = ({ user, handleLogout }) => {
             <p className="user-name">{user.displayName || 'No Name'}</p>
             <p className="user-email">{user.email}</p>
           </div>
+          <Link to="/settings" className="dropdown-item">Settings</Link>
           <button onClick={handleLogout} className="dropdown-item">Sign out</button>
         </div>
       )}

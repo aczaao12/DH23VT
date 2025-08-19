@@ -42,11 +42,7 @@ const DashboardDesktopView = ({ user, userData, totalActivities, totalBonusPoint
         <UserDropdown user={user} handleLogout={handleLogout} />
       </header>
 
-      <div className="dashboard-actions">
-        <Link to="/upload">
-            <button className="btn btn-primary btn-animated">Upload Activity</button>
-        </Link>
-      </div>
+      
       
       <div className="semester-selector">
         <label htmlFor="semester-select">Select Semester: </label>

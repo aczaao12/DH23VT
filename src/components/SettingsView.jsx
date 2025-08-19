@@ -1,16 +1,45 @@
 import useDarkMode from '../hooks/useDarkMode';
+import './SettingsView.css';
 
 const SettingsView = ({ handleLogout }) => {
   const [isDarkMode, toggleDarkMode] = useDarkMode();
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Settings</h1>
-      <p>This is the settings page. You can add your settings form or options here.</p>
-      <button onClick={toggleDarkMode} className="btn btn-primary">
-        {isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-      </button>
-      <button onClick={handleLogout} className="btn btn-secondary" style={{ marginLeft: '10px' }}>Sign out</button>
+    <div className="settings-container">
+      <div className="settings-header">
+        <h1>Settings</h1>
+      </div>
+      <ul className="settings-list">
+        <li className="settings-item" onClick={toggleDarkMode}>
+          <div className="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </div>
+          <div className="settings-item-content">
+            <h3>Dark Mode</h3>
+            <p>{isDarkMode ? 'Enabled' : 'Disabled'}</p>
+          </div>
+          <div className="toggle-switch">
+            <label className="switch">
+              <input type="checkbox" checked={isDarkMode} onChange={toggleDarkMode} />
+              <span className="slider round"></span>
+            </label>
+          </div>
+        </li>
+        <li className="settings-item" onClick={handleLogout}>
+          <div className="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+          </div>
+          <div className="settings-item-content">
+            <h3>Sign out</h3>
+          </div>
+        </li>
+      </ul>
     </div>
   );
 };

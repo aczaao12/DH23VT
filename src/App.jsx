@@ -6,22 +6,24 @@ import DashboardView from './components/DashboardView';
 import UploadView from './components/UploadView';
 import AdminView from './components/AdminView';
 import AdminRoute from './components/AdminRoute';
+import SettingsView from './components/SettingsView';
+import BottomNavBar from './components/BottomNavBar';
 import './App.css';
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true); // Fixed initialization
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async user => { // Added 'async'
+    const unsubscribe = auth.onAuthStateChanged(async user => {
       if (user) {
         try {
-          const idTokenResult = await user.getIdTokenResult(true); // Force refresh
-          const isAdmin = idTokenResult.claims.admin || false; // Get admin claim
-          setCurrentUser({ ...user, isAdmin }); // Set enhanced user object
+          const idTokenResult = await user.getIdTokenResult(true);
+          const isAdmin = idTokenResult.claims.admin || false;
+          setCurrentUser({ ...user, isAdmin });
         } catch (error) {
           console.error("Error getting ID token result:", error);
-          setCurrentUser(user); // Fallback to original user if error
+          setCurrentUser(user);
         }
       } else {
         setCurrentUser(null);
@@ -36,14 +38,16 @@ function App() {
   }
 
   return (
-    // Removed <Router> as App is already wrapped by BrowserRouter in main.jsx
-    <Routes>
-      <Route path="/" element={currentUser ? <Navigate to="/dashboard" /> : <LoginView />} />
-      <Route path="/dashboard" element={currentUser ? <DashboardView /> : <Navigate to="/" />} />
-      <Route path="/upload" element={currentUser ? <UploadView /> : <Navigate to="/" />} />
-      <Route path="/admin" element={<AdminRoute user={currentUser}><AdminView /></AdminRoute>} /> {/* Passed user prop */}
-      {/* Add new route here */}
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={currentUser ? <Navigate to="/dashboard" /> : <LoginView />} />
+        <Route path="/dashboard" element={currentUser ? <DashboardView /> : <Navigate to="/" />} />
+        <Route path="/upload" element={currentUser ? <UploadView /> : <Navigate to="/" />} />
+        <Route path="/settings" element={currentUser ? <SettingsView /> : <Navigate to="/" />} />
+        <Route path="/admin" element={<AdminRoute user={currentUser}><AdminView /></AdminRoute>} />
+      </Routes>
+      {currentUser && <BottomNavBar />}
+    </>
   );
 }
 

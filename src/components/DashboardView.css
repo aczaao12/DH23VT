@@ -2,7 +2,7 @@
 
 body {
     margin: 0;
-    background-color: #f0f2f5; /* Light gray background for the whole page */
+    background-color: var(--background-color); /* Light gray background for the whole page */
 }
 
 .dashboard-container {
@@ -10,8 +10,8 @@ body {
   margin: 40px auto;
   padding: 30px;
   font-family: 'Segoe UI', Arial, sans-serif;
-  color: #333;
-  background-color: #ffffff; /* White background for the container */
+  color: var(--text-color);
+  background-color: var(--background-color); /* White background for the container */
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* More pronounced shadow */
 }
@@ -33,12 +33,12 @@ body {
   margin: 0;
   font-weight: bold;
   font-size: 1.8em; /* Larger font size */
-  color: #333;
+  color: var(--text-color);
 }
 
 .welcome-message p {
   margin: 5px 0 0 0;
-  color: #555;
+  color: var(--text-color);
   font-size: 1.1em;
 }
 
@@ -55,7 +55,7 @@ body {
 .semester-selector label {
   font-weight: bold;
   margin-right: 10px;
-  color: #555;
+  color: var(--text-color);
   font-size: 1.1em;
 }
 
@@ -65,7 +65,7 @@ body {
   border: 1px solid #ccc;
   font-size: 16px;
   appearance: none; /* Remove default select arrow */
-  background-color: #f9f9f9;
+  background-color: var(--background-color);
   cursor: pointer;
   transition: border-color 0.3s ease;
 }
@@ -88,7 +88,7 @@ body {
   min-width: 280px; /* Minimum width for cards */
   padding: 28px;
   border-radius: 15px; /* More rounded corners */
-  background: #ffffff;
+  background: var(--background-color);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.07); /* Enhanced shadow */
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -102,7 +102,7 @@ body {
 
 .stat-card h3 {
   margin: 0;
-  color: #495057;
+  color: var(--text-color);
   font-size: 1.3em; /* Slightly larger heading */
   margin-bottom: 10px;
 }
@@ -122,7 +122,7 @@ body {
 }
 
 .activity-card {
-  background: #ffffff;
+  background: var(--background-color);
   border-radius: 15px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
   padding: 15px; /* Reduced padding */
@@ -145,7 +145,7 @@ body {
 .card-content h3 {
   margin: 0;
   font-size: 1.1em; /* Smaller font for activity name */
-  color: #333;
+  color: var(--text-color);
 }
 
 .points {
@@ -171,7 +171,7 @@ body {
 }
 
 .modal-content {
-  background-color: #ffffff;
+  background-color: var(--card-background-color);
   padding: 30px;
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
@@ -184,18 +184,18 @@ body {
 .modal-content h2 {
   margin-top: 0;
   margin-bottom: 20px;
-  color: #333;
+  color: var(--text-color);
   text-align: center;
 }
 
 .detail-item {
   margin-bottom: 10px;
   font-size: 1.1em;
-  color: #555;
+  color: var(--text-color);
 }
 
 .detail-item strong {
-  color: #333;
+  color: var(--text-color);
   margin-right: 5px;
 }
 
@@ -269,7 +269,7 @@ body {
     text-align: center;
     margin-top: 50px;
     font-size: 1.3em; /* Slightly larger font */
-    color: #666;
+    color: var(--text-color);
 }
 
 .notification {
@@ -314,7 +314,7 @@ New Styles for Redesigned Header
   position: absolute;
   top: 50px;
   right: 0;
-  background-color: white;
+  background-color: var(--background-color);
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   padding: 10px;
@@ -334,7 +334,7 @@ New Styles for Redesigned Header
 
 .user-email {
   font-size: 0.9em;
-  color: #555;
+  color: var(--text-color);
   margin: 5px 0 0 0;
 }
 
@@ -349,7 +349,7 @@ New Styles for Redesigned Header
 }
 
 .dropdown-item:hover {
-  background-color: #f0f2f5;
+  background-color: var(--background-color);
 }
 
 /*
@@ -392,7 +392,7 @@ Mobile-Specific Styles
 
 .user-details-mobile .user-email-mobile {
     font-size: 0.9em;
-    color: #555;
+    color: var(--text-color);
     margin: 5px 0 0 0;
 }
 
@@ -407,7 +407,7 @@ Mobile-Specific Styles
   flex: 1;
   padding: 10px;
   border-radius: 10px;
-  background: #ffffff;
+  background: var(--background-color);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   text-align: center;
   border: 1px solid #eee;
@@ -416,11 +416,13 @@ Mobile-Specific Styles
 .stat-card-mobile h3 {
     font-size: 0.8em;
     margin-bottom: 5px;
+    color: var(--text-color);
 }
 
 .stat-card-mobile p {
     font-size: 1.5em;
     margin: 0;
+    color: var(--text-color);
 }
 
 .semester-selector-mobile {
@@ -439,7 +441,7 @@ Mobile-Specific Styles
 }
 
 .activity-card-mobile {
-  background: #ffffff;
+  background: var(--background-color);
   border-radius: 15px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
   padding: 15px;
@@ -452,6 +454,12 @@ Mobile-Specific Styles
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
+}
+
+.card-content-mobile h3 {
+  margin: 0;
+  font-size: 1.1em; /* Smaller font for activity name */
+  color: var(--text-color);
 }
 
 .card-content-mobile .points {

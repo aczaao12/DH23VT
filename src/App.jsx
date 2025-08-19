@@ -9,12 +9,14 @@ import AdminView from './components/AdminView';
 import AdminRoute from './components/AdminRoute';
 import SettingsView from './components/SettingsView';
 import BottomNavBar from './components/BottomNavBar';
+import useDarkMode from './hooks/useDarkMode';
 import './App.css';
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [isDarkMode] = useDarkMode();
 
   const handleLogout = async () => {
     try {
@@ -49,7 +51,7 @@ function App() {
   }
 
   return (
-    <>
+    <div className={isDarkMode ? 'dark-mode' : ''}>
       <Routes>
         <Route path="/" element={currentUser ? <Navigate to="/dashboard" /> : <LoginView />} />
         <Route path="/dashboard" element={currentUser ? <DashboardView handleLogout={handleLogout} /> : <Navigate to="/" />} />
@@ -58,7 +60,7 @@ function App() {
         <Route path="/admin" element={<AdminRoute user={currentUser}><AdminView /></AdminRoute>} />
       </Routes>
       {currentUser && <BottomNavBar />}
-    </>
+    </div>
   );
 }
 

@@ -11,6 +11,7 @@ import SettingsView from './components/SettingsView';
 import BottomNavBar from './components/BottomNavBar';
 import useDarkMode from './hooks/useDarkMode';
 import ScoreCalculator from './components/ScoreCalculator';
+import NotificationView from './components/NotificationView';
 import './App.css';
 
 function App() {
@@ -60,6 +61,7 @@ function App() {
         <Route path="/settings" element={currentUser ? <SettingsView handleLogout={handleLogout} /> : <Navigate to="/" />} />
         <Route path="/admin" element={<AdminRoute user={currentUser}><AdminView /></AdminRoute>} />
         <Route path="/calculator" element={currentUser ? <ScoreCalculator /> : <Navigate to="/" />} />
+        <Route path="/notifications" element={currentUser ? <NotificationView /> : <Navigate to="/" />} />
       </Routes>
       {currentUser && <BottomNavBar />}
     </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { db } from '../firebase';
 import { collection, getDocs, doc, updateDoc, deleteDoc, writeBatch } from 'firebase/firestore';
+import NotificationPostForm from './NotificationPostForm';
 import './AdminView.css';
 
 const AdminView = () => {
@@ -270,6 +271,11 @@ const AdminView = () => {
           </div>
         </>
       )}
+
+      <hr className="admin-section-divider" />
+
+      <NotificationPostForm />
+
     </div>
   );
 };

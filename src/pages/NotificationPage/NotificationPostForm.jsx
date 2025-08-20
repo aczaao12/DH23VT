@@ -4,7 +4,8 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { ref as rtdbRef, push, serverTimestamp, set } from 'firebase/database';
 
 const NotificationPostForm = () => {
-  const [notificationText, setNotificationText] = useState('');
+  const [notificationTitle, setNotificationTitle] = useState('');
+  const [notificationBody, setNotificationBody] = useState('');
   const [notificationImage, setNotificationImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -22,8 +23,8 @@ const NotificationPostForm = () => {
     setMessage('');
     setError('');
 
-    if (!notificationText && !notificationImage) {
-      setError('Please enter text or select an image for the notification.');
+    if (!notificationTitle || (!notificationBody && !notificationImage)) {
+      setError('Please enter a title and either text or select an image for the notification.');
       setLoading(false);
       return;
     }
@@ -38,14 +39,16 @@ const NotificationPostForm = () => {
 
       const newNotificationRef = push(rtdbRef(rtdb, 'notifications'));
       await set(newNotificationRef, {
-        text: notificationText,
+        title: notificationTitle,
+        body: notificationBody,
         imageUrl: imageUrl,
         timestamp: serverTimestamp(),
-        adminId: 'admin_user_id' // TODO: Replace with actual admin user ID
+        adminId: 'Hồ Quốc Thắng' // TODO: Replace with actual admin user ID
       });
 
       setMessage('Notification posted successfully!');
-      setNotificationText('');
+      setNotificationTitle('');
+      setNotificationBody('');
       setNotificationImage(null);
     } catch (err) {
       console.error('Error posting notification: ', err);
@@ -60,13 +63,23 @@ const NotificationPostForm = () => {
       <h3>Post New Notification</h3>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="notification-text">Notification Text:</label>
+          <label htmlFor="notification-title">Title:</label>
+          <input
+            type="text"
+            id="notification-title"
+            value={notificationTitle}
+            onChange={(e) => setNotificationTitle(e.target.value)}
+            placeholder="Enter notification title here..."
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="notification-body">Notification Body:</label>
           <textarea
-            id="notification-text"
-            value={notificationText}
-            onChange={(e) => setNotificationText(e.target.value)}
+            id="notification-body"
+            value={notificationBody}
+            onChange={(e) => setNotificationBody(e.target.value)}
             rows="4"
-            placeholder="Enter notification text here..."
+            placeholder="Enter notification body here..."
           ></textarea>
         </div>
         <div className="form-group">

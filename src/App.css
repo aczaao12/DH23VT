@@ -6,13 +6,7 @@
   --neumorphism-dark-shadow: #a3b1c6; /* Dark shadow for bottom/right */
 }
 
-.dark-mode {
-  --background-color: #2c2f33; /* Dark gray for neumorphism base */
-  --text-color: #ffffff;
-  --card-background-color: #2c2f33; /* Same as background for seamless look */
-  --neumorphism-light-shadow: #3a3f44; /* Dark mode light shadow */
-  --neumorphism-dark-shadow: #1f2124; /* Dark mode dark shadow */
-}
+
 
 body {
   background-color: var(--background-color);

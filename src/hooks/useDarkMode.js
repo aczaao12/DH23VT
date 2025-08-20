@@ -1,22 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
 const useDarkMode = () => {
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    const savedMode = localStorage.getItem('darkMode');
-    return savedMode ? JSON.parse(savedMode) : false;
-  });
-
+  // Ensure the dark-mode class is never present on initial load and subsequent renders
   useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark-mode');
-    } else {
-      document.documentElement.classList.remove('dark-mode');
-    }
-    localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
-  }, [isDarkMode]);
+    document.documentElement.classList.remove('dark-mode');
+  }, []); // Run once on mount
 
+  const isDarkMode = false;
   const toggleDarkMode = () => {
-    setIsDarkMode(prevMode => !prevMode);
+    // No operation needed as dark mode is disabled
   };
 
   return [isDarkMode, toggleDarkMode];

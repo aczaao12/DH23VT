@@ -1,8 +1,21 @@
 /* Styles for DashboardView Component */
 
+:root {
+    --light-background: #f0f0f0; /* Overall light background */
+    --dark-card-background: #f0f0f0; /* Card background now light */
+    --light-shadow: #ffffff; /* Light shadow for neumorphism */
+    --dark-shadow: #a3a3a3; /* Dark shadow for neumorphism */
+    --dark-card-light-shadow: #ffffff; /* Light shadow for cards */
+    --dark-card-dark-shadow: #a3a3a3; /* Dark shadow for cards */
+    --text-color-light: #000000ab; /* Text color for light background */
+    --text-color-dark: #000000ab; /* Text color for cards now dark */
+    --accent-color: #007bff;
+}
+
 body {
     margin: 0;
-    background-color: var(--background-color); /* Light gray background for the whole page */
+    background-color: var(--light-background);
+    color: var(--text-color-light);
 }
 
 .dashboard-container {
@@ -10,10 +23,9 @@ body {
   margin: 40px auto;
   padding: 30px;
   font-family: 'Segoe UI', Arial, sans-serif;
-  color: var(--text-color);
-  background-color: var(--background-color); /* White background for the container */
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* More pronounced shadow */
+  background-color: var(--light-background);
+  border-radius: 20px; /* More rounded for neumorphism */
+  box-shadow: 8px 8px 15px var(--dark-shadow), -8px -8px 15px var(--light-shadow); /* Neumorphic shadow */
 }
 
 .dashboard-header {
@@ -21,11 +33,11 @@ body {
   justify-content: space-between;
   align-items: center;
   gap: 20px;
-  flex-wrap: wrap; /* Allow wrapping on small screens */
+  flex-wrap: wrap;
   margin-bottom: 30px;
   padding: 0;
   background: transparent;
-  color: inherit;
+  color: var(--text-color-light);
   border-radius: 0;
   box-shadow: none;
 }
@@ -33,83 +45,86 @@ body {
 .welcome-message h1 {
   margin: 0;
   font-weight: bold;
-  font-size: 1.8em; /* Larger font size */
-  color: var(--text-color);
+  font-size: 1.8em;
+  color: var(--text-color-light);
 }
 
 .welcome-message p {
   margin: 5px 0 0 0;
-  color: var(--text-color);
+  color: var(--text-color-light);
   font-size: 1.1em;
 }
 
 .header-actions {
     display: flex;
-    gap: 15px; /* Space between buttons */
+    gap: 15px;
 }
 
 .semester-selector {
   margin-bottom: 30px;
-  text-align: center; /* Center align the selector */
+  text-align: center;
 }
 
 .semester-selector label {
   font-weight: bold;
   margin-right: 10px;
-  color: var(--text-color);
+  color: var(--text-color-light);
   font-size: 1.1em;
 }
 
 .semester-select {
   padding: 10px 15px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  border-radius: 10px; /* Neumorphic border-radius */
+  border: none; /* No direct border */
   font-size: 16px;
-  appearance: none; /* Remove default select arrow */
-  background-color: var(--background-color);
+  appearance: none;
+  background-color: var(--light-background);
+  color: var(--text-color-light);
   cursor: pointer;
-  transition: border-color 0.3s ease;
+  box-shadow: inset 5px 5px 10px var(--dark-shadow), inset -5px -5px 10px var(--light-shadow); /* Inset neumorphic shadow */
+  transition: all 0.2s ease-in-out;
 }
 
 .semester-select:focus {
-    border-color: #007bff;
     outline: none;
+    box-shadow: inset 2px 2px 5px var(--dark-shadow), inset -2px -2px 5px var(--light-shadow); /* Smaller inset on focus */
 }
 
 .stats-container {
   display: flex;
-  gap: 25px; /* Increased gap */
+  gap: 25px;
   margin: 30px 0;
-  flex-wrap: wrap; /* Allow wrapping for responsiveness */
-  justify-content: center; /* Center cards on wrap */
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .stat-card {
   flex: 1;
-  min-width: 280px; /* Minimum width for cards */
+  min-width: 280px;
   padding: 28px;
-  border-radius: 15px; /* More rounded corners */
-  background: var(--background-color);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.07); /* Enhanced shadow */
+  border-radius: 20px; /* Neumorphic border-radius */
+  background: var(--dark-card-background); /* Dark background for cards */
+  color: var(--text-color-dark); /* Light text for dark cards */
+  box-shadow: 8px 8px 15px var(--dark-card-dark-shadow), -8px -8px 15px var(--dark-card-light-shadow); /* Neumorphic shadow for dark cards */
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 1px solid #eee; /* Subtle border */
+  border: none; /* No direct border */
 }
 
 .stat-card:hover {
-    transform: translateY(-8px); /* More pronounced lift */
-    box-shadow: 0 18px 40px rgba(0,0,0,0.12); /* Stronger shadow on hover */
+    transform: translateY(-5px); /* Subtle lift */
+    box-shadow: 10px 10px 20px var(--dark-card-dark-shadow), -10px -10px 20px var(--dark-card-light-shadow); /* Stronger shadow on hover */
 }
 
 .stat-card h3 {
   margin: 0;
-  color: var(--text-color);
-  font-size: 1.3em; /* Slightly larger heading */
+  color: var(--text-color-dark);
+  font-size: 1.3em;
   margin-bottom: 10px;
 }
 
 .stat-card p {
-  font-size: 3.5em; /* Larger score font */
+  font-size: 3.5em;
   font-weight: bold;
   margin: 15px 0 0 0;
   line-height: 1;
@@ -117,24 +132,25 @@ body {
 
 .activities-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Responsive grid */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
   margin-top: 30px;
 }
 
 .activity-card {
-  background: var(--background-color);
-  border-radius: 15px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-  padding: 15px; /* Reduced padding */
+  background: var(--dark-card-background); /* Dark background for cards */
+  color: var(--text-color-dark); /* Light text for dark cards */
+  border-radius: 20px; /* Neumorphic border-radius */
+  box-shadow: 8px 8px 15px var(--dark-card-dark-shadow), -8px -8px 15px var(--dark-card-light-shadow); /* Neumorphic shadow for dark cards */
+  padding: 15px;
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 1px solid #eee;
+  border: none; /* No direct border */
 }
 
 .activity-card:hover {
-  transform: translateY(-3px); /* Less pronounced lift */
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.07);
+  transform: translateY(-3px);
+  box-shadow: 10px 10px 20px var(--dark-card-dark-shadow), -10px -10px 20px var(--dark-card-light-shadow);
 }
 
 .card-content {
@@ -145,16 +161,16 @@ body {
 
 .card-content h3 {
   margin: 0;
-  font-size: 1.1em; /* Smaller font for activity name */
-  color: var(--text-color);
+  font-size: 1.1em;
+  color: var(--text-color-dark);
 }
 
 .points {
-  font-size: 1em; /* Smaller font for points */
+  font-size: 1em;
   font-weight: bold;
-  color: #007bff;
-  white-space: nowrap; /* Prevent wrapping */
-  margin-left: 10px; /* Space between name and points */
+  color: var(--accent-color);
+  white-space: nowrap;
+  margin-left: 10px;
 }
 
 /* Modal Styles */
@@ -172,10 +188,11 @@ body {
 }
 
 .modal-content {
-  background-color: var(--card-background-color);
+  background-color: var(--light-background); /* Modal content background */
+  color: var(--text-color-light);
   padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border-radius: 20px; /* Neumorphic border-radius */
+  box-shadow: 8px 8px 15px var(--dark-shadow), -8px -8px 15px var(--light-shadow); /* Neumorphic shadow */
   width: 90%;
   max-width: 500px;
   position: relative;
@@ -185,18 +202,18 @@ body {
 .modal-content h2 {
   margin-top: 0;
   margin-bottom: 20px;
-  color: var(--text-color);
+  color: var(--text-color-light);
   text-align: center;
 }
 
 .detail-item {
   margin-bottom: 10px;
   font-size: 1.1em;
-  color: var(--text-color);
+  color: var(--text-color-light);
 }
 
 .detail-item strong {
-  color: var(--text-color);
+  color: var(--text-color-light);
   margin-right: 5px;
 }
 
@@ -205,17 +222,19 @@ body {
   width: 100%;
   padding: 12px;
   margin-top: 20px;
-  border-radius: 8px;
+  border-radius: 15px; /* Neumorphic border-radius */
   border: none;
-  background-color: #007bff;
-  color: white;
+  background-color: var(--light-background); /* Neumorphic button background */
+  color: var(--accent-color);
   font-size: 1.1em;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  box-shadow: 5px 5px 10px var(--dark-shadow), -5px -5px 10px var(--light-shadow); /* Neumorphic shadow */
+  transition: all 0.2s ease-in-out;
 }
 
 .modal-close-btn:hover {
-  background-color: #0056b3;
+  box-shadow: inset 2px 2px 5px var(--dark-shadow), inset -2px -2px 5px var(--light-shadow); /* Inset shadow on hover */
+  color: var(--text-color-light);
 }
 
 @keyframes fadeIn {
@@ -224,7 +243,7 @@ body {
 }
 
 .file-link {
-  color: #007bff;
+  color: var(--accent-color);
   text-decoration: none;
   font-weight: bold;
   transition: color 0.3s ease;
@@ -236,52 +255,54 @@ body {
 }
 
 .btn {
-  padding: 12px 25px; /* Increased padding */
-  border-radius: 30px; /* Pill-shaped buttons */
+  padding: 12px 25px;
+  border-radius: 15px; /* Neumorphic border-radius */
   border: none;
-  font-size: 17px; /* Slightly larger font */
+  font-size: 17px;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.3s ease; /* Smooth transition for all properties */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle button shadow */
+  transition: all 0.2s ease-in-out;
+  background-color: var(--light-background); /* Neumorphic button background */
+  color: var(--text-color-light);
+  box-shadow: 5px 5px 10px var(--dark-shadow), -5px -5px 10px var(--light-shadow); /* Neumorphic shadow */
+}
+
+.btn:hover {
+    box-shadow: inset 2px 2px 5px var(--dark-shadow), inset -2px -2px 5px var(--light-shadow); /* Inset shadow on hover */
 }
 
 .btn-primary {
-  background: #007bff;
-  color: white;
+  color: var(--accent-color);
 }
 
 .btn-primary:hover {
-    background: #0056b3;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    color: var(--text-color-light);
 }
 
 .btn-secondary {
-  background: #6c757d;
-  color: white;
+  color: #6c757d;
 }
 
 .btn-secondary:hover {
-    background: #5a6268;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    color: var(--text-color-light);
 }
 
 .centered-text {
     text-align: center;
     margin-top: 50px;
-    font-size: 1.3em; /* Slightly larger font */
-    color: var(--text-color);
+    font-size: 1.3em;
+    color: var(--text-color-light);
 }
 
-.notification {
+.notification.centered-text {
     padding: 15px;
-    border-radius: 8px;
+    border-radius: 15px;
     margin-top: 20px;
     font-weight: bold;
     text-align: center;
-    color: white;
-    background-color: #dc3545; /* Red for error/notification */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    color: var(--text-color-light);
+    background-color: var(--dark-card-background); /* Dark background for notifications */
+    box-shadow: 8px 8px 15px var(--dark-card-dark-shadow), -8px -8px 15px var(--dark-card-light-shadow);
 }
 
 /*
@@ -315,9 +336,9 @@ New Styles for Redesigned Header
   position: absolute;
   top: 50px;
   right: 0;
-  background-color: var(--background-color);
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  background-color: var(--light-background);
+  border-radius: 15px;
+  box-shadow: 8px 8px 15px var(--dark-shadow), -8px -8px 15px var(--light-shadow);
   padding: 10px;
   width: 200px;
   z-index: 100;
@@ -325,17 +346,18 @@ New Styles for Redesigned Header
 
 .user-info {
   padding: 10px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--dark-shadow);
 }
 
 .user-name {
   font-weight: bold;
   margin: 0;
+  color: var(--text-color-light);
 }
 
 .user-email {
   font-size: 0.9em;
-  color: var(--text-color);
+  color: var(--text-color-light);
   margin: 5px 0 0 0;
 }
 
@@ -347,10 +369,12 @@ New Styles for Redesigned Header
   background: none;
   text-align: left;
   cursor: pointer;
+  color: var(--text-color-light);
 }
 
 .dropdown-item:hover {
-  background-color: var(--background-color);
+  background-color: var(--light-background);
+  box-shadow: inset 2px 2px 5px var(--dark-shadow), inset -2px -2px 5px var(--light-shadow);
 }
 
 /*
@@ -366,6 +390,8 @@ Mobile-Specific Styles
   padding: 20px;
   box-sizing: border-box;
   border-radius: 0;
+  background-color: var(--light-background);
+  color: var(--text-color-light);
 }
 
 .dashboard-header-mobile {
@@ -389,11 +415,12 @@ Mobile-Specific Styles
 .user-details-mobile .user-name-mobile {
     font-weight: bold;
     margin: 0;
+    color: var(--text-color-light);
 }
 
 .user-details-mobile .user-email-mobile {
     font-size: 0.9em;
-    color: var(--text-color);
+    color: var(--text-color-light);
     margin: 5px 0 0 0;
 }
 
@@ -407,23 +434,24 @@ Mobile-Specific Styles
 .stat-card-mobile {
   flex: 1;
   padding: 10px;
-  border-radius: 10px;
-  background: var(--card-background-color);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: 15px;
+  background: var(--dark-card-background);
+  color: var(--text-color-dark);
+  box-shadow: 5px 5px 10px var(--dark-card-dark-shadow), -5px -5px 10px var(--dark-card-light-shadow);
   text-align: center;
-  border: 1px solid #eee;
+  border: none;
 }
 
 .stat-card-mobile h3 {
     font-size: 0.8em;
     margin-bottom: 5px;
-    color: var(--text-color);
+    color: var(--text-color-dark);
 }
 
 .stat-card-mobile p {
     font-size: 1.5em;
     margin: 0;
-    color: var(--text-color);
+    color: var(--text-color-dark);
 }
 
 .semester-selector-mobile {
@@ -442,12 +470,13 @@ Mobile-Specific Styles
 }
 
 .activity-card-mobile {
-  background: var(--card-background-color);
+  background: var(--dark-card-background);
+  color: var(--text-color-dark);
   border-radius: 15px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  box-shadow: 5px 5px 10px var(--dark-card-dark-shadow), -5px -5px 10px var(--dark-card-light-shadow);
   padding: 15px;
   cursor: pointer;
-  border: 1px solid #eee;
+  border: none;
 }
 
 .card-content-mobile {
@@ -459,12 +488,13 @@ Mobile-Specific Styles
 
 .card-content-mobile h3 {
   margin: 0;
-  font-size: 1.1em; /* Smaller font for activity name */
-  color: var(--text-color);
+  font-size: 1.1em;
+  color: var(--text-color-dark);
 }
 
 .card-content-mobile .points {
     margin-left: 0;
+    color: var(--accent-color);
 }
 
 /*
@@ -481,12 +511,16 @@ Search Bar Styles
   width: 100%;
   padding: 10px 15px;
   font-size: 16px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  border-radius: 10px; /* Neumorphic border-radius */
+  border: none;
   box-sizing: border-box;
+  background-color: var(--light-background);
+  color: var(--text-color-light);
+  box-shadow: inset 5px 5px 10px var(--dark-shadow), inset -5px -5px 10px var(--light-shadow); /* Inset neumorphic shadow */
+  transition: all 0.2s ease-in-out;
 }
 
 .search-bar:focus {
-  border-color: #007bff;
   outline: none;
+  box-shadow: inset 2px 2px 5px var(--dark-shadow), inset -2px -2px 5px var(--light-shadow); /* Smaller inset on focus */
 }

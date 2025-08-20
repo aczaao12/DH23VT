@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { auth, db } from '../firebase';
-import { useNavigate, Link } from 'react-router-dom';
+import { auth, db } from '../../firebase';
+import { Link } from 'react-router-dom';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { calculateFinalScore, calculateConditionalScore } from '../utils';
-import { useResponsive } from '../hooks/useResponsive';
+import { calculateFinalScore, calculateConditionalScore } from '../../utils';
+import { useResponsive } from '../../hooks/useResponsive';
 import './DashboardView.css';
 
 const UserDropdown = ({ user, handleLogout }) => {
@@ -239,7 +239,7 @@ const DashboardMobileView = ({ user, userData, totalActivities, totalBonusPoints
 };
 
 const DashboardView = ({ handleLogout }) => {
-  const navigate = useNavigate();
+  
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [notification, setNotification] = useState('');

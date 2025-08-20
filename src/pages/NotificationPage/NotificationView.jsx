@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { rtdb } from '../firebase';
+import { rtdb } from '../../firebase';
 import { ref, onValue, off } from 'firebase/database';
 
 const NotificationView = () => {

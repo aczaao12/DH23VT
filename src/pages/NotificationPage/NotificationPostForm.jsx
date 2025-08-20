@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { rtdb, storage } from '../firebase';
+import { rtdb, storage } from '../../firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { ref as rtdbRef, push, serverTimestamp, set } from 'firebase/database';
 

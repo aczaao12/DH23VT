@@ -10,7 +10,7 @@ const ScoreCalculator = () => {
   });
   const [sinhHoat, setSinhHoat] = useState('yes');
   const [finalScore, setFinalScore] = useState(null);
-  const [message, setMessage] = useState('');
+  const [message] = useState('');
 
   const handleCheckboxChange = (event) => {
     const { id, checked } = event.target;

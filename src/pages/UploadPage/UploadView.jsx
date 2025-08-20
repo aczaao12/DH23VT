@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { ref, onValue } from 'firebase/database';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { collection, addDoc } from 'firebase/firestore';
-import { auth, db, rtdb, storage } from '../firebase';
+import { auth, db, rtdb, storage } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
-import SearchableSelect from './SearchableSelect'; // Import the new component
+import SearchableSelect from '../../components/shared/SearchableSelect'; // Import the new component
 import './UploadView.css';
 
 const UploadView = () => {

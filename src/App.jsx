@@ -2,16 +2,16 @@ import { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { auth } from './firebase';
 import { signOut } from 'firebase/auth';
-import LoginView from './components/LoginView';
-import DashboardView from './components/DashboardView';
-import UploadView from './components/UploadView';
-import AdminView from './components/AdminView';
-import AdminRoute from './components/AdminRoute';
-import SettingsView from './components/SettingsView';
-import BottomNavBar from './components/BottomNavBar';
+import LoginView from './pages/LoginPage/LoginView';
+import DashboardView from './pages/DashboardPage/DashboardView';
+import UploadView from './pages/UploadPage/UploadView';
+import AdminView from './pages/AdminPage/AdminView';
+import AdminRoute from './components/shared/AdminRoute';
+import SettingsView from './pages/SettingsPage/SettingsView';
+import BottomNavBar from './components/shared/BottomNavBar';
 import useDarkMode from './hooks/useDarkMode';
-import ScoreCalculator from './components/ScoreCalculator';
-import NotificationView from './components/NotificationView';
+import ScoreCalculator from './pages/DashboardPage/ScoreCalculator';
+import NotificationView from './pages/NotificationPage/NotificationView';
 import './App.css';
 
 function App() {

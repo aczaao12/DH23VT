@@ -1,4 +1,4 @@
-import useDarkMode from '../hooks/useDarkMode';
+import useDarkMode from '../../hooks/useDarkMode';
 import './SettingsView.css';
 
 const SettingsView = ({ handleLogout }) => {

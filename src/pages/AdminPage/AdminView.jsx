@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { db } from '../firebase';
+import { useState, useEffect, useCallback } from 'react';
+import { db } from '../../firebase';
 import { collection, getDocs, doc, updateDoc, deleteDoc, writeBatch } from 'firebase/firestore';
-import NotificationPostForm from './NotificationPostForm';
+import NotificationPostForm from '../../pages/NotificationPage/NotificationPostForm';
 import './AdminView.css';
 
 const AdminView = () => {
@@ -13,7 +13,7 @@ const AdminView = () => {
   const [selectedActivities, setSelectedActivities] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState('Phê duyệt');
 
-  const fetchActivities = async () => {
+  const fetchActivities = useCallback(async () => {
     setActivities([]);
     setLoading(true);
     setError('');
@@ -30,11 +30,11 @@ const AdminView = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedSemester, setActivities, setLoading, setError, setNotification, setSelectedActivities]);
 
   useEffect(() => {
     fetchActivities();
-  }, [selectedSemester]);
+  }, [selectedSemester, fetchActivities]);
 
   const handleFieldChange = (id, field, value) => {
     const updatedActivities = activities.map(activity => {
@@ -59,7 +59,7 @@ const AdminView = () => {
 
     try {
       const activityDocRef = doc(db, 'users', selectedSemester, 'students', id);
-      const { id: docId, ...dataToUpdate } = activityToUpdate; // Exclude id from the data to be updated
+      const { id, ...dataToUpdate } = activityToUpdate; // Exclude id from the data to be updated
       await updateDoc(activityDocRef, dataToUpdate);
       setNotification(`Activity ${activityToUpdate['Tên hoạt động']} (${id}) updated successfully.`);
       setError(''); // Clear any previous error notification

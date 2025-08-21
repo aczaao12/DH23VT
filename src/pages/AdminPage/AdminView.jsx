@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { db } from '../../firebase';
-import { collection, getDocs, doc, updateDoc, deleteDoc, writeBatch } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc, deleteDoc, writeBatch, query, where } from 'firebase/firestore';
+ // Import Firebase Functions
 import NotificationPostForm from '../../pages/NotificationPage/NotificationPostForm';
 import './AdminView.css';
 
@@ -12,6 +13,9 @@ const AdminView = () => {
   const [selectedSemester, setSelectedSemester] = useState('HK1N3');
   const [selectedActivities, setSelectedActivities] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState('Phê duyệt');
+  const [activityNameFilter, setActivityNameFilter] = useState('');
+  const [fileToImport, setFileToImport] = useState(null);
+  const [importSemester, setImportSemester] = useState('HK1N3'); // New state for import semester
 
   const fetchActivities = useCallback(async () => {
     setActivities([]);
@@ -21,7 +25,7 @@ const AdminView = () => {
     try {
       const activitiesCollectionRef = collection(db, 'users', selectedSemester, 'students');
       const querySnapshot = await getDocs(activitiesCollectionRef);
-      const activitiesList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const activitiesList = querySnapshot.docs.map(doc => ({ firestoreDocId: doc.id, ...doc.data() }));
       setActivities(activitiesList);
       setSelectedActivities([]); // Reset selection when semester changes
     } catch (err) {
@@ -36,9 +40,9 @@ const AdminView = () => {
     fetchActivities();
   }, [selectedSemester, fetchActivities]);
 
-  const handleFieldChange = (id, field, value) => {
+  const handleFieldChange = (firestoreDocId, field, value) => {
     const updatedActivities = activities.map(activity => {
-      if (activity.id === id) {
+      if (activity.firestoreDocId === firestoreDocId) {
         return { ...activity, [field]: value };
       }
       return activity;
@@ -46,8 +50,8 @@ const AdminView = () => {
     setActivities(updatedActivities);
   };
 
-  const handleUpdate = async (id) => {
-    const activityToUpdate = activities.find(activity => activity.id === id);
+  const handleUpdate = async (firestoreDocId) => {
+    const activityToUpdate = activities.find(activity => activity.firestoreDocId === firestoreDocId);
     if (!activityToUpdate) return;
 
     // Condition: If Status is 'Không duyệt', 'Chi tiết' must not be empty
@@ -57,42 +61,68 @@ const AdminView = () => {
       return;
     }
 
+    // New validation: Prevent re-approving the same activity for the same user
+    if (activityToUpdate.Status === 'Phê duyệt') {
+      try {
+        const q = query(
+          collection(db, 'users', selectedSemester, 'students'),
+          where('Email', '==', activityToUpdate.Email),
+          where('Tên hoạt động', '==', activityToUpdate['Tên hoạt động']),
+          where('Status', '==', 'Phê duyệt')
+        );
+        const querySnapshot = await getDocs(q);
+
+        const existingApprovedActivity = querySnapshot.docs.find(doc => doc.id !== firestoreDocId);
+
+        if (existingApprovedActivity) {
+          setError(`Activity '${activityToUpdate['Tên hoạt động']}' for user '${activityToUpdate.Email}' has already been approved.`);
+          setNotification('');
+          return;
+        }
+      } catch (validationErr) {
+        console.error("Error during re-approval validation: ", validationErr);
+        setError("Failed to perform re-approval validation.");
+        setNotification('');
+        return;
+      }
+    }
+
     try {
-      const activityDocRef = doc(db, 'users', selectedSemester, 'students', id);
-      const { id, ...dataToUpdate } = activityToUpdate; // Exclude id from the data to be updated
+      const activityDocRef = doc(db, 'users', selectedSemester, 'students', firestoreDocId);
+      const { firestoreDocId: _firestoreDocId, ...dataToUpdate } = activityToUpdate; // Exclude firestoreDocId from the data to be updated
       await updateDoc(activityDocRef, dataToUpdate);
-      setNotification(`Activity ${activityToUpdate['Tên hoạt động']} (${id}) updated successfully.`);
+      setNotification(`Activity ${activityToUpdate['Tên hoạt động']} (${firestoreDocId}) updated successfully.`);
       setError(''); // Clear any previous error notification
     } catch (err) {
       console.error("Error updating document: ", err);
-      setError(`Failed to update activity ${id}.`);
+      setError(`Failed to update activity ${firestoreDocId}.`);
       setNotification(''); // Clear any previous success notification
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm(`Are you sure you want to delete activity ${id}?`)) return;
+  const handleDelete = async (firestoreDocId) => {
+    if (!window.confirm(`Are you sure you want to delete activity ${firestoreDocId}?`)) return;
 
     try {
-      const activityDocRef = doc(db, 'users', selectedSemester, 'students', id);
+      const activityDocRef = doc(db, 'users', selectedSemester, 'students', firestoreDocId);
       await deleteDoc(activityDocRef);
-      setActivities(activities.filter(activity => activity.id !== id));
-      setNotification(`Activity ${id} deleted successfully.`);
+      setActivities(activities.filter(activity => activity.firestoreDocId !== firestoreDocId));
+      setNotification(`Activity ${firestoreDocId} deleted successfully.`);
     } catch (err) {
       console.error("Error deleting document: ", err);
-      setError(`Failed to delete activity ${id}.`);
+      setError(`Failed to delete activity ${firestoreDocId}.`);
     }
   };
 
-  const handleSelect = (id) => {
+  const handleSelect = (firestoreDocId) => {
     setSelectedActivities(prev =>
-      prev.includes(id) ? prev.filter(activityId => activityId !== id) : [...prev, id]
+      prev.includes(firestoreDocId) ? prev.filter(activityId => activityId !== firestoreDocId) : [...prev, firestoreDocId]
     );
   };
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedActivities(activities.map(a => a.id));
+      setSelectedActivities(filteredActivities.map(a => a.firestoreDocId));
     } else {
       setSelectedActivities([]);
     }
@@ -106,15 +136,64 @@ const AdminView = () => {
     if (!window.confirm(`Are you sure you want to update ${selectedActivities.length} activities to "${selectedStatus}"?`)) return;
 
     setLoading(true);
+    setError('');
+    setNotification('');
+
     const batch = writeBatch(db);
-    selectedActivities.forEach(id => {
-      const activityDocRef = doc(db, 'users', selectedSemester, 'students', id);
+    const activitiesToSkip = [];
+    const activitiesToUpdateInBatch = [];
+
+    // Pre-validate all selected activities
+    for (const firestoreDocId of selectedActivities) {
+      const activityToUpdate = activities.find(activity => activity.firestoreDocId === firestoreDocId);
+      if (!activityToUpdate) continue; // Should not happen
+
+      // If the status is being set to 'Phê duyệt', check for re-approval
+      if (selectedStatus === 'Phê duyệt') {
+        try {
+          const q = query(
+            collection(db, 'users', selectedSemester, 'students'),
+            where('Email', '==', activityToUpdate.Email),
+            where('Tên hoạt động', '==', activityToUpdate['Tên hoạt động']),
+            where('Status', '==', 'Phê duyệt')
+          );
+          const querySnapshot = await getDocs(q);
+
+          const existingApprovedActivity = querySnapshot.docs.find(doc => doc.id !== firestoreDocId);
+
+          if (existingApprovedActivity) {
+            activitiesToSkip.push(`'${activityToUpdate['Tên hoạt động']}' for ${activityToUpdate.Email}`);
+            continue; // Skip this activity for batch update
+          }
+        } catch (validationErr) {
+          console.error("Error during bulk re-approval validation: ", validationErr);
+          setError("Failed to perform bulk re-approval validation.");
+          setLoading(false);
+          return; // Stop the entire bulk update
+        }
+      }
+      // If validation passes or status is not 'Phê duyệt', add to batch
+      activitiesToUpdateInBatch.push(activityToUpdate);
+    }
+
+    if (activitiesToSkip.length > 0) {
+      setError(`The following activities were skipped because they are already approved: ${activitiesToSkip.join(', ')}.`);
+      // If all activities were skipped, don't proceed with batch commit
+      if (activitiesToUpdateInBatch.length === 0) {
+        setLoading(false);
+        return;
+      }
+    }
+
+    // Add only valid activities to the batch
+    activitiesToUpdateInBatch.forEach(activity => {
+      const activityDocRef = doc(db, 'users', selectedSemester, 'students', activity.firestoreDocId);
       batch.update(activityDocRef, { Status: selectedStatus });
     });
 
     try {
       await batch.commit();
-      setNotification(`${selectedActivities.length} activities updated successfully.`);
+      setNotification(`${activitiesToUpdateInBatch.length} activities updated successfully.`);
       fetchActivities(); // Refresh data
     } catch (err) {
       console.error("Error bulk updating documents: ", err);
@@ -132,8 +211,8 @@ const AdminView = () => {
 
     setLoading(true);
     const batch = writeBatch(db);
-    selectedActivities.forEach(id => {
-      const activityDocRef = doc(db, 'users', selectedSemester, 'students', id);
+    selectedActivities.forEach(firestoreDocId => {
+      const activityDocRef = doc(db, 'users', selectedSemester, 'students', firestoreDocId);
       batch.delete(activityDocRef);
     });
 
@@ -148,6 +227,89 @@ const AdminView = () => {
     }
   };
 
+  const handleExportJson = () => {
+    if (selectedActivities.length === 0) {
+      setError("No activities selected for export.");
+      return;
+    }
+
+    const activitiesToExport = activities.filter(activity => selectedActivities.includes(activity.firestoreDocId));
+    const jsonString = JSON.stringify(activitiesToExport, null, 2); // Pretty print JSON
+
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `exported_activities_${selectedSemester}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setNotification(`${selectedActivities.length} activities exported to JSON.`);
+    setError('');
+  };
+
+  const handleImportJson = async () => {
+    if (!fileToImport) {
+      setError("Please select a JSON file to import.");
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    setNotification('');
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const importedData = JSON.parse(e.target.result);
+
+        if (!Array.isArray(importedData)) {
+          setError("Imported JSON is not an array of activities.");
+          setLoading(false);
+          return;
+        }
+
+        const batch = writeBatch(db);
+        let importedCount = 0;
+
+        for (const activity of importedData) {
+          if (activity.firestoreDocId) { // Assuming 'firestoreDocId' exists and is the document ID
+            const activityDocRef = doc(db, 'users', importSemester, 'students', activity.firestoreDocId);
+            const { firestoreDocId: _firestoreDocId, ...dataToImport } = activity; // Exclude firestoreDocId from data
+            batch.set(activityDocRef, dataToImport, { merge: true }); // Use set with merge to update or create
+            importedCount++;
+          } else {
+            // If no firestoreDocId, create a new document with an auto-generated ID
+            const activityDocRef = doc(collection(db, 'users', importSemester, 'students'));
+            batch.set(activityDocRef, activity); // Import all data as is
+            importedCount++;
+            console.warn("Importing activity without 'firestoreDocId'. A new document ID will be generated.", activity);
+          }
+        }
+
+        await batch.commit();
+        setNotification(`${importedCount} activities imported successfully.`);
+        setFileToImport(null); // Clear selected file
+        fetchActivities(); // Refresh data
+      } catch (err) {
+        console.error("Error importing JSON: ", err);
+        setError(`Failed to import activities: ${err.message}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+    reader.onerror = () => {
+      setError("Failed to read file.");
+      setLoading(false);
+    };
+    reader.readAsText(fileToImport);
+  };
+
+
+  const filteredActivities = activities.filter(activity =>
+    activity['Tên hoạt động'] && activity['Tên hoạt động'].toLowerCase().includes(activityNameFilter.toLowerCase())
+  );
 
   return (
     <div className="admin-container">
@@ -155,7 +317,7 @@ const AdminView = () => {
       <div className="semester-selector">
         <label htmlFor="semester-select">Select Semester: </label>
         <select id="semester-select" value={selectedSemester} onChange={(e) => setSelectedSemester(e.target.value)} className="semester-select">
-          <option value="HK1N1">HK1N1</option>
+<option value="HK1N1">HK1N1</option>
           <option value="HK2N1">HK2N1</option>
           <option value="HK1N2">HK1N2</option>
           <option value="HK2N2">HK2N2</option>
@@ -164,6 +326,18 @@ const AdminView = () => {
           <option value="HK1N4">HK1N4</option>
           <option value="HK2N4">HK2N4</option>
         </select>
+      </div>
+          
+      <div className="filter-section">
+        <label htmlFor="activity-name-filter">Filter by Activity Name: </label>
+        <input
+          type="text"
+          id="activity-name-filter"
+          value={activityNameFilter}
+          onChange={(e) => setActivityNameFilter(e.target.value)}
+          placeholder="Enter activity name"
+          className="activity-name-filter-input"
+        />
       </div>
 
       {loading && <p className="centered-text">Loading activities...</p>}
@@ -186,6 +360,36 @@ const AdminView = () => {
             <button onClick={handleBulkDelete} className="btn btn-danger">Delete Selected</button>
             <span className="selected-count">{selectedActivities.length} selected</span>
           </div>
+
+          <div className="import-export-section">
+            <h3>Data Management</h3>
+            <div className="export-group">
+              <button onClick={handleExportJson} className="btn btn-info">Export JSON</button>
+              <span className="selected-count">{selectedActivities.length} selected for export</span>
+            </div>
+            <div className="import-group">
+              <div className="semester-selector import-semester-selector">
+                <label htmlFor="import-semester-select">Import to Semester: </label>
+                <select id="import-semester-select" value={importSemester} onChange={(e) => setImportSemester(e.target.value)} className="semester-select">
+                  <option value="HK1N1">HK1N1</option>
+                  <option value="HK2N1">HK2N1</option>
+                  <option value="HK1N2">HK1N2</option>
+                  <option value="HK2N2">HK2N2</option>
+                  <option value="HK1N3">HK1N3</option>
+                  <option value="HK2N3">HK2N3</option>
+                  <option value="HK1N4">HK1N4</option>
+                  <option value="HK2N4">HK2N4</option>
+                </select>
+              </div>
+              <input
+                type="file"
+                accept=".json"
+                onChange={(e) => setFileToImport(e.target.files[0])}
+                className="file-input"
+              />
+              <button onClick={handleImportJson} className="btn btn-success" disabled={!fileToImport}>Import JSON</button>
+            </div>
+          </div>
           <div className="table-container">
             <table className="data-table">
               <thead>
@@ -194,7 +398,7 @@ const AdminView = () => {
                     <input
                       type="checkbox"
                       onChange={handleSelectAll}
-                      checked={selectedActivities.length === activities.length && activities.length > 0}
+                      checked={selectedActivities.length === filteredActivities.length && filteredActivities.length > 0}
                     />
                   </th>
                   <th>User Email</th>
@@ -207,20 +411,20 @@ const AdminView = () => {
                 </tr>
               </thead>
               <tbody>
-                {activities.map(activity => (
-                  <tr key={activity.id} className={selectedActivities.includes(activity.id) ? 'selected' : ''}>
+                {filteredActivities.map(activity => (
+                  <tr key={activity.firestoreDocId} className={selectedActivities.includes(activity.firestoreDocId) ? 'selected' : ''}>
                     <td>
                       <input
                         type="checkbox"
-                        checked={selectedActivities.includes(activity.id)}
-                        onChange={() => handleSelect(activity.id)}
+                        checked={selectedActivities.includes(activity.firestoreDocId)}
+                        onChange={() => handleSelect(activity.firestoreDocId)}
                       />
                     </td>
                     <td>
                       <input
                         type="email"
                         value={activity.Email || ''}
-                        onChange={(e) => handleFieldChange(activity.id, 'Email', e.target.value)}
+                        onChange={(e) => handleFieldChange(activity.firestoreDocId, 'Email', e.target.value)}
                         className="table-input"
                       />
                     </td>
@@ -228,7 +432,7 @@ const AdminView = () => {
                       <input
                         type="text"
                         value={activity['Tên hoạt động'] || ''}
-                        onChange={(e) => handleFieldChange(activity.id, 'Tên hoạt động', e.target.value)}
+                        onChange={(e) => handleFieldChange(activity.firestoreDocId, 'Tên hoạt động', e.target.value)}
                         className="table-input"
                       />
                     </td>
@@ -236,7 +440,7 @@ const AdminView = () => {
                       <input
                         type="number"
                         value={activity['Điểm cộng'] || 0}
-                        onChange={(e) => handleFieldChange(activity.id, 'Điểm cộng', Number(e.target.value))}
+                        onChange={(e) => handleFieldChange(activity.firestoreDocId, 'Điểm cộng', Number(e.target.value))}
                         className="table-input"
                       />
                     </td>
@@ -246,7 +450,7 @@ const AdminView = () => {
                       </a>
                     </td>
                     <td>
-                      <select value={activity.Status || 'Đang chờ'} onChange={(e) => handleFieldChange(activity.id, 'Status', e.target.value)} className="status-select">
+                      <select value={activity.Status || 'Đang chờ'} onChange={(e) => handleFieldChange(activity.firestoreDocId, 'Status', e.target.value)} className="status-select">
                         <option value="Đang chờ">Đang chờ</option>
                         <option value="Phê duyệt">Phê duyệt</option>
                         <option value="Không duyệt">Không duyệt</option>
@@ -255,14 +459,14 @@ const AdminView = () => {
                     <td>
                       <textarea
                         value={activity['Chi tiết'] || ''}
-                        onChange={(e) => handleFieldChange(activity.id, 'Chi tiết', e.target.value)}
+                        onChange={(e) => handleFieldChange(activity.firestoreDocId, 'Chi tiết', e.target.value)}
                         className="table-textarea"
                         rows="2"
                       />
                     </td>
                     <td className="actions-cell">
-                      <button onClick={() => handleUpdate(activity.id)} className="btn btn-primary">Update</button>
-                      <button onClick={() => handleDelete(activity.id)} className="btn btn-danger">Delete</button>
+                      <button onClick={() => handleUpdate(activity.firestoreDocId)} className="btn btn-primary">Update</button>
+                      <button onClick={() => handleDelete(activity.firestoreDocId)} className="btn btn-danger">Delete</button>
                     </td>
                   </tr>
                 ))}

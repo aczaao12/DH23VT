@@ -250,3 +250,80 @@ h1 {
   background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
   margin: 40px 0;
 }
+
+/* Styles for Import/Export Section */
+.import-export-section {
+  margin-top: 20px;
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #f0f2f5; /* Lighter background than bulk-actions */
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Space between export and import groups */
+}
+
+.import-export-section h3 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.export-group,
+.import-group {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+}
+
+.export-group .selected-count {
+  margin-left: 10px;
+  font-weight: bold;
+  color: #555;
+}
+
+.import-group .semester-selector {
+  margin-bottom: 0; /* Override default margin */
+}
+
+.import-group .file-input {
+  flex-grow: 1; /* Allow file input to take available space */
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+/* Adjustments for existing elements within the new structure */
+.bulk-actions {
+  margin-top: 30px; /* Add some space above bulk actions */
+}
+
+/* Responsive adjustments for the new section */
+@media (max-width: 768px) {
+  .import-export-section {
+    padding: 15px;
+  }
+
+  .export-group,
+  .import-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .export-group .btn,
+  .import-group .btn,
+  .import-group .semester-selector,
+  .import-group .file-input {
+    width: 100%;
+  }
+
+  .export-group .selected-count {
+    margin-left: 0;
+    margin-top: 10px;
+    text-align: center;
+  }
+}

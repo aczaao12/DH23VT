@@ -327,3 +327,10 @@ h1 {
     text-align: center;
   }
 }
+
+.cell-error {
+  color: #dc3545; /* Red color for errors */
+  font-size: 0.85em;
+  margin-top: 5px;
+  text-align: left;
+}

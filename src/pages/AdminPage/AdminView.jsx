@@ -16,6 +16,7 @@ const AdminView = () => {
   const [activityNameFilter, setActivityNameFilter] = useState('');
   const [fileToImport, setFileToImport] = useState(null);
   const [importSemester, setImportSemester] = useState('HK1N3'); // New state for import semester
+  const [cellErrors, setCellErrors] = useState({}); // New state for cell-specific errors
 
   const fetchActivities = useCallback(async () => {
     setActivities([]);
@@ -34,7 +35,7 @@ const AdminView = () => {
     } finally {
       setLoading(false);
     }
-  }, [selectedSemester, setActivities, setLoading, setError, setNotification, setSelectedActivities]);
+  }, [selectedSemester]);
 
   useEffect(() => {
     fetchActivities();
@@ -48,6 +49,60 @@ const AdminView = () => {
       return activity;
     });
     setActivities(updatedActivities);
+  };
+
+  const handleStatusChangeWithValidation = async (firestoreDocId, value, activity) => {
+    // Clear any existing error for this cell first
+    setCellErrors(prev => {
+      const newErrors = { ...prev };
+      if (newErrors[firestoreDocId]) {
+        delete newErrors[firestoreDocId].Status;
+        if (Object.keys(newErrors[firestoreDocId]).length === 0) {
+          delete newErrors[firestoreDocId];
+        }
+      }
+      return newErrors;
+    });
+
+    // Only perform validation if the new status is 'Phê duyệt'
+    if (value === 'Phê duyệt') {
+      try {
+        const q = query(
+          collection(db, 'users', selectedSemester, 'students'),
+          where('Email', '==', activity.Email),
+          where('Tên hoạt động', '==', activity['Tên hoạt động']),
+          where('Status', '==', 'Phê duyệt')
+        );
+        const querySnapshot = await getDocs(q);
+
+        const existingApprovedActivity = querySnapshot.docs.find(doc => doc.id !== firestoreDocId);
+
+        if (existingApprovedActivity) {
+          // Set error for this specific cell
+          setCellErrors(prev => ({
+            ...prev,
+            [firestoreDocId]: {
+              ...prev[firestoreDocId],
+              Status: `Activity '${activity['Tên hoạt động']}' for user '${activity.Email}' has already been approved.`
+            }
+          }));
+          return; // Prevent status change
+        }
+      } catch (validationErr) {
+        console.error("Error during front-end re-approval validation: ", validationErr);
+        setCellErrors(prev => ({
+          ...prev,
+          [firestoreDocId]: {
+            ...prev[firestoreDocId],
+            Status: "Failed to perform validation."
+          }
+        }));
+        return; // Prevent status change
+      }
+    }
+
+    // If validation passes or status is not 'Phê duyệt', update the field
+    handleFieldChange(firestoreDocId, 'Status', value);
   };
 
   const handleUpdate = async (firestoreDocId) => {
@@ -454,11 +509,14 @@ const AdminView = () => {
                       </a>
                     </td>
                     <td>
-                      <select value={activity.Status || 'Đang chờ'} onChange={(e) => handleFieldChange(activity.firestoreDocId, 'Status', e.target.value)} className="status-select">
+                      <select value={activity.Status || 'Đang chờ'} onChange={(e) => handleStatusChangeWithValidation(activity.firestoreDocId, e.target.value, activity)} className="status-select">
                         <option value="Đang chờ">Đang chờ</option>
                         <option value="Phê duyệt">Phê duyệt</option>
                         <option value="Không duyệt">Không duyệt</option>
                       </select>
+                      {cellErrors[activity.firestoreDocId]?.Status && (
+                        <div className="cell-error">{cellErrors[activity.firestoreDocId].Status}</div>
+                      )}
                     </td>
                     <td>
                       <textarea

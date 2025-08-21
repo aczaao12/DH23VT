@@ -364,20 +364,31 @@ const AdminView = () => {
   };
 
   const handleGenerateReport = () => {
-    const approvedActivities = activities.filter(activity => activity.Status === 'Phê duyệt');
-    const report = approvedActivities.map((activity, index) => ({
+    const selectedAndApprovedActivities = activities.filter(activity =>
+      selectedActivities.includes(activity.firestoreDocId) && activity.Status === 'Phê duyệt'
+    );
+
+    if (selectedAndApprovedActivities.length === 0) {
+      setError("No selected activities with 'Phê duyệt' status to generate a report.");
+      setReportData([]);
+      setShowReport(false);
+      return;
+    }
+
+    const report = selectedAndApprovedActivities.map((activity, index) => ({
       STT: index + 1,
-      'Tên hoạt động': activity['Tên hoạt động'],
+      name: activity['Tên hoạt động'],
       Email: activity.Email,
       'File upload': activity['File upload'],
     }));
     setReportData(report);
     setShowReport(true);
+    setError('');
   };
 
   const handleCopyReport = () => {
-    const reportString = 'STT\tTên hoạt động\tEmail\tFile upload\n' + reportData.map(item => 
-      `${item.STT}\t${item['Tên hoạt động']}\t${item.Email}\t${item['File upload']}`
+    const reportString = 'STT\tname\tEmail\tFile upload\n' + reportData.map(item =>
+      `${item.STT}\t${item.name}\t${item.Email}\t${item['File upload']}`
     ).join('\n');
 
     navigator.clipboard.writeText(reportString).then(() => {
@@ -574,7 +585,7 @@ const AdminView = () => {
                 <thead>
                   <tr>
                     <th>STT</th>
-                    <th>Tên hoạt động</th>
+                    <th>name</th>
                     <th>Email</th>
                     <th>File upload</th>
                   </tr>
@@ -583,7 +594,7 @@ const AdminView = () => {
                   {reportData.map(item => (
                     <tr key={item.STT}>
                       <td>{item.STT}</td>
-                      <td>{item['Tên hoạt động']}</td>
+                      <td>{item.name}</td>
                       <td>{item.Email}</td>
                       <td><a href={item['File upload']} target="_blank" rel="noopener noreferrer">View File</a></td>
                     </tr>

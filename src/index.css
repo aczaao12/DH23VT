@@ -3,87 +3,73 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light; /* Only light scheme */
-  color: #213547; /* Light theme text color */
-  background-color: #ffffff; /* Light theme background color */
+  color-scheme: light;
+  color: #333; /* Adjusted text color for neumorphic background */
+  background-color: var(--neumo-bg); /* Set global background */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Neumorphism variables - make them global */
+  --neumo-bg: #e0e0e0;
+  --neumo-light-shadow: #ffffff;
+  --neumo-dark-shadow: #a3b1c6;
+  --neumo-border-radius: 12px;
+  --neumo-element-padding: 15px;
 }
 
 a {
   font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+  color: #007bff; /* Keep a distinct link color */
+  text-decoration: none; /* Remove underline by default */
 }
 a:hover {
-  color: #535bf2;
+  color: #0056b3; /* Darker on hover */
+  text-decoration: underline; /* Add underline on hover */
 }
 
 body {
   margin: 0;
   display: flex;
-  place-items: center;
+  /* place-items: center; Removed as main container handles it */
   min-width: 320px;
   min-height: 100vh;
+  background-color: var(--neumo-bg); /* Ensure body background is neumorphic */
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+  color: #333; /* Ensure heading color is consistent */
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
+  border: none; /* Remove default border */
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--neumo-bg); /* Neumorphic background */
   cursor: pointer;
-  transition: border-color 0.25s;
+  border-radius: var(--neumo-border-radius);
+  box-shadow: 5px 5px 10px var(--neumo-dark-shadow),
+              -5px -5px 10px var(--neumo-light-shadow);
+  color: #333; /* Default button text color */
+  transition: all 0.2s ease-in-out; /* Smooth transition for hover/active */
 }
 button:hover {
-  border-color: #646cff;
+  box-shadow: 2px 2px 5px var(--neumo-dark-shadow),
+              -2px -2px 5px var(--neumo-light-shadow);
+}
+button:active {
+  box-shadow: inset 2px 2px 5px var(--neumo-dark-shadow),
+              inset -2px -2px 5px var(--neumo-light-shadow);
 }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-/* Trong file CSS của bạn */
-#semester-select {
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-  cursor: pointer;
-  background-color: #f9f9f9;
-  color: #333;
-  outline: none;
-  transition: all 0.3s ease;
-}
-
-#semester-select:hover {
-  border-color: #666;
-}
-
-#semester-select:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  outline: none; /* Remove default outline */
+  box-shadow: inset 2px 2px 5px var(--neumo-dark-shadow),
+              inset -2px -2px 5px var(--neumo-light-shadow); /* Neumorphic focus */
 }

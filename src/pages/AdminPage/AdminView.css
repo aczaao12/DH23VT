@@ -1,8 +1,25 @@
+/* Variables for Neumorphism */
+:root {
+  --neumo-bg: #e0e0e0; /* Light grey background */
+  --neumo-light-shadow: #ffffff; /* White for light shadow */
+  --neumo-dark-shadow: #a3b1c6; /* Darker grey-blue for dark shadow */
+  --neumo-border-radius: 12px; /* Slightly larger border-radius for soft look */
+  --neumo-element-padding: 15px;
+}
+
+body {
+  background-color: var(--neumo-bg); /* Ensure body matches container background */
+}
+
 .admin-container {
-  padding: 20px;
+  padding: var(--neumo-element-padding);
   max-width: 1400px;
   margin: 0 auto;
   font-family: sans-serif;
+  background-color: var(--neumo-bg);
+  border-radius: var(--neumo-border-radius);
+  box-shadow: 9px 9px 16px var(--neumo-dark-shadow),
+              -9px -9px 16px var(--neumo-light-shadow);
 }
 
 .centered-text {
@@ -14,70 +31,90 @@
 .semester-selector,
 .filter-section,
 .bulk-actions,
-.import-export-section {
+.import-export-section,
+.report-container { /* Added report-container here */
   margin-bottom: 20px;
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f9f9f9;
+  padding: var(--neumo-element-padding);
+  border: none; /* Removed border */
+  border-radius: var(--neumo-border-radius);
+  background-color: var(--neumo-bg);
+  box-shadow: inset 5px 5px 10px var(--neumo-dark-shadow),
+              inset -5px -5px 10px var(--neumo-light-shadow);
 }
 
 .semester-selector label,
 .filter-section label {
   margin-right: 10px;
   font-weight: bold;
+  color: #333; /* Darker text for contrast */
 }
 
 .semester-select,
 .status-select,
-.activity-name-filter-input {
+.activity-name-filter-input,
+.table-input,
+.table-textarea {
   padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+  border-radius: var(--neumo-border-radius);
+  border: none; /* Removed border */
+  background-color: var(--neumo-bg);
+  box-shadow: inset 2px 2px 5px var(--neumo-dark-shadow),
+              inset -2px -2px 5px var(--neumo-light-shadow);
+  color: #333;
+  outline: none; /* Remove default outline */
 }
 
 .table-container {
   overflow-x: auto;
   width: 100%;
+  margin-top: 20px;
+  border-radius: var(--neumo-border-radius);
+  box-shadow: 5px 5px 10px var(--neumo-dark-shadow),
+              -5px -5px 10px var(--neumo-light-shadow);
+  background-color: var(--neumo-bg); /* Background for the table container */
 }
 
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  /* Removed margin-top as it's on container now */
 }
 
 .data-table th,
 .data-table td {
-  border: 1px solid #ddd;
+  border: none; /* Removed border */
   padding: 10px;
   text-align: left;
   vertical-align: middle;
+  background-color: var(--neumo-bg); /* Ensure cells have base background */
 }
 
 .data-table th {
-  background-color: #f2f2f2;
+  background-color: var(--neumo-bg);
   font-weight: bold;
+  color: #333;
+  /* Subtle inset shadow for header cells */
+  box-shadow: inset 1px 1px 2px var(--neumo-dark-shadow),
+              inset -1px -1px 2px var(--neumo-light-shadow);
 }
 
 .data-table tr:nth-child(even) {
-  background-color: #f9f9f9;
+  background-color: var(--neumo-bg); /* Keep consistent background */
 }
 
 .data-table tr:hover {
-  background-color: #f1f1f1;
+  background-color: #d0d0d0; /* Slightly darker on hover */
 }
 
 .data-table tr.selected {
-  background-color: #e0e0ff;
+  background-color: #c0c0c0; /* More pronounced selection */
 }
 
 .table-input,
 .table-textarea {
   width: 100%;
   padding: 6px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  /* Already defined above */
   box-sizing: border-box;
 }
 
@@ -86,7 +123,7 @@
 }
 
 .file-link {
-  color: #007bff;
+  color: #007bff; /* Keep original link color for visibility */
   text-decoration: none;
 }
 
@@ -101,54 +138,71 @@
 .btn {
   padding: 8px 12px;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--neumo-border-radius);
   cursor: pointer;
   margin-right: 5px;
   font-size: 14px;
+  background-color: var(--neumo-bg);
+  box-shadow: 5px 5px 10px var(--neumo-dark-shadow),
+              -5px -5px 10px var(--neumo-light-shadow);
+  color: #333; /* Default button text color */
+  transition: all 0.2s ease-in-out; /* Smooth transition for hover/active */
 }
 
+.btn:hover {
+  box-shadow: 2px 2px 5px var(--neumo-dark-shadow),
+              -2px -2px 5px var(--neumo-light-shadow);
+}
+
+.btn:active {
+  box-shadow: inset 2px 2px 5px var(--neumo-dark-shadow),
+              inset -2px -2px 5px var(--neumo-light-shadow);
+}
+
+/* Specific button colors - adjust to fit neumorphism */
 .btn-primary {
-  background-color: #007bff;
-  color: white;
+  color: #007bff; /* Keep primary color as text */
 }
 
 .btn-danger {
-  background-color: #dc3545;
-  color: white;
+  color: #dc3545; /* Keep danger color as text */
 }
 
 .btn-info {
-  background-color: #17a2b8;
-  color: white;
+  color: #17a2b8; /* Keep info color as text */
 }
 
 .btn-success {
-  background-color: #28a745;
-  color: white;
+  color: #28a745; /* Keep success color as text */
 }
 
 .btn:disabled {
-  background-color: #cccccc;
+  background-color: var(--neumo-bg);
+  box-shadow: inset 2px 2px 5px var(--neumo-dark-shadow),
+              inset -2px -2px 5px var(--neumo-light-shadow);
+  color: #999;
   cursor: not-allowed;
 }
 
 .notification {
   padding: 15px;
   margin-bottom: 20px;
-  border-radius: 4px;
+  border-radius: var(--neumo-border-radius);
   text-align: center;
+  box-shadow: inset 2px 2px 5px var(--neumo-dark-shadow),
+              inset -2px -2px 5px var(--neumo-light-shadow);
 }
 
 .notification.success {
-  background-color: #d4edda;
+  background-color: #d4edda; /* Keep a distinct background for success */
   color: #155724;
-  border: 1px solid #c3e6cb;
+  border: none;
 }
 
 .notification.error {
-  background-color: #f8d7da;
+  background-color: #f8d7da; /* Keep a distinct background for error */
   color: #721c24;
-  border: 1px solid #f5c6cb;
+  border: none;
 }
 
 .selected-count {
@@ -160,9 +214,10 @@
 .import-export-section h3,
 .reporting-section h3 {
   margin-top: 0;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #ccc; /* Keep a subtle separator */
   padding-bottom: 10px;
   margin-bottom: 15px;
+  color: #333;
 }
 
 .import-group,
@@ -184,7 +239,8 @@
   margin-top: 40px;
   margin-bottom: 40px;
   border: 0;
-  border-top: 2px solid #eee;
+  border-top: 2px solid var(--neumo-light-shadow); /* Neumorphic divider */
+  box-shadow: 0px 1px 2px var(--neumo-dark-shadow);
 }
 
 .cell-error {
@@ -193,13 +249,7 @@
   margin-top: 4px;
 }
 
-.report-container {
-  margin-top: 30px;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #fdfdfd;
-}
+/* Report container already styled with other card-like elements */
 
 .report-table {
   margin-top: 15px;
@@ -215,16 +265,72 @@
 .pagination-controls button {
   margin: 0 10px;
   padding: 8px 16px;
-  border: 1px solid #ddd;
-  background-color: #f0f0f0;
+  border: none; /* Removed border */
+  border-radius: var(--neumo-border-radius);
+  background-color: var(--neumo-bg);
+  box-shadow: 5px 5px 10px var(--neumo-dark-shadow),
+              -5px -5px 10px var(--neumo-light-shadow);
+  color: #333;
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.pagination-controls button:hover {
+  box-shadow: 2px 2px 5px var(--neumo-dark-shadow),
+              -2px -2px 5px var(--neumo-light-shadow);
+}
+
+.pagination-controls button:active {
+  box-shadow: inset 2px 2px 5px var(--neumo-dark-shadow),
+              inset -2px -2px 5px var(--neumo-light-shadow);
 }
 
 .pagination-controls button:disabled {
-  background-color: #e9e9e9;
+  background-color: var(--neumo-bg);
+  box-shadow: inset 2px 2px 5px var(--neumo-dark-shadow),
+              inset -2px -2px 5px var(--neumo-light-shadow);
+  color: #999;
   cursor: not-allowed;
 }
 
 .pagination-controls span {
   margin: 0 10px;
+  color: #333;
+}
+
+/* Additional global styles for neumorphism */
+body {
+  background-color: var(--neumo-bg);
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure checkboxes and radio buttons also look neumorphic if possible */
+input[type="checkbox"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  background-color: var(--neumo-bg);
+  box-shadow: inset 2px 2px 5px var(--neumo-dark-shadow),
+              inset -2px -2px 5px var(--neumo-light-shadow);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease-in-out;
+}
+
+input[type="checkbox"]:checked {
+  box-shadow: inset 2px 2px 5px var(--neumo-light-shadow),
+              inset -2px -2px 5px var(--neumo-dark-shadow);
+  background-color: #6dd5ed; /* A subtle color when checked */
+}
+
+input[type="checkbox"]:checked::after {
+  content: '✔';
+  font-size: 14px;
+  color: var(--neumo-bg);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

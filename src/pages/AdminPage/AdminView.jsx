@@ -328,17 +328,7 @@ const AdminView = () => {
         </select>
       </div>
           
-      <div className="filter-section">
-        <label htmlFor="activity-name-filter">Filter by Activity Name: </label>
-        <input
-          type="text"
-          id="activity-name-filter"
-          value={activityNameFilter}
-          onChange={(e) => setActivityNameFilter(e.target.value)}
-          placeholder="Enter activity name"
-          className="activity-name-filter-input"
-        />
-      </div>
+      
 
       {loading && <p className="centered-text">Loading activities...</p>}
       {error && <div className="notification error">{error}</div>}
@@ -350,23 +340,14 @@ const AdminView = () => {
 
       {activities.length > 0 && (
         <>
-          <div className="bulk-actions">
-            <select value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)} className="status-select">
-              <option value="Phê duyệt">Phê duyệt</option>
-              <option value="Không duyệt">Không duyệt</option>
-              <option value="Đang chờ">Đang chờ</option>
-            </select>
-            <button onClick={handleBulkUpdate} className="btn btn-primary">Update Selected</button>
-            <button onClick={handleBulkDelete} className="btn btn-danger">Delete Selected</button>
-            <span className="selected-count">{selectedActivities.length} selected</span>
-          </div>
-
-          <div className="import-export-section">
+           <div className="import-export-section">
             <h3>Data Management</h3>
             <div className="export-group">
               <button onClick={handleExportJson} className="btn btn-info">Export JSON</button>
               <span className="selected-count">{selectedActivities.length} selected for export</span>
             </div>
+            
+           
             <div className="import-group">
               <div className="semester-selector import-semester-selector">
                 <label htmlFor="import-semester-select">Import to Semester: </label>
@@ -389,6 +370,29 @@ const AdminView = () => {
               />
               <button onClick={handleImportJson} className="btn btn-success" disabled={!fileToImport}>Import JSON</button>
             </div>
+
+             <div className="filter-section">
+        <label htmlFor="activity-name-filter">Filter by Activity Name: </label>
+        <input
+          type="text"
+          id="activity-name-filter"
+          value={activityNameFilter}
+          onChange={(e) => setActivityNameFilter(e.target.value)}
+          placeholder="Enter activity name"
+          className="activity-name-filter-input"
+        />
+      </div>
+
+          </div>
+          <div className="bulk-actions">
+            <select value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)} className="status-select">
+              <option value="Phê duyệt">Phê duyệt</option>
+              <option value="Không duyệt">Không duyệt</option>
+              <option value="Đang chờ">Đang chờ</option>
+            </select>
+            <button onClick={handleBulkUpdate} className="btn btn-primary">Update Selected</button>
+            <button onClick={handleBulkDelete} className="btn btn-danger">Delete Selected</button>
+            <span className="selected-count">{selectedActivities.length} selected</span>
           </div>
           <div className="table-container">
             <table className="data-table">
@@ -473,6 +477,8 @@ const AdminView = () => {
               </tbody>
             </table>
           </div>
+
+       
         </>
       )}
 

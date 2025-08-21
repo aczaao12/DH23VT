@@ -377,7 +377,7 @@ const AdminView = () => {
 
     const report = selectedAndApprovedActivities.map((activity, index) => ({
       STT: index + 1,
-      name: activity['Tên hoạt động'],
+      name: activity.Name, // Changed from activity['Tên hoạt động']
       Email: activity.Email,
       'File upload': activity['File upload'],
     }));
@@ -585,7 +585,7 @@ const AdminView = () => {
                 <thead>
                   <tr>
                     <th>STT</th>
-                    <th>name</th>
+                    <th>Name</th>
                     <th>Email</th>
                     <th>File upload</th>
                   </tr>
@@ -594,7 +594,7 @@ const AdminView = () => {
                   {reportData.map(item => (
                     <tr key={item.STT}>
                       <td>{item.STT}</td>
-                      <td>{item.name}</td>
+                      <td>{item.Name}</td>
                       <td>{item.Email}</td>
                       <td><a href={item['File upload']} target="_blank" rel="noopener noreferrer">View File</a></td>
                     </tr>

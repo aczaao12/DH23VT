@@ -61,7 +61,7 @@ const UploadView = () => {
         'File upload': fileUrl,
         Status: 'Đang chờ',
         'Thời gian': new Date(),
-        'collectedBy': user.displayName, // Add this field to save the name of the user who collected the data
+        'Name': user.displayName, // Add this field to save the name of the user who collected the data
       });
 
       setNotification('Upload successful! Redirecting to dashboard...');

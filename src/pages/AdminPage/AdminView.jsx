@@ -19,6 +19,8 @@ const AdminView = () => {
   const [cellErrors, setCellErrors] = useState({}); // New state for cell-specific errors
   const [reportData, setReportData] = useState([]);
   const [showReport, setShowReport] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage] = useState(100);
 
   const fetchActivities = useCallback(async () => {
     setActivities([]);
@@ -387,8 +389,8 @@ const AdminView = () => {
   };
 
   const handleCopyReport = () => {
-    const reportString = 'STT\tname\tEmail\tFile upload\n' + reportData.map(item =>
-      `${item.STT}\t${item.name}\t${item.Email}\t${item['File upload']}`
+    const reportString = 'STT\tName\tEmail\tFile upload\n' + reportData.map(item =>
+      `${item.STT}\t${item.Name}\t${item.Email}\t${item['File upload']}`
     ).join('\n');
 
     navigator.clipboard.writeText(reportString).then(() => {
@@ -403,12 +405,18 @@ const AdminView = () => {
     activity['Tên hoạt động'] && activity['Tên hoạt động'].toLowerCase().includes(activityNameFilter.toLowerCase())
   );
 
+  // Pagination Logic
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  const paginatedActivities = filteredActivities.slice(indexOfFirstRow, indexOfLastRow);
+  const totalPages = Math.ceil(filteredActivities.length / rowsPerPage);
+
   return (
     <div className="admin-container">
       <h1>Admin - Activity Management</h1>
       <div className="semester-selector">
         <label htmlFor="semester-select">Select Semester: </label>
-        <select id="semester-select" value={selectedSemester} onChange={(e) => setSelectedSemester(e.target.value)} className="semester-select">
+        <select id="semester-select" value={selectedSemester} onChange={(e) => { setSelectedSemester(e.target.value); setCurrentPage(1); }} className="semester-select">
 <option value="HK1N1">HK1N1</option>
           <option value="HK2N1">HK2N1</option>
           <option value="HK1N2">HK1N2</option>
@@ -473,7 +481,7 @@ const AdminView = () => {
           type="text"
           id="activity-name-filter"
           value={activityNameFilter}
-          onChange={(e) => setActivityNameFilter(e.target.value)}
+          onChange={(e) => { setActivityNameFilter(e.target.value); setCurrentPage(1); }}
           placeholder="Enter activity name"
           className="activity-name-filter-input"
         />
@@ -511,7 +519,7 @@ const AdminView = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredActivities.map(activity => (
+                {paginatedActivities.map(activity => (
                   <tr key={activity.firestoreDocId} className={selectedActivities.includes(activity.firestoreDocId) ? 'selected' : ''}>
                     <td>
                       <input
@@ -575,6 +583,15 @@ const AdminView = () => {
                 ))}
               </tbody>
             </table>
+            <div className="pagination-controls">
+              <button onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1}>
+                Previous
+              </button>
+              <span> Page {currentPage} of {totalPages} </span>
+              <button onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages || totalPages === 0}>
+                Next
+              </button>
+            </div>
           </div>
 
           {showReport && (

@@ -17,6 +17,8 @@ const AdminView = () => {
   const [fileToImport, setFileToImport] = useState(null);
   const [importSemester, setImportSemester] = useState('HK1N3'); // New state for import semester
   const [cellErrors, setCellErrors] = useState({}); // New state for cell-specific errors
+  const [reportData, setReportData] = useState([]);
+  const [showReport, setShowReport] = useState(false);
 
   const fetchActivities = useCallback(async () => {
     setActivities([]);
@@ -361,6 +363,30 @@ const AdminView = () => {
     reader.readAsText(fileToImport);
   };
 
+  const handleGenerateReport = () => {
+    const approvedActivities = activities.filter(activity => activity.Status === 'Phê duyệt');
+    const report = approvedActivities.map((activity, index) => ({
+      STT: index + 1,
+      'Tên hoạt động': activity['Tên hoạt động'],
+      Email: activity.Email,
+      'File upload': activity['File upload'],
+    }));
+    setReportData(report);
+    setShowReport(true);
+  };
+
+  const handleCopyReport = () => {
+    const reportString = 'STT\tTên hoạt động\tEmail\tFile upload\n' + reportData.map(item => 
+      `${item.STT}\t${item['Tên hoạt động']}\t${item.Email}\t${item['File upload']}`
+    ).join('\n');
+
+    navigator.clipboard.writeText(reportString).then(() => {
+      setNotification('Report copied to clipboard!');
+    }, () => {
+      setError('Failed to copy report.');
+    });
+  };
+
 
   const filteredActivities = activities.filter(activity =>
     activity['Tên hoạt động'] && activity['Tên hoạt động'].toLowerCase().includes(activityNameFilter.toLowerCase())
@@ -424,6 +450,10 @@ const AdminView = () => {
                 className="file-input"
               />
               <button onClick={handleImportJson} className="btn btn-success" disabled={!fileToImport}>Import JSON</button>
+            </div>
+            <div className="reporting-section">
+              <h3>Reporting</h3>
+              <button onClick={handleGenerateReport} className="btn btn-info">Generate Approved Report</button>
             </div>
 
              <div className="filter-section">
@@ -535,6 +565,33 @@ const AdminView = () => {
               </tbody>
             </table>
           </div>
+
+          {showReport && (
+            <div className="report-container">
+              <h3>Approved Activities Report</h3>
+              <button onClick={handleCopyReport} className="btn btn-secondary">Copy Report</button>
+              <table className="data-table report-table">
+                <thead>
+                  <tr>
+                    <th>STT</th>
+                    <th>Tên hoạt động</th>
+                    <th>Email</th>
+                    <th>File upload</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reportData.map(item => (
+                    <tr key={item.STT}>
+                      <td>{item.STT}</td>
+                      <td>{item['Tên hoạt động']}</td>
+                      <td>{item.Email}</td>
+                      <td><a href={item['File upload']} target="_blank" rel="noopener noreferrer">View File</a></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
 
        
         </>

@@ -377,7 +377,7 @@ const AdminView = () => {
 
     const report = selectedAndApprovedActivities.map((activity, index) => ({
       STT: index + 1,
-      name: activity.Name, // Changed from activity['Tên hoạt động']
+      Name: activity.Name, // Changed from activity['Tên hoạt động']
       Email: activity.Email,
       'File upload': activity['File upload'],
     }));

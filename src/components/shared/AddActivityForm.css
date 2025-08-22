@@ -1,0 +1,50 @@
+.neumorphism-form {
+  padding: 20px;
+  border-radius: 20px;
+  background: #e0e0e0;
+  box-shadow: 20px 20px 60px #bebebe,
+              -20px -20px 60px #ffffff;
+  margin-bottom: 20px;
+}
+
+.neumorphism-form h3 {
+  color: #5a5a5a;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.neumorphism-input {
+  width: 100%;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  border: none;
+  background: #e0e0e0;
+  box-shadow: inset 5px 5px 10px #bebebe,
+              inset -5px -5px 10px #ffffff;
+  color: #5a5a5a;
+  font-size: 1rem;
+}
+
+.neumorphism-input:focus {
+  outline: none;
+}
+
+.neumorphism-button {
+  width: 100%;
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: none;
+  background: #e0e0e0;
+  box-shadow: 5px 5px 10px #bebebe,
+              -5px -5px 10px #ffffff;
+  color: #5a5a5a;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.neumorphism-button:active {
+  box-shadow: inset 5px 5px 10px #bebebe,
+              inset -5px -5px 10px #ffffff;
+}

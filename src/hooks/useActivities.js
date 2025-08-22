@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { db } from '../firebase'; // Adjust path as needed
+import { db, rtdb } from '../firebase'; // Adjust path as needed
 import { collection, getDocs, doc, updateDoc, deleteDoc, writeBatch, query, where } from 'firebase/firestore';
+import { ref, set } from 'firebase/database';
 
 export const useActivities = (semester) => {
   const [activities, setActivities] = useState([]);
@@ -342,6 +343,25 @@ export const useActivities = (semester) => {
     setError('');
   }, [activities, selectedActivities, semester]);
 
+  const addActivityDefinition = useCallback(async (activityKey, activityName, points) => {
+    setLoading(true);
+    setError('');
+    setNotification('');
+    try {
+      const activityRef = ref(rtdb, `activities/${activityKey}`);
+      await set(activityRef, {
+        name: activityName,
+        points: points
+      });
+      setNotification(`Activity definition '${activityName}' added successfully.`);
+    } catch (err) {
+      console.error("Error adding activity definition: ", err);
+      setError(`Failed to add activity definition: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   return {
     activities,
     loading,
@@ -363,5 +383,6 @@ export const useActivities = (semester) => {
     setError, // Expose for external error setting
     handleImportJson,
     handleExportJson,
+    addActivityDefinition,
   };
 };

@@ -5,15 +5,18 @@ import { collection, addDoc } from 'firebase/firestore';
 import { auth, db, rtdb, storage } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
 import SearchableSelect from '../../components/shared/SearchableSelect'; // Import the new component
+import ConfirmationModal from '../../components/shared/ConfirmationModal';
 import './UploadView.css';
 
 const UploadView = () => {
   const [activities, setActivities] = useState({});
   const [selectedActivity, setSelectedActivity] = useState('');
+  const [selectedSemester, setSelectedSemester] = useState('HK1N3');
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState('');
   const [error, setError] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const user = auth.currentUser;
 
@@ -31,7 +34,7 @@ const UploadView = () => {
     setFile(e.target.files[0]);
   };
 
-  const handleSubmit = async (e) => {
+  const handleOpenModal = (e) => {
     e.preventDefault();
     setError('');
     setNotification('');
@@ -40,11 +43,15 @@ const UploadView = () => {
       setError('Please select an activity and a file.');
       return;
     }
+    setIsModalOpen(true);
+  };
 
+  const handleSubmit = async () => {
     setLoading(true);
+    setIsModalOpen(false);
 
     try {
-      const semester = 'HK1N3'; // As specified
+      const semester = selectedSemester;
       const studentFolder = user.uid;
       const filePath = `upload/${semester}/students/${studentFolder}/${file.name}`;
       const fileRef = storageRef(storage, filePath);
@@ -77,7 +84,20 @@ const UploadView = () => {
   return (
     <div className="upload-container">
       <h1 className="upload-header">Upload Activity</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleOpenModal}>
+        <div className="form-group">
+          <label htmlFor="semester-select" className="form-label">Học kỳ:</label>
+          <select id="semester-select" value={selectedSemester} onChange={(e) => setSelectedSemester(e.target.value)} className="semester-select">
+              <option value="HK1N3">HK1N3</option>
+              <option value="HK1N1">HK1N1</option>
+              <option value="HK2N1">HK2N1</option>
+              <option value="HK1N2">HK1N2</option>
+              <option value="HK2N2">HK2N2</option>
+              <option value="HK2N3">HK2N3</option>
+              <option value="HK1N4">HK1N4</option>
+              <option value="HK2N4">HK2N4</option>
+          </select>
+        </div>
         <div className="form-group">
           <label htmlFor="activity-select" className="form-label">Tên hoạt động:</label>
           <SearchableSelect
@@ -106,6 +126,14 @@ const UploadView = () => {
 
       {notification && <div className="notification success">{notification}</div>}
       {error && <div className="notification error">{error}</div>}
+
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleSubmit}
+        activityName={activities[selectedActivity]?.name}
+        semester={selectedSemester}
+      />
     </div>
   );
 };

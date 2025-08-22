@@ -5,10 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build:prod": "vite build --mode production",
+    "build:test": "vite build --mode test",
     "lint": "eslint .",
     "preview": "vite preview",
-    "code": "npm run build && firebase hosting:channel:deploy test"
+    "code": "npm run build:test && firebase hosting:channel:deploy test",
+    "deploy": "npm run build:prod && firebase deploy --only hosting"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.2",

@@ -8,14 +8,14 @@ import { getStorage } from "firebase/storage";
 // TODO: Add your own Firebase configuration from your Firebase project settings
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyCBmXHDfx-2_-Jc3hXpGppjS0ciplvwyZ0",
-  authDomain: "dh23vt-d086a.firebaseapp.com",
-  databaseURL: "https://dh23vt-d086a-default-rtdb.asia-southeast1.firebasedatabase.app/",
-  projectId: "dh23vt-d086a",
-  storageBucket: "dh23vt-d086a.firebasestorage.app",
-  messagingSenderId: "963314060185",
-  appId: "1:963314060185:web:9709ad8237d2b2557b6108",
-  measurementId: "G-FRBQS1N0C7"
+  apiKey: import.meta.env.VITE_API_KEY,
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+  databaseURL: import.meta.env.VITE_DATABASE_URL,
+  projectId: import.meta.env.VITE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_APP_ID,
+  measurementId: import.meta.env.VITE_MEASUREMENT_ID
 };
 
 

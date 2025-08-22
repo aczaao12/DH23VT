@@ -5,6 +5,7 @@ import ActivityTable from '../../components/shared/ActivityTable';
 import AdminToolbar from '../../components/shared/AdminToolbar';
 import DataManagement from '../../components/shared/DataManagement';
 import Pagination from '../../components/shared/Pagination';
+import AddActivityForm from '../../components/shared/AddActivityForm'; // Import the new component
 import './AdminView.css';
 
 const AdminView = () => {
@@ -39,6 +40,7 @@ const AdminView = () => {
     setError,
     handleImportJson,
     handleExportJson,
+    addActivityDefinition, // Get the new function from the hook
   } = useActivities(selectedSemester);
 
   // Filter activities based on activityNameFilter
@@ -93,6 +95,10 @@ const AdminView = () => {
       {loading && <p className="centered-text">Loading activities...</p>}
       {error && <div className="notification error">{error}</div>}
       {notification && <div className="notification success">{notification}</div>}
+
+      {/* Add the new form here */}
+      <AddActivityForm onAddActivity={addActivityDefinition} />
+      <hr className="admin-section-divider" />
 
       {!loading && activities.length === 0 && (
         <p className="centered-text">No activities found for this semester.</p>

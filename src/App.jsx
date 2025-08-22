@@ -1,24 +1,32 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { auth } from './firebase';
 import { signOut } from 'firebase/auth';
-import LoginView from './pages/LoginPage/LoginView';
-import DashboardView from './pages/DashboardPage/DashboardView';
-import UploadView from './pages/UploadPage/UploadView';
-import AdminView from './pages/AdminPage/AdminView';
 import AdminRoute from './components/shared/AdminRoute';
-import SettingsView from './pages/SettingsPage/SettingsView';
 import BottomNavBar from './components/shared/BottomNavBar';
 import useDarkMode from './hooks/useDarkMode';
-import ScoreCalculator from './pages/DashboardPage/ScoreCalculator';
-import NotificationView from './pages/NotificationPage/NotificationView';
 import './App.css';
+
+const LoginView = lazy(() => import('./pages/LoginPage/LoginView'));
+const DashboardView = lazy(() => import('./pages/DashboardPage/DashboardView'));
+const UploadView = lazy(() => import('./pages/UploadPage/UploadView'));
+const AdminView = lazy(() => import('./pages/AdminPage/AdminView'));
+const SettingsView = lazy(() => import('./pages/SettingsPage/SettingsView'));
+const ScoreCalculator = lazy(() => import('./pages/DashboardPage/ScoreCalculator'));
+const NotificationView = lazy(() => import('./pages/NotificationPage/NotificationView'));
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [isDarkMode] = useDarkMode();
+
+  useEffect(() => {
+    const loader = document.getElementById('loader');
+    if (loader) {
+      loader.remove();
+    }
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -54,15 +62,17 @@ function App() {
 
   return (
     <div className={isDarkMode ? 'dark-mode' : ''}>
-      <Routes>
-        <Route path="/" element={currentUser ? <Navigate to="/dashboard" /> : <LoginView />} />
-        <Route path="/dashboard" element={currentUser ? <DashboardView handleLogout={handleLogout} /> : <Navigate to="/" />} />
-        <Route path="/upload" element={currentUser ? <UploadView /> : <Navigate to="/" />} />
-        <Route path="/settings" element={currentUser ? <SettingsView handleLogout={handleLogout} /> : <Navigate to="/" />} />
-        <Route path="/admin" element={<AdminRoute user={currentUser}><AdminView /></AdminRoute>} />
-        <Route path="/calculator" element={currentUser ? <ScoreCalculator /> : <Navigate to="/" />} />
-        <Route path="/notifications" element={currentUser ? <NotificationView /> : <Navigate to="/" />} />
-      </Routes>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/" element={currentUser ? <Navigate to="/dashboard" /> : <LoginView />} />
+          <Route path="/dashboard" element={currentUser ? <DashboardView handleLogout={handleLogout} /> : <Navigate to="/" />} />
+          <Route path="/upload" element={currentUser ? <UploadView /> : <Navigate to="/" />} />
+          <Route path="/settings" element={currentUser ? <SettingsView handleLogout={handleLogout} /> : <Navigate to="/" />} />
+          <Route path="/admin" element={<AdminRoute user={currentUser}><AdminView /></AdminRoute>} />
+          <Route path="/calculator" element={currentUser ? <ScoreCalculator /> : <Navigate to="/" />} />
+          <Route path="/notifications" element={currentUser ? <NotificationView /> : <Navigate to="/" />} />
+        </Routes>
+      </Suspense>
       {currentUser && <BottomNavBar />}
     </div>
   );

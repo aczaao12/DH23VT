@@ -55,15 +55,35 @@ const AdminView = () => {
   const totalPages = Math.ceil(filteredActivities.length / rowsPerPage);
 
   const handleCopyReport = useCallback(() => {
-    const reportString = 'STT\tName\tEmail\tFile upload\n' + reportData.map(item =>
-      `${item.STT}\t${item.Name}\t${item.Email}\t${item['File upload']}`
-    ).join('\n');
-
-    navigator.clipboard.writeText(reportString).then(() => {
-      setNotification('Report copied to clipboard!');
-    }, () => {
-      setError('Failed to copy report.');
+    let tableHTML = '<table border="1" style="border-collapse: collapse; width: 100%; font-family: sans-serif;">';
+    tableHTML += '<thead><tr>';
+    tableHTML += '<th style="padding: 8px; border: 1px solid #ddd; text-align: left; background-color: #f2f2f2;">STT</th>';
+    tableHTML += '<th style="padding: 8px; border: 1px solid #ddd; text-align: left; background-color: #f2f2f2;">Name</th>';
+    tableHTML += '<th style="padding: 8px; border: 1px solid #ddd; text-align: left; background-color: #f2f2f2;">Email</th>';
+    tableHTML += '<th style="padding: 8px; border: 1px solid #ddd; text-align: left; background-color: #f2f2f2;">File upload</th>';
+    tableHTML += '</tr></thead>';
+    tableHTML += '<tbody>';
+    reportData.forEach(item => {
+      tableHTML += '<tr>';
+      tableHTML += `<td style="padding: 8px; border: 1px solid #ddd;">${item.STT}</td>`;
+      tableHTML += `<td style="padding: 8px; border: 1px solid #ddd;">${item.Name}</td>`;
+      tableHTML += `<td style="padding: 8px; border: 1px solid #ddd;">${item.Email}</td>`;
+      tableHTML += `<td style="padding: 8px; border: 1px solid #ddd;"><a href="${item['File upload']}" target="_blank" rel="noopener noreferrer">View File</a></td>`;
+      tableHTML += '</tr>';
     });
+    tableHTML += '</tbody></table>';
+
+    const blob = new Blob([tableHTML], { type: 'text/html' });
+    const data = [new ClipboardItem({ 'text/html': blob })];
+
+    navigator.clipboard.write(data).then(
+      () => {
+        setNotification('Report copied to clipboard!');
+      },
+      () => {
+        setError('Failed to copy report.');
+      }
+    );
   }, [reportData, setNotification, setError]);
 
 

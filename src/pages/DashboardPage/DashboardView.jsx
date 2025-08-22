@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { auth, db } from '../../firebase';
 import { Link } from 'react-router-dom';
 import { collection, query, where, getDocs } from 'firebase/firestore';
+import { getDatabase, ref, query as rtdbQuery, orderByChild, equalTo, get } from "firebase/database";
 import { calculateFinalScore, calculateConditionalScore } from '../../utils';
 import { useResponsive } from '../../hooks/useResponsive';
 import './DashboardView.css';
@@ -28,7 +29,39 @@ const UserDropdown = ({ user, handleLogout }) => {
   );
 };
 
-const DashboardDesktopView = ({ user, userData, totalActivities, totalBonusPoints, finalScore, selectedSemester, setSelectedSemester, handleLogout, handleRowClick, showDetailModal, selectedActivityDetail, handleCloseModal, notification, searchTerm, setSearchTerm }) => {
+const ScoresTable = ({ scores, loading }) => {
+    if (loading) return <div className="centered-text">Loading scores...</div>;
+    if (!scores || scores.length === 0) return <div className="centered-text">No scores data found.</div>;
+
+    return (
+        <div className="scores-table-container" style={{ overflowX: 'auto' }}>
+            <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                    <tr>
+                        <th style={{ padding: '8px', border: '1px solid #ddd', textAlign: 'left' }}>HK/N</th>
+                        <th style={{ padding: '8px', border: '1px solid #ddd', textAlign: 'left' }}>Student Score</th>
+                        <th style={{ padding: '8px', border: '1px solid #ddd', textAlign: 'left' }}>Class</th>
+                        <th style={{ padding: '8px', border: '1px solid #ddd', textAlign: 'left' }}>Faculty</th>
+                        <th style={{ padding: '8px', border: '1px solid #ddd', textAlign: 'left' }}>University</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {scores.map((score) => (
+                        <tr key={score.id}>
+                                                        <td style={{ padding: '8px', border: '1px solid #ddd' }}>{score.HK_N}</td>
+                            <td style={{ padding: '8px', border: '1px solid #ddd' }}>{score.Student_Score}</td>
+                            <td style={{ padding: '8px', border: '1px solid #ddd' }}>{score.Class}</td>
+                            <td style={{ padding: '8px', border: '1px solid #ddd' }}>{score.Faculty}</td>
+                            <td style={{ padding: '8px', border: '1px solid #ddd' }}>{score.University}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
+};
+
+const DashboardDesktopView = ({ user, userData, totalActivities, totalBonusPoints, finalScore, selectedSemester, setSelectedSemester, handleLogout, handleRowClick, showDetailModal, selectedActivityDetail, handleCloseModal, notification, searchTerm, setSearchTerm, showScores, setShowScores, scoresData, scoresLoading }) => {
   const filteredUserData = userData.filter(data =>
     data['Tên hoạt động'].toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -43,7 +76,12 @@ const DashboardDesktopView = ({ user, userData, totalActivities, totalBonusPoint
         <UserDropdown user={user} handleLogout={handleLogout} />
       </header>
 
-      
+      <div className="scores-section" style={{ margin: '20px 0', padding: '20px', background: '#f9f9f9', borderRadius: '8px' }}>
+        <h3 onClick={() => setShowScores(!showScores)} style={{ cursor: 'pointer', marginBottom: '15px' }}>
+          Điểm rèn luyện qua các kỳ {showScores ? '▾' : '▸'}
+        </h3>
+        {showScores && <ScoresTable scores={scoresData} loading={scoresLoading} />}
+      </div>
       
       <div className="semester-selector">
         <label htmlFor="semester-select">Select Semester: </label>
@@ -133,7 +171,7 @@ const DashboardDesktopView = ({ user, userData, totalActivities, totalBonusPoint
   );
 };
 
-const DashboardMobileView = ({ user, userData, totalActivities, totalBonusPoints, finalScore, selectedSemester, setSelectedSemester, handleRowClick, showDetailModal, selectedActivityDetail, handleCloseModal, notification, searchTerm, setSearchTerm }) => {
+const DashboardMobileView = ({ user, userData, totalActivities, totalBonusPoints, finalScore, selectedSemester, setSelectedSemester, handleRowClick, showDetailModal, selectedActivityDetail, handleCloseModal, notification, searchTerm, setSearchTerm, showScores, setShowScores, scoresData, scoresLoading }) => {
     const filteredUserData = userData.filter(data =>
         data['Tên hoạt động'].toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -149,6 +187,13 @@ const DashboardMobileView = ({ user, userData, totalActivities, totalBonusPoints
                     </div>
                 </div>
             </header>
+
+            <div className="scores-section" style={{ margin: '10px', padding: '10px', background: '#f9f9f9', borderRadius: '8px' }}>
+                <h3 onClick={() => setShowScores(!showScores)} style={{ cursor: 'pointer', fontSize: '1.1em', marginBottom: '10px' }}>
+                    Điểm rèn luyện qua các kỳ {showScores ? '▾' : '▸'}
+                </h3>
+                {showScores && <ScoresTable scores={scoresData} loading={scoresLoading} />}
+            </div>
             
             <div className="semester-selector-mobile">
                 <label htmlFor="semester-select">Select Semester: </label>
@@ -250,6 +295,9 @@ const DashboardView = ({ handleLogout }) => {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedActivityDetail, setSelectedActivityDetail] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showScores, setShowScores] = useState(false);
+  const [scoresData, setScoresData] = useState([]);
+  const [scoresLoading, setScoresLoading] = useState(true);
   const user = auth.currentUser;
   const { isMobile } = useResponsive();
 
@@ -295,6 +343,34 @@ const DashboardView = ({ handleLogout }) => {
     }
   }, [selectedSemester, user]);
 
+    useEffect(() => {
+    const fetchScores = async () => {
+      if (user) {
+        setScoresLoading(true);
+        try {
+          const rtdb = getDatabase();
+          const scoresRef = ref(rtdb, 'drl');
+          const q = rtdbQuery(scoresRef, orderByChild('Email'), equalTo(user.email));
+          const snapshot = await get(q);
+          const data = [];
+          if (snapshot.exists()) {
+            snapshot.forEach(childSnapshot => {
+              data.push({ id: childSnapshot.key, ...childSnapshot.val() });
+            });
+          }
+          setScoresData(data);
+        } catch (error) {
+          console.error('Error fetching scores from RTDB:', error);
+        } finally {
+          setScoresLoading(false);
+        }
+      } else {
+        setScoresLoading(false);
+      }
+    };
+    fetchScores();
+  }, [user]);
+
   const handleRowClick = (activity) => {
     setSelectedActivityDetail(activity);
     setShowDetailModal(true);
@@ -325,6 +401,10 @@ const DashboardView = ({ handleLogout }) => {
     notification,
     searchTerm,
     setSearchTerm,
+    showScores,
+    setShowScores,
+    scoresData,
+    scoresLoading,
   };
 
   return isMobile ? <DashboardMobileView {...viewProps} /> : <DashboardDesktopView {...viewProps} />;

@@ -118,6 +118,30 @@ const NotificationView = () => {
     }
   };
 
+  const handleLike = async (notificationId, currentLikes) => {
+    const newLikes = (currentLikes || 0) + 1;
+    try {
+      await set(ref(rtdb, `notifications/${notificationId}/likes`), newLikes);
+    } catch (err) {
+      console.error('Error liking notification: ', err);
+      setError('Failed to like notification.');
+    }
+  };
+
+  const handleShare = (notification) => {
+    if (navigator.share) {
+      navigator.share({
+        title: notification.title,
+        text: notification.body,
+        url: window.location.href,
+      })
+        .then(() => console.log('Successful share'))
+        .catch((error) => console.log('Error sharing', error));
+    } else {
+      alert('Share not supported on this browser, you can manually copy the link.');
+    }
+  };
+
   const toggleExpanded = (id) => {
     setExpandedNotifications(prevState => ({
       ...prevState,
@@ -237,8 +261,8 @@ const NotificationView = () => {
                   <footer className="notification-footer">                    
                     <hr className="notification-divider" />
                     <div className="notification-actions">
-                        <button className="action-button">Like</button>                    
-                        <button className="action-button">Share</button>
+                        <button className="action-button" onClick={() => handleLike(notification.id, notification.likes)}>{notification.likes || 0} Like</button>
+                        <button className="action-button" onClick={() => handleShare(notification)}>Share</button>
                     </div>
                   </footer>
                 </>

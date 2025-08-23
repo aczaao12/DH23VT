@@ -196,7 +196,7 @@ const NotificationView = () => {
                 // Display Notification
                 <>
                   <header className="notification-header">
-                    <img src={user?.photoURL || `https://i.pravatar.cc/40`} alt="Avatar" className="notification-avatar" />
+                    <img src="https://lh3.googleusercontent.com/a/ACg8ocIlzuhoxIQy9GsCl1uJK6DN-yUZZUqR1UIYU6BhixA_u6DFMYl8=s96-c" alt="Avatar" className="notification-avatar" />
                     <div className="notification-author-info">
                       <span className="notification-author-name">{notification.adminId || 'Admin'}</span>
                       <span className="notification-timestamp">
@@ -234,16 +234,10 @@ const NotificationView = () => {
                     </button>
                   )}
 
-                  <footer className="notification-footer">
-                    <div className="notification-stats">
-                        {/* Placeholder stats */}
-                        <span>12 Likes</span>
-                        <span>3 Comments</span>
-                    </div>
+                  <footer className="notification-footer">                    
                     <hr className="notification-divider" />
                     <div className="notification-actions">
-                        <button className="action-button">Like</button>
-                        <button className="action-button">Comment</button>
+                        <button className="action-button">Like</button>                    
                         <button className="action-button">Share</button>
                     </div>
                   </footer>

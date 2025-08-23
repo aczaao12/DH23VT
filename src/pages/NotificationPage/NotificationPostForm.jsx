@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { rtdb, storage } from '../../firebase';
+import { auth, rtdb, storage } from '../../firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { ref as rtdbRef, push, serverTimestamp, set } from 'firebase/database';
 
@@ -37,13 +37,21 @@ const NotificationPostForm = () => {
         imageUrl = await getDownloadURL(imageRef);
       }
 
+      const user = auth.currentUser;
+      if (!user) {
+          setError('You must be logged in to post a notification.');
+          setLoading(false);
+          return;
+      }
+
       const newNotificationRef = push(rtdbRef(rtdb, 'notifications'));
       await set(newNotificationRef, {
         title: notificationTitle,
         body: notificationBody,
         imageUrl: imageUrl,
         timestamp: serverTimestamp(),
-        adminId: 'Hồ Quốc Thắng' // TODO: Replace with actual admin user ID
+        adminId: user.displayName || 'Admin', // Use display name from auth
+        authorAvatarUrl: user.photoURL || '' // Save the avatar URL
       });
 
       setMessage('Notification posted successfully!');

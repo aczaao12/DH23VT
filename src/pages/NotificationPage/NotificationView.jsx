@@ -15,6 +15,7 @@ const NotificationView = () => {
   const [currentEditImage, setCurrentEditImage] = useState(null);
   const [currentEditImageUrl, setCurrentEditImageUrl] = useState('');
   const [expandedNotifications, setExpandedNotifications] = useState({}); // New state for show more/less
+  const [activeMenu, setActiveMenu] = useState(null); // State for active dropdown menu
 
   const user = auth.currentUser; // Get current user
   const allowedAdminEmail = '23129398@st.hcmuaf.edu.vn';
@@ -195,13 +196,28 @@ const NotificationView = () => {
                 // Display Notification
                 <>
                   <header className="notification-header">
-                    <img src="https://i.pravatar.cc/40" alt="Avatar" className="notification-avatar" />
+                    <img src={user?.photoURL || `https://i.pravatar.cc/40`} alt="Avatar" className="notification-avatar" />
                     <div className="notification-author-info">
                       <span className="notification-author-name">{notification.adminId || 'Admin'}</span>
                       <span className="notification-timestamp">
                         {notification.timestamp ? new Date(notification.timestamp).toLocaleString() : ''}
                       </span>
                     </div>
+                    {isAdmin && (
+                      <div className="menu-container">
+                        {activeMenu === notification.id ? (
+                          <div className="inline-menu-actions">
+                            <button onClick={() => { handleEdit(notification); setActiveMenu(null); }}>Edit</button>
+                            <button onClick={() => { handleDelete(notification.id); setActiveMenu(null); }}>Delete</button>
+                            <button className="menu-button close-button" onClick={() => setActiveMenu(null)}>X</button>
+                          </div>
+                        ) : (
+                          <button className="menu-button" onClick={() => setActiveMenu(notification.id)}>
+                            …
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </header>
 
                   <div className="notification-body-container">
@@ -230,12 +246,6 @@ const NotificationView = () => {
                         <button className="action-button">Comment</button>
                         <button className="action-button">Share</button>
                     </div>
-                    {isAdmin && (
-                        <div className="admin-actions" style={{marginTop: '10px', borderTop: '1px solid #e4e6eb', paddingTop: '10px', display: 'flex', gap: '10px'}}>
-                            <button onClick={() => handleEdit(notification)}>Edit</button>
-                            <button onClick={() => handleDelete(notification.id)}>Delete</button>
-                        </div>
-                    )}
                   </footer>
                 </>
               )}

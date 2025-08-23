@@ -151,16 +151,17 @@ body {
 
 /* NotificationView Styles - Facebook Feed Style */
 .notification-view {
-  max-width: 580px; /* More narrow, like a feed */
+  max-width: 580px;
   margin: 20px auto;
-  background-color: transparent; /* The background is on the body */
-  box-shadow: none; /* Remove the outer container shadow */
-  padding: 0; /* Remove padding, spacing will be on posts */
+  background-color: transparent;
+  box-shadow: none;
+  padding: 0;
 }
 
 .notification-view h2 {
   text-align: center;
-  margin-bottom: 20px;
+  font-size: 1.5rem; /* Reduced header size */
+  margin-bottom: 15px;
   color: #333;
 }
 
@@ -180,9 +181,60 @@ body {
 
 /* Post Header */
 .notification-header {
+  position: relative; /* For positioning the dropdown */
   display: flex;
   align-items: center;
   padding: 15px 15px 0;
+}
+
+.notification-author-info {
+  flex-grow: 1; /* Allow author info to take up space */
+  display: flex; /* Bật chế độ sắp xếp linh hoạt */
+  flex-direction: column; /* Sắp xếp các phần tử con theo chiều dọc (cột) */
+  align-items: flex-start; /* Căn lề trái*/
+}
+
+.menu-container {
+  position: relative;
+}
+
+.menu-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem; /* Make button larger */
+  color: #65676b;
+  padding: 5px;
+  border-radius: 50%;
+  line-height: 1;
+}
+.menu-button:hover {
+  background-color: #f0f2f5;
+}
+
+.inline-menu-actions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid #e4e6eb;
+    border-radius: 20px;
+    padding: 2px 8px;
+}
+
+.inline-menu-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    font-size: 0.9rem;
+}
+
+.inline-menu-actions .close-button {
+    font-weight: bold;
+    font-size: 1rem;
+    color: #65676b;
+    border-left: 1px solid #e4e6eb;
+    padding-left: 8px;
 }
 
 .notification-avatar {
@@ -190,11 +242,6 @@ body {
   height: 40px;
   border-radius: 50%;
   margin-right: 10px;
-}
-
-.notification-author-info {
-  display: flex;
-  flex-direction: column;
 }
 
 .notification-author-name {
@@ -256,8 +303,8 @@ body {
 .action-button {
   background: none;
   border: none;
-  color: #65676b;
-  font-weight: 600;
+  color: #8A8D91; /* Lighter, more subtle color */
+  font-weight: 500; /* Thinner font weight */
   font-size: 0.9rem;
   padding: 10px;
   cursor: pointer;

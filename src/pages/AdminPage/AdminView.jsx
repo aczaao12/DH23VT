@@ -6,6 +6,8 @@ import AdminToolbar from '../../components/shared/AdminToolbar';
 import DataManagement from '../../components/shared/DataManagement';
 import Pagination from '../../components/shared/Pagination';
 import AddActivityForm from '../../components/shared/AddActivityForm'; // Import the new component
+import Tabs from '../../components/shared/Tabs';
+import Toast from '../../components/shared/Toast';
 import './AdminView.css';
 
 const AdminView = () => {
@@ -86,45 +88,15 @@ const AdminView = () => {
     );
   }, [reportData, setNotification, setError]);
 
+  const closeToast = () => {
+    setNotification('');
+    setError('');
+  };
 
-  return (
-    <div className="admin-container">
-      <h1>Admin - Activity Management</h1>
-      <div className="semester-selector">
-        <label htmlFor="semester-select">Select Semester: </label>
-        <select
-          id="semester-select"
-          value={selectedSemester}
-          onChange={(e) => {
-            setSelectedSemester(e.target.value);
-            setCurrentPage(1); // Reset page on semester change
-          }}
-          className="semester-select"
-        >
-          <option value="HK1N1">HK1N1</option>
-          <option value="HK2N1">HK2N1</option>
-          <option value="HK1N2">HK1N2</option>
-          <option value="HK2N2">HK2N2</option>
-          <option value="HK1N3">HK1N3</option>
-          <option value="HK2N3">HK2N3</option>
-          <option value="HK1N4">HK1N4</option>
-          <option value="HK2N4">HK2N4</option>
-        </select>
-      </div>
-
-      {loading && <p className="centered-text">Loading activities...</p>}
-      {error && <div className="notification error">{error}</div>}
-      {notification && <div className="notification success">{notification}</div>}
-
-      {/* Add the new form here */}
-      <AddActivityForm onAddActivity={addActivityDefinition} />
-      <hr className="admin-section-divider" />
-
-      {!loading && activities.length === 0 && (
-        <p className="centered-text">No activities found for this semester.</p>
-      )}
-
-      {activities.length > 0 && (
+  const tabs = [
+    {
+      label: 'Activity Management',
+      content: (
         <>
           <DataManagement
             handleExportJson={handleExportJson}
@@ -171,39 +143,82 @@ const AdminView = () => {
             totalPages={totalPages}
             onPageChange={setCurrentPage}
           />
-
-          {showReport && (
-            <div className="report-container">
-              <h3>Approved Activities Report</h3>
-              <button onClick={handleCopyReport} className="btn btn-secondary">Copy Report</button>
-              <table className="data-table report-table">
-                <thead>
-                  <tr>
-                    <th>STT</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>File upload</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {reportData.map(item => (
-                    <tr key={item.STT}>
-                      <td>{item.STT}</td>
-                      <td>{item.Name}</td>
-                      <td>{item.Email}</td>
-                      <td><a href={item['File upload']} target="_blank" rel="noopener noreferrer">View File</a></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
         </>
+      )
+    },
+    {
+      label: 'Add Activity',
+      content: <AddActivityForm onAddActivity={addActivityDefinition} />
+    },
+    {
+      label: 'Post Notification',
+      content: <NotificationPostForm />
+    },
+    {
+      label: 'Report',
+      content: (
+        <div className="report-container">
+          <h3>Approved Activities Report</h3>
+          <button onClick={handleCopyReport} className="btn btn-secondary">Copy Report</button>
+          <table className="data-table report-table">
+            <thead>
+              <tr>
+                <th>STT</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>File upload</th>
+              </tr>
+            </thead>
+            <tbody>
+              {reportData.map(item => (
+                <tr key={item.STT}>
+                  <td>{item.STT}</td>
+                  <td>{item.Name}</td>
+                  <td>{item.Email}</td>
+                  <td><a href={item['File upload']} target="_blank" rel="noopener noreferrer">View File</a></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )
+    }
+  ];
+
+  return (
+    <div className="admin-container">
+      <Toast message={notification} onClose={closeToast} type="success" />
+      <Toast message={error} onClose={closeToast} type="error" />
+      <h1>Admin - Activity Management</h1>
+      <div className="semester-selector">
+        <label htmlFor="semester-select">Select Semester: </label>
+        <select
+          id="semester-select"
+          value={selectedSemester}
+          onChange={(e) => {
+            setSelectedSemester(e.target.value);
+            setCurrentPage(1); // Reset page on semester change
+          }}
+          className="semester-select"
+        >
+          <option value="HK1N1">HK1N1</option>
+          <option value="HK2N1">HK2N1</option>
+          <option value="HK1N2">HK1N2</option>
+          <option value="HK2N2">HK2N2</option>
+          <option value="HK1N3">HK1N3</option>
+          <option value="HK2N3">HK2N3</option>
+          <option value="HK1N4">HK1N4</option>
+          <option value="HK2N4">HK2N4</option>
+        </select>
+      </div>
+
+      {loading && <p className="centered-text">Loading activities...</p>}
+
+      {!loading && activities.length === 0 && (
+        <p className="centered-text">No activities found for this semester.</p>
       )}
 
-      <hr className="admin-section-divider" />
-
-      <NotificationPostForm />
+      {activities.length > 0 && <Tabs tabs={tabs} />}
     </div>
   );
 };

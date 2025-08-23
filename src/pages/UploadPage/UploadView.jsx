@@ -6,6 +6,7 @@ import { auth, db, rtdb, storage } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
 import SearchableSelect from '../../components/shared/SearchableSelect'; // Import the new component
 import ConfirmationModal from '../../components/shared/ConfirmationModal';
+import Toast from '../../components/shared/Toast';
 import './UploadView.css';
 
 const UploadView = () => {
@@ -81,8 +82,15 @@ const UploadView = () => {
     }
   };
 
+  const closeToast = () => {
+    setNotification('');
+    setError('');
+  };
+
   return (
     <div className="upload-container">
+      <Toast message={notification} onClose={closeToast} type="success" />
+      <Toast message={error} onClose={closeToast} type="error" />
       <h1 className="upload-header">Upload Activity</h1>
       <form onSubmit={handleOpenModal}>
         <div className="form-group">
@@ -123,9 +131,6 @@ const UploadView = () => {
           {loading ? 'Uploading...' : 'Submit'}
         </button>
       </form>
-
-      {notification && <div className="notification success">{notification}</div>}
-      {error && <div className="notification error">{error}</div>}
 
       <ConfirmationModal
         isOpen={isModalOpen}

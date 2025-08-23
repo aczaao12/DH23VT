@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook Feed</title>
+    <link rel="stylesheet" href="facebook_feed.css">
+</head>
+<body>
+    <main class="feed">
+        <!-- Post 1: With text and image -->
+        <article class="post">
+            <header class="post-header">
+                <img src="https://i.pravatar.cc/40?u=a042581f4e29026704d" alt="Avatar" class="post-avatar">
+                <div class="post-author-info">
+                    <span class="post-author-name">John Doe</span>
+                    <span class="post-timestamp">15 minutes ago</span>
+                </div>
+            </header>
+            <div class="post-body">
+                <p class="post-text">Đây là một bài viết mẫu với hình ảnh. Giao diện được thiết kế để trông giống với Facebook.</p>
+                <img src="https://picsum.photos/seed/picsum/580/350" alt="Post image" class="post-image">
+            </div>
+            <footer class="post-footer">
+                <div class="post-stats">
+                    <span>100 Likes</span>
+                    <span>20 Comments</span>
+                    <span>5 Shares</span>
+                </div>
+                <hr class="post-divider">
+                <div class="post-actions">
+                    <button class="action-button">Like</button>
+                    <button class="action-button">Comment</button>
+                    <button class="action-button">Share</button>
+                </div>
+            </footer>
+        </article>
+
+        <!-- Post 2: From your JSON data (text only) -->
+        <article class="post">
+            <header class="post-header">
+                <img src="https://i.pravatar.cc/40?u=a042581f4e29026704e" alt="Avatar" class="post-avatar">
+                <div class="post-author-info">
+                    <span class="post-author-name">Hồ Quốc Thắng</span>
+                    <span class="post-timestamp">30 phút trước</span>
+                </div>
+            </header>
+            <div class="post-body">
+                <h3 class="post-title">Xin chào các bạn sinh viên!</h3>
+                <p class="post-text">Tôi đã <em>dành thời gian khá ít</em> để làm web này cho kịp Học kỳ mới. Webapp này vẫn đang <strong>trong thời gian phát triển,</strong> nếu có lỗi gì, hãy gửi tin nhắn zalo cho tôi nhé. Cảm ơn đóng góp của các bạn. Thân ái kính chào.</p>
+            </div>
+            <footer class="post-footer">
+                <div class="post-stats">
+                    <span>1.2k Likes</span>
+                    <span>345 Comments</span>
+                    <span>123 Shares</span>
+                </div>
+                <hr class="post-divider">
+                <div class="post-actions">
+                    <button class="action-button">Like</button>
+                    <button class="action-button">Comment</button>
+                    <button class="action-button">Share</button>
+                </div>
+            </footer>
+        </article>
+    </main>
+</body>
+</html>

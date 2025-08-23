@@ -194,28 +194,49 @@ const NotificationView = () => {
               ) : (
                 // Display Notification
                 <>
-                  {notification.imageUrl && (
-                    <img src={notification.imageUrl} alt="Notification" className="notification-image" />
-                  )}
-                  <h3>{notification.title}</h3>
-                  <p className="notification-body" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(marked.parse(displayedBody)) }}></p>
+                  <header className="notification-header">
+                    <img src="https://i.pravatar.cc/40" alt="Avatar" className="notification-avatar" />
+                    <div className="notification-author-info">
+                      <span className="notification-author-name">{notification.adminId || 'Admin'}</span>
+                      <span className="notification-timestamp">
+                        {notification.timestamp ? new Date(notification.timestamp).toLocaleString() : ''}
+                      </span>
+                    </div>
+                  </header>
+
+                  <div className="notification-body-container">
+                    <h3 className="notification-title">{notification.title}</h3>
+                    <p className="notification-body" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(marked.parse(displayedBody)) }}></p>
+                    {notification.imageUrl && (
+                      <img src={notification.imageUrl} alt="Notification" className="notification-image" />
+                    )}
+                  </div>
+
                   {isLongText && (
-                    <button onClick={() => toggleExpanded(notification.id)}>
+                    <button onClick={() => toggleExpanded(notification.id)} className="action-button">
                       {isExpanded ? 'Show Less' : 'Show More'}
                     </button>
                   )}
-                  <p className="notification-timestamp">
-                    {notification.timestamp ? new Date(notification.timestamp).toLocaleString() : ''}
-                  </p>
-                  {notification.adminId && (
-                    <p className="notification-adminId">Posted by: {notification.adminId}</p>
-                  )}
-                  {isAdmin && (
-                    <>
-                      <button onClick={() => handleEdit(notification)}>Edit</button>
-                      <button onClick={() => handleDelete(notification.id)}>Delete</button>
-                    </>
-                  )}
+
+                  <footer className="notification-footer">
+                    <div className="notification-stats">
+                        {/* Placeholder stats */}
+                        <span>12 Likes</span>
+                        <span>3 Comments</span>
+                    </div>
+                    <hr className="notification-divider" />
+                    <div className="notification-actions">
+                        <button className="action-button">Like</button>
+                        <button className="action-button">Comment</button>
+                        <button className="action-button">Share</button>
+                    </div>
+                    {isAdmin && (
+                        <div className="admin-actions" style={{marginTop: '10px', borderTop: '1px solid #e4e6eb', paddingTop: '10px', display: 'flex', gap: '10px'}}>
+                            <button onClick={() => handleEdit(notification)}>Edit</button>
+                            <button onClick={() => handleDelete(notification.id)}>Delete</button>
+                        </div>
+                    )}
+                  </footer>
                 </>
               )}
             </div>

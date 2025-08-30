@@ -22,11 +22,16 @@
 .docs-container h1, .docs-container h2, .docs-container h3, .docs-container h4 {
   text-align: left; /* Ensure headings are left-aligned */
 }
-
-.docs-container ol, .docs-container ul {
-  text-align: left; /* Ensure lists are left-aligned */
-  margin-left: 20px; /* Add some indentation for lists */
+.docs-container ul, .docs-container ol {
+  margin-left: 1em; /* 1em thay vì 20px */
+  padding-left: 0.5em;
 }
+.docs-container ul ul,
+.docs-container ol ol {
+  margin-left: 1em; /* giữ hằng số nhỏ */
+}
+
+
 
 .docs-container p {
   text-align: left; /* Ensure paragraphs are left-aligned */

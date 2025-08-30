@@ -14,6 +14,7 @@ const AdminView = lazy(() => import('./pages/AdminPage/AdminView'));
 const SettingsView = lazy(() => import('./pages/SettingsPage/SettingsView'));
 const ScoreCalculator = lazy(() => import('./pages/DashboardPage/ScoreCalculator'));
 const NotificationView = lazy(() => import('./pages/NotificationPage/NotificationView'));
+const DocsView = lazy(() => import('./pages/DocsPage/DocsView')); // New import
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -71,6 +72,7 @@ function App() {
           <Route path="/admin" element={<AdminRoute user={currentUser}><AdminView /></AdminRoute>} />
           <Route path="/calculator" element={currentUser ? <ScoreCalculator /> : <Navigate to="/" />} />
           <Route path="/notifications" element={currentUser ? <NotificationView /> : <Navigate to="/" />} />
+          <Route path="/docs" element={currentUser ? <DocsView /> : <Navigate to="/" />} /> {/* New Route */}
         </Routes>
       </Suspense>
       {currentUser && <BottomNavBar />}

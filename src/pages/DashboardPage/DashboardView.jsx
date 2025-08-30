@@ -73,6 +73,9 @@ const DashboardDesktopView = ({ user, userData, totalActivities, totalBonusPoint
           <h1>Welcome, {user.displayName || user.email}!</h1>
           <p>Here is your activity summary.</p>
         </div>
+        <Link to="/docs" className="docs-button" style={{ marginLeft: 'auto', marginRight: '10px', padding: '8px 15px', backgroundColor: '#007bff', color: 'white', borderRadius: '5px', textDecoration: 'none' }}>
+          Docs
+        </Link>
         <UserDropdown user={user} handleLogout={handleLogout} />
       </header>
 
@@ -186,6 +189,9 @@ const DashboardMobileView = ({ user, userData, totalActivities, totalBonusPoints
                         <p className="user-email-mobile">{user.email}</p>
                     </div>
                 </div>
+                <Link to="/docs" className="docs-button-mobile" style={{ marginLeft: 'auto', marginRight: '10px', padding: '8px 15px', backgroundColor: '#007bff', color: 'white', borderRadius: '5px', textDecoration: 'none', fontSize: '0.8em' }}>
+                    Docs
+                </Link>
             </header>
 
             <div className="scores-section" style={{ margin: '10px', padding: '10px', background: '#f9f9f9', borderRadius: '8px' }}>

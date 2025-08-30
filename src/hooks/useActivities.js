@@ -182,7 +182,6 @@ export const useActivities = (semester) => {
     setError('');
     setNotification('');
 
-    const batch = writeBatch(db);
     const activitiesToSkip = [];
     const activitiesToUpdateInBatch = [];
 
@@ -218,27 +217,47 @@ export const useActivities = (semester) => {
     }
 
     if (activitiesToSkip.length > 0) {
-      setError(`The following activities were skipped because they are already approved: ${activitiesToSkip.join(', ')}.`);
+      setError(`The following activities were skipped because they are already approved: ${activitiesToSkip.join(', ')}. If you wish to update them, please change their status first.`);
       if (activitiesToUpdateInBatch.length === 0) {
         setLoading(false);
         return;
       }
     }
 
-    activitiesToUpdateInBatch.forEach(activity => {
-      const activityDocRef = doc(db, 'users', semester, 'students', activity.firestoreDocId);
-      batch.update(activityDocRef, { Status: selectedStatus });
-    });
+    const batchSize = 100; // Define batch size
+    let successfulUpdates = 0;
+    let hasError = false;
 
-    try {
-      await batch.commit();
-      setNotification(`${activitiesToUpdateInBatch.length} activities updated successfully.`);
-      fetchActivities();
-    } catch (err) {
-      console.error("Error bulk updating documents: ", err);
-      setError('Failed to update selected activities.');
-      setLoading(false);
+    for (let i = 0; i < activitiesToUpdateInBatch.length; i += batchSize) {
+      const batch = writeBatch(db);
+      const chunk = activitiesToUpdateInBatch.slice(i, i + batchSize);
+
+      chunk.forEach(activity => {
+        const activityDocRef = doc(db, 'users', semester, 'students', activity.firestoreDocId);
+        batch.update(activityDocRef, { Status: selectedStatus });
+      });
+
+      try {
+        await batch.commit();
+        successfulUpdates += chunk.length;
+      } catch (err) {
+        console.error("Error committing batch: ", err);
+        setError(`Failed to update some activities. Error: ${err.message}`);
+        hasError = true;
+        // Continue to try committing other batches
+      }
     }
+
+    if (successfulUpdates > 0) {
+      setNotification(`${successfulUpdates} activities updated successfully.`);
+    }
+    if (hasError) {
+      setError(prev => prev + " Please check console for more details.");
+    } else if (successfulUpdates === 0 && activitiesToSkip.length === 0) {
+      setNotification("No activities were updated.");
+    }
+    fetchActivities();
+    setLoading(false);
   }, [activities, selectedActivities, semester, fetchActivities]);
 
   const handleBulkDelete = useCallback(async () => {
@@ -297,7 +316,8 @@ export const useActivities = (semester) => {
             batch.set(activityDocRef, dataToImport, { merge: true });
             importedCount++;
           } else {
-            const activityDocRef = doc(collection(db, 'users', importSemester, 'students'));
+            const studentsCollectionRef = collection(db, 'users', importSemester, 'students');
+            const activityDocRef = doc(studentsCollectionRef);
             batch.set(activityDocRef, activity);
             importedCount++;
             console.warn("Importing activity without 'firestoreDocId'. A new document ID will be generated.", activity);

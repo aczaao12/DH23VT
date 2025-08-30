@@ -17,9 +17,25 @@ const NotificationView = () => {
   const [expandedNotifications, setExpandedNotifications] = useState({}); // New state for show more/less
   const [activeMenu, setActiveMenu] = useState(null); // State for active dropdown menu
 
+  const [isAdmin, setIsAdmin] = useState(false);
   const user = auth.currentUser; // Get current user
-  const allowedAdminEmail = '23129398@st.hcmuaf.edu.vn';
-  const isAdmin = user && user.email === allowedAdminEmail; // Check if current user is the allowed admin
+
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      if (user) {
+        try {
+          const idTokenResult = await user.getIdTokenResult(true);
+          setIsAdmin(idTokenResult.claims.admin || false);
+        } catch (error) {
+          console.error("Error getting admin claims:", error);
+          setIsAdmin(false);
+        }
+      } else {
+        setIsAdmin(false);
+      }
+    };
+    checkAdminStatus();
+  }, [user]);
 
   useEffect(() => {
     const notificationsRef = ref(rtdb, 'notifications');

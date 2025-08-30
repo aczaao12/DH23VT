@@ -6,7 +6,7 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
-const adminEmails = ['aczaao12@gmail.com', '23129398@st.hcmuaf.edu.vn'];
+const adminEmails = ['aczaao12@gmail.com', '23129398@st.hcmuaf.edu.vn', 'dh23vt.ceft@gmail.com',];
 
 async function setAdminClaims() {
   for (const email of adminEmails) {

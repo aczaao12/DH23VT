@@ -1,100 +1,219 @@
 import React from 'react';
 import Tabs from '../../components/shared/Tabs'; // Assuming Tabs component exists
-
+import './DocsView.css'; // Import the new CSS file
+import { Link } from "react-router-dom";
 const DocsView = () => {
+  const userGuideContent = (
+    <div className="docs-content-wrapper">
+      <h2>Hướng dẫn người dùng</h2>
+
+      <h3>1. Đăng nhập</h3>
+      <ul>
+        <li><strong>Truy cập:</strong> Mở trình duyệt và truy cập vào địa chỉ web của ứng dụng. Sau đó login bằng nút có logo Google</li>
+                <li><strong>Lưu ý tránh lỗi:</strong>
+          <ul>
+                        <li>Chỉ cho phép login bằng tài khoản của trường. VD: <strong>@st.hcmuaf.edu.vn</strong>  </li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3>2. Dashboard (<Link to="/dashboard">Trang chính</Link>)</h3>
+      <p>Trang Dashboard là nơi bạn có thể xem thông tin tổng quát về các hoạt động và điểm rèn luyện của mình.</p>
+      <ul>
+        <li><strong>Tóm tắt hoạt động và điểm rèn luyện:</strong> Hiển thị tổng số hoạt động đã nộp, tổng điểm cộng đã được duyệt và điểm rèn luyện cuối cùng của bạn.</li>
+        <li><strong>Chọn học kỳ:</strong> Sử dụng hộp chọn "Select Semester" để xem dữ liệu hoạt động và điểm rèn luyện của học kỳ mong muốn.</li>
+        <li><strong>Tìm kiếm hoạt động:</strong> Sử dụng thanh tìm kiếm "Search activities..." để lọc danh sách hoạt động theo tên.</li>
+        <li><strong>Bảng điểm rèn luyện qua các kỳ:</strong> Nhấp vào tiêu đề "Điểm rèn luyện qua các kỳ" để xem điểm rèn luyện của bạn qua các học kỳ khác nhau.</li>
+        <li><strong>Xem chi tiết hoạt động:</strong> Nhấp vào bất kỳ thẻ hoạt động nào để xem thông tin chi tiết (thời gian nộp, tên, điểm cộng, tệp đã tải lên, trạng thái duyệt). Nhấp "View File" để xem tệp đã tải lên.</li>
+        <li><strong>Lưu ý tránh lỗi:</strong>
+          <ul>
+            <li>Nếu không thấy dữ liệu, hãy kiểm tra lại học kỳ đã chọn.</li>
+            <li>Đảm bảo từ khóa tìm kiếm chính xác.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3>3. Tải lên hoạt động (<Link to="/upload">Upload Page</Link>)</h3>
+      <p>Trang này cho phép bạn nộp các hoạt động để nhận điểm rèn luyện.</p>
+      <ol>
+        <li><strong>Chọn học kỳ:</strong> Chọn học kỳ mà hoạt động này thuộc về.</li>
+        <li><strong>Chọn tên hoạt động:</strong> Tìm và chọn hoạt động bạn đã tham gia. Điểm cộng tương ứng sẽ hiển thị.</li>
+        <li><strong>Tải lên tệp:</strong> Nhấp "Choose File" để chọn tệp bằng chứng (ảnh, PDF) từ máy tính.</li>
+        <li><strong>Gửi:</strong> Nhấp "Submit". Một cửa sổ xác nhận sẽ hiển thị tóm tắt.</li>
+        <li><strong>Xác nhận:</strong> Kiểm tra lại thông tin và nhấp "Confirm" để hoàn tất.</li>
+      </ol>
+      <ul>
+        <li><strong>Lưu ý tránh lỗi:</strong>
+          <ul>
+            <li>Chỉ tải lên các tệp bằng chứng hợp lệ (ảnh, PDF).</li>
+            <li>Đảm bảo chọn đúng học kỳ và tên hoạt động để tránh sai sót điểm.</li>
+            <li>Kiểm tra kích thước tệp, tránh tải lên tệp quá lớn có thể gây lỗi.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3>4. Cài đặt (<Link to="/settings">Settings</Link>)</h3>
+      <p>Trang Cài đặt cho phép bạn tùy chỉnh một số cài đặt ứng dụng và quản lý tài khoản.</p>
+      <ul>
+        <li><strong>Chế độ tối (Dark Mode):</strong> Bật/tắt chế độ tối để thay đổi giao diện màu sắc.</li>
+        <li><strong>Đăng xuất (Sign out):</strong> Đăng xuất an toàn khỏi tài khoản của bạn.</li>
+        <li><strong>Lưu ý tránh lỗi:</strong>
+          <ul>
+            <li>Đảm bảo bạn đã lưu mọi thay đổi trước khi đăng xuất.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3>5. Công cụ tính điểm rèn luyện (<Link to="/calculator">Score Calculator</Link>)</h3>
+      <p>Công cụ này giúp bạn ước tính điểm rèn luyện tối đa của mình dựa trên các tiêu chí nhất định.</p>
+      <ol>
+        <li><strong>Tiêu chí cộng điểm:</strong> Đánh dấu vào các hộp kiểm tương ứng với các tiêu chí bạn đã đạt được.</li>
+        <li><strong>Hoạt động bắt buộc:</strong> Chọn "Có" hoặc "Không" cho câu hỏi "Bạn có tham gia Sinh hoạt Chi đoàn không?".</li>
+        <li><strong>Tính điểm:</strong> Nhấp vào nút "Tính điểm rèn luyện".</li>
+        <li>Kết quả điểm rèn luyện tối đa ước tính sẽ hiển thị.</li>
+      </ol>
+      <ul>
+        <li><strong>Lưu ý tránh lỗi:</strong>
+          <ul>
+            <li>Kết quả chỉ là ước tính, điểm chính thức sẽ do trang <Link to="/dashboard">Dashboard</Link> công bố.</li>
+            <li>Đảm bảo bạn đã chọn tất cả các tiêu chí phù hợp để có kết quả chính xác nhất.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3>6. Thông báo (<Link to="/notifications">Notification Page</Link>)</h3>
+      <p>Trang Thông báo hiển thị các thông báo và cập nhật quan trọng từ quản trị viên.</p>
+      <ul>
+        <li><strong>Xem danh sách thông báo:</strong> Các thông báo được hiển thị theo thứ tự thời gian, mới nhất ở trên cùng.</li>
+        <li><strong>Xem toàn bộ nội dung:</strong> Nhấp "Show More" để mở rộng nội dung dài, "Show Less" để thu gọn.</li>
+        <li><strong>Thích (Like) thông báo:</strong> Nhấp nút "Like" để thể hiện sự quan tâm.</li>
+        <li><strong>Chia sẻ thông báo:</strong> Nhấp nút "Share" để chia sẻ thông báo qua các tùy chọn của thiết bị.</li>
+        <li><strong>Lưu ý tránh lỗi:</strong>
+          <ul>
+            <li>Kiểm tra thường xuyên để không bỏ lỡ các thông báo quan trọng.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3>7. Trang Docs (<Link to="/docs">Tài liệu hướng dẫn</Link>)</h3>
+      <p>Trang bạn đang xem cung cấp các tài liệu hướng dẫn sử dụng ứng dụng.</p>
+      <ul>
+        <li><strong>Mục lục (TOC):</strong> Bên trái là mục lục giúp bạn điều hướng nhanh đến các phần khác nhau của tài liệu.</li>
+        <li><strong>Cuộn và Highlight:</strong> Khi nhấp vào mục lục, trang sẽ tự động cuộn đến phần tương ứng và có highlight hoặc padding để dễ nhận biết.</li>
+        <li><strong>Lưu ý tránh lỗi:</strong>
+          <ul>
+            <li>Nếu trang bị cuộn khó theo dõi, hãy sử dụng mục lục để nhảy đến phần bạn cần.</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  );
+
+  const adminGuideContent = (
+    <div className="docs-content-wrapper">
+      <h2>Hướng dẫn quản trị viên</h2>
+
+      <h3>1. Quyền truy cập quản trị viên (Admin Access)</h3>
+      <ul>
+        <li><strong>Điều kiện áp dụng:</strong> Chỉ các địa chỉ email đã được cấu hình là quản trị viên mới có thể truy cập các trang và tính năng quản trị.</li>
+        <li><strong>Lưu ý tránh lỗi:</strong>
+          <ul>
+            <li>Nếu bạn là quản trị viên nhưng không thể truy cập, hãy kiểm tra lại địa chỉ email đã đăng nhập.</li>
+            <li>Liên hệ với nhà phát triển nếu bạn tin rằng mình nên có quyền truy cập admin nhưng không được cấp.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3>2. Quản lý hoạt động (Activity Management)</h3>
+      <p>Tab "Quản lý hoạt động" là nơi chính để quản lý các hoạt động đã nộp của sinh viên.</p>
+      <ul>
+        <li><strong>Chọn học kỳ:</strong> Sử dụng hộp chọn "Select Semester" để xem và quản lý hoạt động của học kỳ mong muốn.</li>
+        <li><strong>Lọc hoạt động:</strong> Sử dụng thanh tìm kiếm để lọc danh sách hoạt động theo tên.</li>
+        <li><strong>Bảng hoạt động:</strong>
+          <ul>
+            <li><strong>Hành động cá nhân (Chỉnh sửa/Xóa):</strong>
+              <ul>
+                <li><strong>Chỉnh sửa:</strong> Nhấp vào một ô bất kỳ trong hàng để chỉnh sửa trực tiếp thông tin (trạng thái, điểm cộng, chi tiết). Nhấp ra ngoài hoặc nhấn Enter để lưu.</li>
+                <li><strong>Xóa:</strong> Nhấp biểu tượng thùng rác để xóa hoạt động. Sẽ có cửa sổ xác nhận.</li>
+              </ul>
+            </li>
+            <li><strong>Hành động hàng loạt (Cập nhật/Xóa):</strong>
+              <ul>
+                <li><strong>Chọn hoạt động:</strong> Đánh dấu hộp kiểm ở đầu mỗi hàng để chọn. Có thể chọn tất cả bằng hộp kiểm ở tiêu đề bảng.</li>
+                <li><strong>Cập nhật hàng loạt:</strong> Chọn trạng thái mới từ "Bulk Update Status" và nhấp "Apply Status".</li>
+                <li><strong>Xóa hàng loạt:</strong> Nhấp "Delete Selected" để xóa tất cả hoạt động đã chọn. Sẽ có cửa sổ xác nhận.</li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li><strong>Quản lý dữ liệu:</strong>
+          <ul>
+            <li><strong>Xuất dữ liệu:</strong> Nhấp "Export Data" để tải xuống tệp JSON chứa dữ liệu hoạt động của học kỳ hiện tại.</li>
+            <li><strong>Nhập dữ liệu:</strong> Chọn học kỳ muốn nhập, chọn tệp JSON và nhấp "Import Data".</li>
+            <li><strong>Tạo báo cáo:</strong> Nhấp "Generate Report" để tạo báo cáo các hoạt động đã được phê duyệt. Nhấp "Copy Report" để sao chép báo cáo (HTML) vào clipboard.</li>
+          </ul>
+        </li>
+        <li><strong>Lưu ý tránh lỗi:</strong>
+          <ul>
+            <li>Luôn xác nhận trước khi xóa hoạt động, đặc biệt là xóa hàng loạt.</li>
+            <li>Đảm bảo tệp JSON nhập vào đúng định dạng để tránh lỗi dữ liệu.</li>
+            <li>Kiểm tra kỹ học kỳ đã chọn trước khi nhập dữ liệu để tránh ghi đè hoặc nhập sai chỗ.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3>3. Thêm định nghĩa hoạt động (Add Activity Definition)</h3>
+      <p>Tab này cho phép bạn thêm các loại hoạt động mới vào hệ thống.</p>
+      <ol>
+        <li><strong>Tên hoạt động:</strong> Nhập tên của hoạt động mới.</li>
+        <li><strong>Điểm cộng:</strong> Nhập số điểm mà hoạt động này mang lại.</li>
+        <li><strong>Thêm hoạt động:</strong> Nhấp "Add Activity" để lưu định nghĩa.</li>
+      </ol>
+      <ul>
+        <li><strong>Lưu ý tránh lỗi:</strong>
+          <ul>
+            <li>Đảm bảo tên hoạt động rõ ràng và điểm cộng chính xác.</li>
+            <li>Tránh tạo các hoạt động trùng lặp.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3>4. Đăng thông báo (Post Notification)</h3>
+      <p>Tab này cho phép bạn tạo và xuất bản các thông báo mới cho tất cả người dùng.</p>
+      <ol>
+        <li><strong>Tiêu đề:</strong> Nhập tiêu đề của thông báo.</li>
+        <li><strong>Nội dung:</strong> Nhập nội dung chi tiết. Có thể sử dụng định dạng Markdown cơ bản.</li>
+        <li><strong>Hình ảnh (tùy chọn):</strong> Tải lên một hình ảnh đi kèm.</li>
+        <li><strong>Đăng:</strong> Nhấp "Post Notification" để xuất bản.</li>
+      </ol>
+      <ul>
+        <li><strong>Lưu ý tránh lỗi:</strong>
+          <ul>
+            <li>Kiểm tra kỹ nội dung và chính tả trước khi đăng.</li>
+            <li>Sử dụng hình ảnh có kích thước phù hợp để tránh làm chậm tải trang.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3>5. Quản lý thông báo (từ trang Thông báo)</h3>
+      <p>Ngoài các chức năng quản trị trên, khi bạn truy cập trang "Thông báo" (mà người dùng thông thường cũng thấy), bạn sẽ có thêm các tùy chọn quản lý.</p>
+      <ul>
+        <li><strong>Chỉnh sửa thông báo:</strong> Trên mỗi thông báo, nhấp biểu tượng "..." để mở menu, chọn "Edit" để chỉnh sửa.</li>
+        <li><strong>Xóa thông báo:</strong> Nhấp biểu tượng "..." để mở menu, chọn "Delete" để xóa vĩnh viễn.</li>
+      </ul>
+      <ul>
+        <li><strong>Lưu ý tránh lỗi:</strong>
+          <ul>
+            <li>Luôn xác nhận trước khi xóa thông báo, vì hành động này không thể hoàn tác.</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  );
+
   const tabs = [
-    { label: 'Hướng dẫn người dùng', content: (
-      <div>
-        <h2>Hướng dẫn người dùng</h2>
-        <h3>1. Trang tổng quan (Dashboard)</h3>
-        <p>Trang tổng quan là nơi bạn có thể xem thông tin tổng quát. Tại đây, bạn có thể:</p>
-        <ul>
-          <li>Xem tổng số hoạt động, điểm cộng đã được duyệt và điểm rèn luyện cuối cùng của bạn.</li>
-          <li>Chọn các học kỳ khác nhau để xem tóm tắt hoạt động của bạn trong giai đoạn đó.</li>
-          <li>Tìm kiếm các hoạt động cụ thể mà bạn đã nộp.</li>
-          <li>Xem bảng điểm rèn luyện của bạn qua các học kỳ khác nhau.</li>
-          <li>Nhấp vào thẻ hoạt động để xem thông tin chi tiết, bao gồm tệp đã tải lên và trạng thái của nó.</li>
-        </ul>
-
-        <h3>2. Tải lên hoạt động</h3>
-        <p>Để nộp một hoạt động mới để nhận điểm:</p>
-        <ol>
-          <li>Điều hướng đến trang "Tải lên".</li>
-          <li>Chọn học kỳ liên quan.</li>
-          <li>Chọn tên hoạt động từ danh sách thả xuống có thể tìm kiếm. Hệ thống sẽ tự động hiển thị số điểm liên quan đến hoạt động đó.</li>
-          <li>Tải lên tệp hỗ trợ (ví dụ: chứng chỉ, bằng chứng tham gia).</li>
-          <li>Nhấp vào "Gửi". Một cửa sổ xác nhận sẽ xuất hiện.</li>
-          <li>Xác nhận việc nộp của bạn. Sau khi tải lên thành công, bạn sẽ được chuyển hướng đến Trang tổng quan.</li>
-        </ol>
-
-        <h3>3. Cài đặt</h3>
-        <p>Trên trang Cài đặt, bạn có thể:</p>
-        <ul>
-          <li>Bật hoặc tắt Chế độ tối để thay đổi giao diện của ứng dụng.</li>
-          <li>Đăng xuất khỏi tài khoản của bạn.</li>
-        </ul>
-
-        <h3>4. Công cụ tính điểm</h3>
-        <p>Sử dụng Công cụ tính điểm để ước tính điểm rèn luyện tối đa của bạn:</p>
-        <ol>
-          <li>Chọn các tiêu chí áp dụng cho bạn (ví dụ: tham gia câu lạc bộ học thuật, nghiên cứu khoa học, là thành viên ban cán sự lớp).</li>
-          <li>Cho biết bạn có tham gia hoạt động "Sinh hoạt Chi đoàn" bắt buộc hay không.</li>
-          <li>Nhấp vào "Tính điểm rèn luyện" để xem điểm rèn luyện tối đa ước tính của bạn.</li>
-        </ol>
-
-        <h3>5. Thông báo</h3>
-        <p>Trang Thông báo hiển thị các thông báo và cập nhật quan trọng:</p>
-        <ul>
-          <li>Xem danh sách các thông báo, được sắp xếp theo thứ tự mới nhất.</li>
-          <li>Nhấp vào "Xem thêm" đối với các thông báo dài để đọc toàn bộ nội dung.</li>
-          <li>Nhấp vào "Thích" để thể hiện sự đánh giá cao của bạn đối với một thông báo.</li>
-          <li>Nhấp vào "Chia sẻ" để chia sẻ thông báo (nếu trình duyệt của bạn hỗ trợ).</li>
-        </ul>
-      </div>
-    )},
-    { label: 'Hướng dẫn quản trị viên', content: (
-      <div>
-        <h2>Hướng dẫn quản trị viên</h2>
-        <p>Phần này cung cấp hướng dẫn cho quản trị viên quản lý ứng dụng.</p>
-
-        <h3>1. Quyền truy cập quản trị viên</h3>
-        <p>Quyền truy cập quản trị viên chỉ dành cho <strong>email do Lớp sở hữu</strong> (ví dụ: <code>dh23vt.ceft@gmail.com</code>) và <strong>email của nhà phát triển</strong>. Mọi tài khoản khác sẽ không thể truy cập khu vực này.</p>
-
-
-        <h3>2. Quản lý hoạt động</h3>
-        <p>Tab này cho phép bạn quản lý các hoạt động đã nộp của sinh viên.</p>
-        <ul>
-          <li><strong>Chọn học kỳ:</strong> Chọn một học kỳ để xem và quản lý các hoạt động trong giai đoạn đó.</li>
-          <li><strong>Lọc:</strong> Sử dụng thanh tìm kiếm để lọc hoạt động theo tên.</li>
-          <li><strong>Bảng hoạt động:</strong>
-            <ul>
-              <li>Xem danh sách phân trang tất cả các hoạt động đã nộp.</li>
-              <li><strong>Hành động cá nhân:</strong> Nhấp vào một hàng để chỉnh sửa chi tiết (ví dụ: thay đổi trạng thái, điểm) hoặc xóa một hoạt động. Đảm bảo xác thực các thay đổi trạng thái.</li>
-              <li><strong>Hành động hàng loạt:</strong> Chọn nhiều hoạt động bằng cách sử dụng các hộp kiểm. Sau đó, bạn có thể thực hiện cập nhật hàng loạt (ví dụ: thay đổi trạng thái cho tất cả các hoạt động đã chọn) hoặc xóa hàng loạt.</li>
-            </ul>
-          </li>
-          <li><strong>Quản lý dữ liệu:</strong>
-            <ul>
-              <li><strong>Nhập/Xuất:</strong> Nhập dữ liệu hoạt động từ tệp JSON hoặc xuất dữ liệu hoạt động hiện tại sang tệp JSON.</li>
-              <li><strong>Tạo báo cáo:</strong> Tạo báo cáo các hoạt động đã được phê duyệt. Báo cáo này có thể được sao chép vào clipboard ở định dạng HTML để dễ dàng chia sẻ.</li>
-            </ul>
-          </li>
-        </ul>
-
-        <h3>3. Thêm định nghĩa hoạt động</h3>
-        <p>Tab này cho phép bạn định nghĩa các hoạt động mới mà người dùng có thể chọn khi nộp. Bạn có thể chỉ định tên hoạt động và số điểm liên quan đến nó.</p>
-
-        <h3>4. Đăng thông báo</h3>
-        <p>Sử dụng tab này để tạo và xuất bản các thông báo mới cho tất cả người dùng. Bạn có thể bao gồm tiêu đề, nội dung và hình ảnh tùy chọn.</p>
-
-        <h3>5. Quản lý thông báo (từ trang Thông báo)</h3>
-        <p>Khi ở trên trang "Thông báo" chính (có thể truy cập bởi tất cả người dùng), với tư cách là quản trị viên, bạn có các đặc quyền bổ sung:</p>
-        <ul>
-          <li><strong>Chỉnh sửa thông báo:</strong> Nhấp vào menu "..." trên một thông báo để chỉnh sửa tiêu đề, nội dung hoặc hình ảnh của nó.</li>
-          <li><strong>Xóa thông báo:</strong> Nhấp vào menu "..." trên một thông báo để xóa nó.</li>
-        </ul>
-      </div>
-    )},
+    { label: 'Hướng dẫn người dùng', content: userGuideContent },
+    { label: 'Hướng dẫn quản trị viên', content: adminGuideContent },
   ];
 
   return (

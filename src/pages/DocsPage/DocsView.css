@@ -1,0 +1,33 @@
+.docs-container {
+  max-width: 960px; /* Adjust as needed for readability on larger screens */
+  margin: 0 auto; /* Center the container */
+  text-align: left; /* Ensure content is left-aligned */
+  padding: 0; /* Remove padding from the main container */
+}
+
+/* Apply padding to the content inside the tabs */
+.docs-content-wrapper {
+  padding: 20px; /* Default padding for content */
+}
+
+@media (max-width: 768px) {
+  .docs-container {
+    max-width: 100%; /* Full width on mobile */
+  }
+  .docs-content-wrapper {
+    padding: 10px; /* Reduced padding for content on mobile */
+  }
+}
+
+.docs-container h1, .docs-container h2, .docs-container h3, .docs-container h4 {
+  text-align: left; /* Ensure headings are left-aligned */
+}
+
+.docs-container ol, .docs-container ul {
+  text-align: left; /* Ensure lists are left-aligned */
+  margin-left: 20px; /* Add some indentation for lists */
+}
+
+.docs-container p {
+  text-align: left; /* Ensure paragraphs are left-aligned */
+}

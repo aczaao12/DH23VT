@@ -1,3 +1,7 @@
+html {
+  scroll-behavior: smooth;
+}
+
 /* Remove redundant variables, they are now in index.css */
 /*
 :root {

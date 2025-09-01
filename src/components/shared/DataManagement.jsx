@@ -1,6 +1,6 @@
 import React from 'react';
 
-const DataManagement = ({
+  const DataManagement = ({
   handleExportJson,
   selectedActivitiesCount,
   importSemester,

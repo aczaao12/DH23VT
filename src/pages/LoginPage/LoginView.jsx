@@ -1,9 +1,14 @@
 import { GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "firebase/auth";
 import { auth } from "../../firebase";
 import { useEffect } from "react";
+import { Link } from 'react-router-dom';
+import useInAppBrowserDetection from '../../hooks/useInAppBrowserDetection';
+import BrowserWarningBanner from '../../components/shared/BrowserWarningBanner';
 import './LoginView.css'; // Import the new CSS file
 
 const LoginView = () => {
+  const isInAppBrowser = useInAppBrowserDetection();
+
   useEffect(() => {
     const checkRedirectResult = async () => {
       try {
@@ -33,7 +38,16 @@ const LoginView = () => {
       <div className="login-card"> {/* Add a card for the login form */}
         <h1>Login</h1>
         <p>Hãy dùng mail sinh viên để đăng nhập nhé!!!</p> {/* Added text */}
-        <button onClick={handleGoogleLogin}>Sign in with Google</button>
+        {isInAppBrowser && (
+          <BrowserWarningBanner message="Vui lòng mở ứng dụng này trong trình duyệt bên ngoài (ví dụ: Chrome, Safari) để có trải nghiệm tốt nhất và đăng nhập thành công." />
+        )}
+        <button onClick={handleGoogleLogin} disabled={isInAppBrowser}>Sign in with Google</button>
+        <p className="privacy-policy-link-container">
+          <Link to="/privacy-policy">Chính sách bảo mật</Link>
+        </p>
+        <p className="terms-of-service-link-container">
+          <Link to="/terms-of-service">Điều khoản dịch vụ</Link>
+        </p>
       </div>
     </div>
   );

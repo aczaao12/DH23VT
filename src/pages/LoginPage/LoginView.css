@@ -46,3 +46,31 @@
 .login-card button:hover {
   color: #0056b3; /* Darker accent on hover */
 }
+
+.privacy-policy-link-container {
+  margin-top: 20px;
+}
+
+.privacy-policy-link-container a {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 0.9em;
+}
+
+.privacy-policy-link-container a:hover {
+  text-decoration: underline;
+}
+
+.terms-of-service-link-container {
+  margin-top: 10px;
+}
+
+.terms-of-service-link-container a {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 0.9em;
+}
+
+.terms-of-service-link-container a:hover {
+  text-decoration: underline;
+}

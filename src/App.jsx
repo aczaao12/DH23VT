@@ -15,6 +15,8 @@ const SettingsView = lazy(() => import('./pages/SettingsPage/SettingsView'));
 const ScoreCalculator = lazy(() => import('./pages/DashboardPage/ScoreCalculator'));
 const NotificationView = lazy(() => import('./pages/NotificationPage/NotificationView'));
 const DocsView = lazy(() => import('./pages/DocsPage/DocsView')); // New import
+const PrivacyPolicyView = lazy(() => import('./pages/PrivacyPolicyPage/PrivacyPolicyView'));
+const TermsOfServiceView = lazy(() => import('./pages/TermsOfServicePage/TermsOfServiceView'));
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -73,6 +75,8 @@ function App() {
           <Route path="/calculator" element={currentUser ? <ScoreCalculator /> : <Navigate to="/" />} />
           <Route path="/notifications" element={currentUser ? <NotificationView /> : <Navigate to="/" />} />
           <Route path="/docs" element={currentUser ? <DocsView /> : <Navigate to="/" />} /> {/* New Route */}
+          <Route path="/privacy-policy" element={<PrivacyPolicyView />} />
+          <Route path="/terms-of-service" element={<TermsOfServiceView />} />
         </Routes>
       </Suspense>
       {currentUser && <BottomNavBar />}

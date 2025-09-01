@@ -57,6 +57,14 @@
   margin-left: auto;
 }
 
+.settings-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
 /* The switch - the box around the slider */
 .switch {
   position: relative;

@@ -5,6 +5,7 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 import { getDatabase, ref, query as rtdbQuery, orderByChild, equalTo, get } from "firebase/database";
 import { calculateFinalScore, calculateConditionalScore } from '../../utils';
 import { useResponsive } from '../../hooks/useResponsive';
+import SemesterSelector from '../../components/shared/SemesterSelector';
 import './DashboardView.css';
 
 const UserDropdown = ({ user, handleLogout }) => {
@@ -86,19 +87,7 @@ const DashboardDesktopView = ({ user, userData, totalActivities, totalBonusPoint
         {showScores && <ScoresTable scores={scoresData} loading={scoresLoading} />}
       </div>
       
-      <div className="semester-selector">
-        <label htmlFor="semester-select">Select Semester: </label>
-        <select id="semester-select" value={selectedSemester} onChange={(e) => setSelectedSemester(e.target.value)} className="semester-select">
-          <option value="HK1N3">HK1N3</option>
-          <option value="HK1N1">HK1N1</option>
-          <option value="HK2N1">HK2N1</option>
-          <option value="HK1N2">HK1N2</option>
-          <option value="HK2N2">HK2N2</option>
-          <option value="HK2N3">HK2N3</option>
-          <option value="HK1N4">HK1N4</option>
-          <option value="HK2N4">HK2N4</option>
-        </select>
-      </div>
+      <SemesterSelector selectedSemester={selectedSemester} setSelectedSemester={setSelectedSemester} />
 
       <div className="stats-container">
         <div className="stat-card">
@@ -201,19 +190,7 @@ const DashboardMobileView = ({ user, userData, totalActivities, totalBonusPoints
                 {showScores && <ScoresTable scores={scoresData} loading={scoresLoading} />}
             </div>
             
-            <div className="semester-selector-mobile">
-                <label htmlFor="semester-select">Select Semester: </label>
-                <select id="semester-select" value={selectedSemester} onChange={(e) => setSelectedSemester(e.target.value)} className="semester-select">
-                <option value="HK1N3">HK1N3</option>
-                <option value="HK1N1">HK1N1</option>
-                <option value="HK2N1">HK2N1</option>
-                <option value="HK1N2">HK1N2</option>
-                <option value="HK2N2">HK2N2</option>
-                <option value="HK2N3">HK2N3</option>
-                <option value="HK1N4">HK1N4</option>
-                <option value="HK2N4">HK2N4</option>
-                </select>
-            </div>
+            <SemesterSelector selectedSemester={selectedSemester} setSelectedSemester={setSelectedSemester} />
 
             <div className="stats-container-mobile">
                 <div className="stat-card-mobile">

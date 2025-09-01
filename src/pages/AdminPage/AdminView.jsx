@@ -18,7 +18,6 @@ const AdminView = () => {
   const [fileToImport, setFileToImport] = useState(null);
   const [importSemester, setImportSemester] = useState('HK1N3');
   const [reportData, setReportData] = useState([]);
-  const [showReport, setShowReport] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage] = useState(100);
 
@@ -107,7 +106,6 @@ const AdminView = () => {
             setFileToImport={setFileToImport}
             handleImportJson={handleImportJson}
             setReportData={setReportData}
-            setShowReport={setShowReport}
             activities={activities}
             selectedActivities={selectedActivities}
             setError={setError}

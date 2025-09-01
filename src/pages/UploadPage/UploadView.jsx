@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import SearchableSelect from '../../components/shared/SearchableSelect'; // Import the new component
 import ConfirmationModal from '../../components/shared/ConfirmationModal';
 import Toast from '../../components/shared/Toast';
+import SemesterSelector from '../../components/shared/SemesterSelector';
 import './UploadView.css';
 
 const UploadView = () => {
@@ -95,16 +96,7 @@ const UploadView = () => {
       <form onSubmit={handleOpenModal}>
         <div className="form-group">
           <label htmlFor="semester-select" className="form-label">Học kỳ:</label>
-          <select id="semester-select" value={selectedSemester} onChange={(e) => setSelectedSemester(e.target.value)} className="semester-select">
-              <option value="HK1N3">HK1N3</option>
-              <option value="HK1N1">HK1N1</option>
-              <option value="HK2N1">HK2N1</option>
-              <option value="HK1N2">HK1N2</option>
-              <option value="HK2N2">HK2N2</option>
-              <option value="HK2N3">HK2N3</option>
-              <option value="HK1N4">HK1N4</option>
-              <option value="HK2N4">HK2N4</option>
-          </select>
+          <SemesterSelector selectedSemester={selectedSemester} setSelectedSemester={setSelectedSemester} />
         </div>
         <div className="form-group">
           <label htmlFor="activity-select" className="form-label">Tên hoạt động:</label>

@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { auth, db } from '../../firebase';
 import { Link } from 'react-router-dom';
-import { collection, query, where, getDocs } from 'firebase/firestore';
-import { getDatabase, ref, query as rtdbQuery, orderByChild, equalTo, get } from "firebase/database";
+import { collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { getDatabase, ref, query as rtdbQuery, orderByChild, equalTo, get, onValue } from "firebase/database";
+import { ref as storageRef, uploadBytes, getDownloadURL, deleteObject, getStorage } from 'firebase/storage';
 import { calculateFinalScore, calculateConditionalScore } from '../../utils';
 import { useResponsive } from '../../hooks/useResponsive';
 import SemesterSelector from '../../components/shared/SemesterSelector';
+import EditActivityModal from '../../components/shared/EditActivityModal'; // Import EditActivityModal
 import './DashboardView.css';
 
 const UserDropdown = ({ user, handleLogout }) => {
@@ -62,7 +64,7 @@ const ScoresTable = ({ scores, loading }) => {
     );
 };
 
-const DashboardDesktopView = ({ user, userData, totalActivities, totalBonusPoints, finalScore, selectedSemester, setSelectedSemester, handleLogout, handleRowClick, showDetailModal, selectedActivityDetail, handleCloseModal, notification, searchTerm, setSearchTerm, showScores, setShowScores, scoresData, scoresLoading }) => {
+const DashboardDesktopView = ({ user, userData, totalActivities, totalBonusPoints, finalScore, selectedSemester, setSelectedSemester, handleLogout, handleRowClick, showDetailModal, selectedActivityDetail, handleCloseModal, notification, searchTerm, setSearchTerm, showScores, setShowScores, scoresData, scoresLoading, handleEdit }) => {
   const filteredUserData = userData.filter(data =>
     data['Tên hoạt động'].toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -119,11 +121,12 @@ const DashboardDesktopView = ({ user, userData, totalActivities, totalBonusPoint
       {filteredUserData.length > 0 ? (
         <div className="activities-list">
           {filteredUserData.map((data) => (
-            <div key={data.id} className="activity-card" onClick={() => handleRowClick(data)}>
-              <div className="card-content">
+            <div key={data.id} className="activity-card">
+              <div className="card-content" onClick={() => handleRowClick(data)}>
                 <h3>{data['Tên hoạt động']}</h3>
                 <span className="points">{data['Điểm cộng']} điểm</span>
               </div>
+              <button onClick={() => handleEdit(data)} className="edit-button">Edit</button>
             </div>
           ))}
         </div>
@@ -163,7 +166,7 @@ const DashboardDesktopView = ({ user, userData, totalActivities, totalBonusPoint
   );
 };
 
-const DashboardMobileView = ({ user, userData, totalActivities, totalBonusPoints, finalScore, selectedSemester, setSelectedSemester, handleRowClick, showDetailModal, selectedActivityDetail, handleCloseModal, notification, searchTerm, setSearchTerm, showScores, setShowScores, scoresData, scoresLoading }) => {
+const DashboardMobileView = ({ user, userData, totalActivities, totalBonusPoints, finalScore, selectedSemester, setSelectedSemester, handleRowClick, showDetailModal, selectedActivityDetail, handleCloseModal, notification, searchTerm, setSearchTerm, showScores, setShowScores, scoresData, scoresLoading, handleEdit }) => {
     const filteredUserData = userData.filter(data =>
         data['Tên hoạt động'].toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -222,11 +225,12 @@ const DashboardMobileView = ({ user, userData, totalActivities, totalBonusPoints
             {filteredUserData.length > 0 ? (
                 <div className="activities-list-mobile">
                 {filteredUserData.map((data) => (
-                    <div key={data.id} className="activity-card-mobile" onClick={() => handleRowClick(data)}>
-                    <div className="card-content-mobile">
+                    <div key={data.id} className="activity-card-mobile">
+                    <div className="card-content-mobile" onClick={() => handleRowClick(data)}>
                         <h3>{data['Tên hoạt động']}</h3>
                         <span className="points">{data['Điểm cộng']} điểm</span>
                     </div>
+                    <button onClick={() => handleEdit(data)} className="edit-button-mobile">Edit</button>
                     </div>
                 ))}
                 </div>
@@ -281,8 +285,23 @@ const DashboardView = ({ handleLogout }) => {
   const [showScores, setShowScores] = useState(false);
   const [scoresData, setScoresData] = useState([]);
   const [scoresLoading, setScoresLoading] = useState(true);
+  const [activities, setActivities] = useState({}); // New state for all activities from RTDB
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State for edit modal visibility
+  const [activityToEdit, setActivityToEdit] = useState(null); // State to hold the activity being edited
+
   const user = auth.currentUser;
   const { isMobile } = useResponsive();
+
+  // Fetch all activities from RTDB
+  useEffect(() => {
+    const activitiesRef = ref(getDatabase(), 'activities');
+    onValue(activitiesRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        setActivities(data);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -364,6 +383,54 @@ const DashboardView = ({ handleLogout }) => {
     setSelectedActivityDetail(null);
   };
 
+  const handleEdit = (activity) => {
+    setActivityToEdit(activity);
+    setIsEditModalOpen(true);
+  };
+
+  const handleUpdateActivity = async (id, updatedData, newFile) => {
+    try {
+      let fileUrl = updatedData['File upload'];
+
+      if (newFile) {
+        // Delete old file if it exists
+        if (updatedData['File upload']) {
+          const oldFileRef = storageRef(getStorage(), updatedData['File upload']);
+          try {
+            await deleteObject(oldFileRef);
+          } catch (deleteErr) {
+            console.warn('Could not delete old file (might not exist or permissions issue): ', deleteErr);
+          }
+        }
+
+        // Upload new file
+        const semester = selectedSemester;
+        const studentFolder = user.uid;
+        const filePath = `upload/${semester}/students/${studentFolder}/${newFile.name}`;
+        const fileRef = storageRef(getStorage(), filePath);
+        await uploadBytes(fileRef, newFile);
+        fileUrl = await getDownloadURL(fileRef);
+      }
+
+      const docRef = doc(db, 'users', selectedSemester, 'students', id);
+      await updateDoc(docRef, { ...updatedData, 'File upload': fileUrl });
+      setNotification('Activity updated successfully!');
+
+      // Update local state directly instead of re-fetching
+      setUserData(prevActivities =>
+        prevActivities.map(activity =>
+          activity.id === id ? { ...activity, ...updatedData, 'File upload': fileUrl } : activity
+        )
+      );
+    } catch (err) {
+      console.error('Error updating activity:', err);
+      setNotification(`Failed to update activity: ${err.message}`);
+    } finally {
+      setIsEditModalOpen(false);
+      setActivityToEdit(null);
+    }
+  };
+
   if (loading) {
     return <div className="centered-text">Loading...</div>;
   }
@@ -388,9 +455,24 @@ const DashboardView = ({ handleLogout }) => {
     setShowScores,
     scoresData,
     scoresLoading,
+    handleEdit, // Pass handleEdit
   };
 
-  return isMobile ? <DashboardMobileView {...viewProps} /> : <DashboardDesktopView {...viewProps} />;
+  return (
+    <>
+      {isMobile ? <DashboardMobileView {...viewProps} /> : <DashboardDesktopView {...viewProps} />}
+
+      {activityToEdit && (
+        <EditActivityModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          activity={activityToEdit}
+          onUpdate={handleUpdateActivity}
+          activitiesList={activities} // Pass all activities for SearchableSelect
+        />
+      )}
+    </>
+  );
 };
 
 export default DashboardView;

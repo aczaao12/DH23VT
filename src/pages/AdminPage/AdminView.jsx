@@ -9,6 +9,7 @@ import AddActivityForm from '../../components/shared/AddActivityForm'; // Import
 import Tabs from '../../components/shared/Tabs';
 import Toast from '../../components/shared/Toast';
 import Modal from '../../components/shared/Modal';
+import ActivityDetailModal from '../../components/shared/ActivityDetailModal';
 import './AdminView.css';
 
 const AdminView = () => {
@@ -23,6 +24,18 @@ const AdminView = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage] = useState(100);
   const [showNoActivitiesModal, setShowNoActivitiesModal] = useState(false);
+  const [showActivityDetailModal, setShowActivityDetailModal] = useState(false);
+  const [selectedActivityDetail, setSelectedActivityDetail] = useState(null);
+
+  const handleOpenActivityDetailModal = (activity) => {
+    setSelectedActivityDetail(activity);
+    setShowActivityDetailModal(true);
+  };
+
+  const handleCloseActivityDetailModal = () => {
+    setShowActivityDetailModal(false);
+    setSelectedActivityDetail(null);
+  };
 
   // Use custom hook for activities logic
   const {
@@ -147,6 +160,7 @@ const AdminView = () => {
             handleDelete={handleDelete}
             cellErrors={cellErrors}
             filteredActivities={filteredActivities}
+            handleViewDetails={handleOpenActivityDetailModal} // Pass the new handler
           />
 
           <Pagination
@@ -233,6 +247,12 @@ const AdminView = () => {
       {loading && <p className="centered-text">Loading activities...</p>}
 
       <Tabs tabs={tabs} />
+
+      <ActivityDetailModal
+        activity={selectedActivityDetail}
+        isOpen={showActivityDetailModal}
+        onClose={handleCloseActivityDetailModal}
+      />
     </div>
   );
 };

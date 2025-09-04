@@ -10,7 +10,8 @@ const ActivityTable = ({
   handleUpdate,
   handleDelete,
   cellErrors,
-  filteredActivities // Needed for handleSelectAll
+  filteredActivities, // Needed for handleSelectAll
+  handleViewDetails // New prop for detail button
 }) => {
   return (
     <div className="table-container">
@@ -31,6 +32,7 @@ const ActivityTable = ({
             <th>Status</th>
             <th>Chi tiết</th>
             <th>Actions</th>
+            <th>Details</th>
           </tr>
         </thead>
         <tbody>
@@ -93,6 +95,9 @@ const ActivityTable = ({
               <td className="actions-cell">
                 <button onClick={() => handleUpdate(activity.firestoreDocId)} className="btn btn-primary">Update</button>
                 <button onClick={() => handleDelete(activity.firestoreDocId)} className="btn btn-danger">Delete</button>
+              </td>
+              <td>
+                <button onClick={() => handleViewDetails(activity)} className="btn btn-info">View Details</button>
               </td>
             </tr>
           ))}

@@ -17,7 +17,7 @@ const AdminView = () => {
   const [selectedSemester, setSelectedSemester] = useState('HK1N3');
   const [activityNameFilter, setActivityNameFilter] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('Phê duyệt'); // For bulk update
-  const [filterStatus, setFilterStatus] = useState(''); // New state for status filter
+  const [filterStatus, setFilterStatus] = useState('Đang chờ'); // New state for status filter
   const [fileToImport, setFileToImport] = useState(null);
   const [importSemester, setImportSemester] = useState('HK1N3');
   const [reportData, setReportData] = useState([]);

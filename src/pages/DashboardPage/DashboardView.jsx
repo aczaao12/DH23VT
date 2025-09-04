@@ -6,7 +6,6 @@ import { getDatabase, ref, query as rtdbQuery, orderByChild, equalTo, get } from
 import { calculateFinalScore, calculateConditionalScore } from '../../utils';
 import { useResponsive } from '../../hooks/useResponsive';
 import SemesterSelector from '../../components/shared/SemesterSelector';
-import DataModal from '../../components/shared/DataModal';
 import './DashboardView.css';
 
 const UserDropdown = ({ user, handleLogout }) => {
@@ -63,7 +62,7 @@ const ScoresTable = ({ scores, loading }) => {
     );
 };
 
-const DashboardDesktopView = ({ user, userData, totalActivities, totalBonusPoints, finalScore, selectedSemester, setSelectedSemester, handleLogout, notification, searchTerm, setSearchTerm, showScores, setShowScores, scoresData, scoresLoading, showDataModal, handleOpenDataModal, handleCloseDataModal }) => {
+const DashboardDesktopView = ({ user, userData, totalActivities, totalBonusPoints, finalScore, selectedSemester, setSelectedSemester, handleLogout, handleRowClick, showDetailModal, selectedActivityDetail, handleCloseModal, notification, searchTerm, setSearchTerm, showScores, setShowScores, scoresData, scoresLoading }) => {
   const filteredUserData = userData.filter(data =>
     data['Tên hoạt động'].toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -102,9 +101,6 @@ const DashboardDesktopView = ({ user, userData, totalActivities, totalBonusPoint
         <div className="stat-card">
           <h3>Điểm rèn luyện cuối cùng</h3>
           <p style={{color: '#28a745'}}>{finalScore}</p>
-          <button onClick={handleOpenDataModal} style={{ marginTop: '10px', padding: '8px 15px', backgroundColor: '#28a745', color: 'white', borderRadius: '5px', border: 'none', cursor: 'pointer' }}>
-            View Details
-          </button>
         </div>
       </div>
 
@@ -123,7 +119,7 @@ const DashboardDesktopView = ({ user, userData, totalActivities, totalBonusPoint
       {filteredUserData.length > 0 ? (
         <div className="activities-list">
           {filteredUserData.map((data) => (
-            <div key={data.id} className="activity-card">
+            <div key={data.id} className="activity-card" onClick={() => handleRowClick(data)}>
               <div className="card-content">
                 <h3>{data['Tên hoạt động']}</h3>
                 <span className="points">{data['Điểm cộng']} điểm</span>
@@ -135,19 +131,39 @@ const DashboardDesktopView = ({ user, userData, totalActivities, totalBonusPoint
         !notification && <p className="centered-text">No activity data to display for this semester.</p>
       )}
 
-      <DataModal
-        title="Activity Summary"
-        isOpen={showDataModal}
-        onClose={handleCloseDataModal}
-      >
-        <p>Total Activities: {totalActivities}</p>
-        <p>Final Score: {finalScore}</p>
-      </DataModal>
+      {showDetailModal && selectedActivityDetail && (
+        <div className="modal-overlay" onClick={handleCloseModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2>Activity Details</h2>
+            <div className="detail-item">
+              <strong>Thời gian:</strong> {selectedActivityDetail['Thời gian'] && selectedActivityDetail['Thời gian'].toDate ? selectedActivityDetail['Thời gian'].toDate().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }) : selectedActivityDetail['Thời gian']}
+            </div>
+            <div className="detail-item">
+              <strong>Tên hoạt động:</strong> {selectedActivityDetail['Tên hoạt động']}
+            </div>
+            <div className="detail-item">
+              <strong>Điểm cộng:</strong> {selectedActivityDetail['Điểm cộng']}
+            </div>
+            <div className="detail-item">
+              <strong>File:</strong> <a href={selectedActivityDetail['File upload']} target="_blank" rel="noopener noreferrer">View File</a>
+            </div>
+            <div className="detail-item">
+              <strong>Status:</strong> {selectedActivityDetail.Status}
+            </div>
+            {selectedActivityDetail['Chi tiết'] && (
+              <div className="detail-item">
+                <strong>Chi tiết:</strong> {selectedActivityDetail['Chi tiết']}
+              </div>
+            )}
+            <button onClick={handleCloseModal} className="modal-close-btn">Close</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-const DashboardMobileView = ({ user, userData, totalActivities, totalBonusPoints, finalScore, selectedSemester, setSelectedSemester, notification, searchTerm, setSearchTerm, showScores, setShowScores, scoresData, scoresLoading, showDataModal, handleOpenDataModal, handleCloseDataModal }) => {
+const DashboardMobileView = ({ user, userData, totalActivities, totalBonusPoints, finalScore, selectedSemester, setSelectedSemester, handleRowClick, showDetailModal, selectedActivityDetail, handleCloseModal, notification, searchTerm, setSearchTerm, showScores, setShowScores, scoresData, scoresLoading }) => {
     const filteredUserData = userData.filter(data =>
         data['Tên hoạt động'].toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -188,9 +204,6 @@ const DashboardMobileView = ({ user, userData, totalActivities, totalBonusPoints
                 <div className="stat-card-mobile">
                 <h3>Điểm rèn luyện cuối cùng</h3>
                 <p style={{color: '#28a745'}}>{finalScore}</p>
-                <button onClick={handleOpenDataModal} style={{ marginTop: '10px', padding: '8px 15px', backgroundColor: '#28a745', color: 'white', borderRadius: '5px', border: 'none', cursor: 'pointer', fontSize: '0.8em' }}>
-                    View Details
-                </button>
                 </div>
             </div>
 
@@ -209,7 +222,7 @@ const DashboardMobileView = ({ user, userData, totalActivities, totalBonusPoints
             {filteredUserData.length > 0 ? (
                 <div className="activities-list-mobile">
                 {filteredUserData.map((data) => (
-                    <div key={data.id} className="activity-card-mobile">
+                    <div key={data.id} className="activity-card-mobile" onClick={() => handleRowClick(data)}>
                     <div className="card-content-mobile">
                         <h3>{data['Tên hoạt động']}</h3>
                         <span className="points">{data['Điểm cộng']} điểm</span>
@@ -221,15 +234,35 @@ const DashboardMobileView = ({ user, userData, totalActivities, totalBonusPoints
                 !notification && <p className="centered-text">No activity data to display for this semester.</p>
             )}
 
-            <DataModal
-                title="Activity Summary"
-                isOpen={showDataModal}
-                onClose={handleCloseDataModal}
-            >
-                <p>Total Activities: {totalActivities}</p>
-                <p>Final Score: {finalScore}</p>
-            </DataModal>
-        </div>
+            {showDetailModal && selectedActivityDetail && (
+                <div className="modal-overlay" onClick={handleCloseModal}>
+                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                    <h2>Activity Details</h2>
+                    <div className="detail-item">
+                    <strong>Thời gian:</strong> {selectedActivityDetail['Thời gian'] && selectedActivityDetail['Thời gian'].toDate ? selectedActivityDetail['Thời gian'].toDate().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }) : selectedActivityDetail['Thời gian']}
+                    </div>
+                    <div className="detail-item">
+                    <strong>Tên hoạt động:</strong> {selectedActivityDetail['Tên hoạt động']}
+                    </div>
+                    <div className="detail-item">
+                    <strong>Điểm cộng:</strong> {selectedActivityDetail['Điểm cộng']}
+                    </div>
+                    <div className="detail-item">
+                    <strong>File:</strong> <a href={selectedActivityDetail['File upload']} target="_blank" rel="noopener noreferrer">View File</a>
+                    </div>
+                    <div className="detail-item">
+                    <strong>Status:</strong> {selectedActivityDetail.Status}
+                    </div>
+                    {selectedActivityDetail['Chi tiết'] && (
+                    <div className="detail-item">
+                        <strong>Chi tiết:</strong> {selectedActivityDetail['Chi tiết']}
+                    </div>
+                    )}
+                    <button onClick={handleCloseModal} className="modal-close-btn">Close</button>
+                </div>
+                </div>
+            )}
+            </div>
     );
 };
 
@@ -242,16 +275,14 @@ const DashboardView = ({ handleLogout }) => {
   const [totalBonusPoints, setTotalBonusPoints] = useState(0);
   const [finalScore, setFinalScore] = useState(0);
   const [selectedSemester, setSelectedSemester] = useState('HK1N3');
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [selectedActivityDetail, setSelectedActivityDetail] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [showScores, setShowScores] = useState(false);
   const [scoresData, setScoresData] = useState([]);
   const [scoresLoading, setScoresLoading] = useState(true);
-  const [showDataModal, setShowDataModal] = useState(false); // New state for the data modal
   const user = auth.currentUser;
   const { isMobile } = useResponsive();
-
-  const handleOpenDataModal = () => setShowDataModal(true);
-  const handleCloseDataModal = () => setShowDataModal(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -323,6 +354,16 @@ const DashboardView = ({ handleLogout }) => {
     fetchScores();
   }, [user]);
 
+  const handleRowClick = (activity) => {
+    setSelectedActivityDetail(activity);
+    setShowDetailModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowDetailModal(false);
+    setSelectedActivityDetail(null);
+  };
+
   if (loading) {
     return <div className="centered-text">Loading...</div>;
   }
@@ -336,6 +377,10 @@ const DashboardView = ({ handleLogout }) => {
     selectedSemester,
     setSelectedSemester,
     handleLogout,
+    handleRowClick,
+    showDetailModal,
+    selectedActivityDetail,
+    handleCloseModal,
     notification,
     searchTerm,
     setSearchTerm,
@@ -343,9 +388,6 @@ const DashboardView = ({ handleLogout }) => {
     setShowScores,
     scoresData,
     scoresLoading,
-    showDataModal, // Pass to view
-    handleOpenDataModal, // Pass to view
-    handleCloseDataModal, // Pass to view
   };
 
   return isMobile ? <DashboardMobileView {...viewProps} /> : <DashboardDesktopView {...viewProps} />;

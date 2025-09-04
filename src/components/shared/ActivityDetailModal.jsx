@@ -1,5 +1,5 @@
 import React from 'react';
-import '../Modal.css'; // Reusing the existing modal CSS
+import './Modal.css'; // Reusing the existing modal CSS
 
 const ActivityDetailModal = ({ activity, onClose, isOpen }) => {
   if (!isOpen || !activity) {
@@ -12,6 +12,9 @@ const ActivityDetailModal = ({ activity, onClose, isOpen }) => {
         <h2>Activity Details</h2>
         <div className="detail-item">
           <strong>Thời gian:</strong> {activity['Thời gian'] && activity['Thời gian'].toDate ? activity['Thời gian'].toDate().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }) : activity['Thời gian']}
+        </div>
+        <div className="detail-item">
+          <strong>Name:</strong> {activity.Name}
         </div>
         <div className="detail-item">
           <strong>Tên hoạt động:</strong> {activity['Tên hoạt động']}

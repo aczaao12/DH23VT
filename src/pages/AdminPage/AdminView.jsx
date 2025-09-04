@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useActivities } from '../../hooks/useActivities'; // Adjust path as needed
 import NotificationPostForm from '../../pages/NotificationPage/NotificationPostForm';
 import ActivityTable from '../../components/shared/ActivityTable';
@@ -8,6 +8,7 @@ import Pagination from '../../components/shared/Pagination';
 import AddActivityForm from '../../components/shared/AddActivityForm'; // Import the new component
 import Tabs from '../../components/shared/Tabs';
 import Toast from '../../components/shared/Toast';
+import Modal from '../../components/shared/Modal';
 import './AdminView.css';
 
 const AdminView = () => {
@@ -15,11 +16,13 @@ const AdminView = () => {
   const [selectedSemester, setSelectedSemester] = useState('HK1N3');
   const [activityNameFilter, setActivityNameFilter] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('Phê duyệt'); // For bulk update
+  const [filterStatus, setFilterStatus] = useState(''); // New state for status filter
   const [fileToImport, setFileToImport] = useState(null);
   const [importSemester, setImportSemester] = useState('HK1N3');
   const [reportData, setReportData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage] = useState(100);
+  const [showNoActivitiesModal, setShowNoActivitiesModal] = useState(false);
 
   // Use custom hook for activities logic
   const {
@@ -42,7 +45,15 @@ const AdminView = () => {
     handleImportJson,
     handleExportJson,
     addActivityDefinition, // Get the new function from the hook
-  } = useActivities(selectedSemester);
+  } = useActivities(selectedSemester, filterStatus);
+
+  useEffect(() => {
+    if (!loading && activities.length === 0) {
+      setShowNoActivitiesModal(true);
+    } else {
+      setShowNoActivitiesModal(false);
+    }
+  }, [loading, activities]);
 
   // Filter activities based on activityNameFilter
   const filteredActivities = activities.filter(activity =>
@@ -120,6 +131,8 @@ const AdminView = () => {
             setActivityNameFilter={setActivityNameFilter}
             selectedStatus={selectedStatus}
             setSelectedStatus={setSelectedStatus}
+            filterStatus={filterStatus}
+            setFilterStatus={setFilterStatus}
             setCurrentPage={setCurrentPage}
           />
 
@@ -187,6 +200,13 @@ const AdminView = () => {
     <div className="admin-container">
       <Toast message={notification} onClose={closeToast} type="success" />
       <Toast message={error} onClose={closeToast} type="error" />
+      {showNoActivitiesModal && (
+        <Modal
+          message="No activities found for this semester."
+          onClose={() => setShowNoActivitiesModal(false)}
+          type="info"
+        />
+      )}
       <h1>Admin - Activity Management</h1>
       <div className="semester-selector">
         <label htmlFor="semester-select">Select Semester: </label>
@@ -212,11 +232,7 @@ const AdminView = () => {
 
       {loading && <p className="centered-text">Loading activities...</p>}
 
-      {!loading && activities.length === 0 && (
-        <p className="centered-text">No activities found for this semester.</p>
-      )}
-
-      {activities.length > 0 && <Tabs tabs={tabs} />}
+      <Tabs tabs={tabs} />
     </div>
   );
 };

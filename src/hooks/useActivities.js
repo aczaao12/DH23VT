@@ -3,7 +3,7 @@ import { db, rtdb } from '../firebase'; // Adjust path as needed
 import { collection, getDocs, doc, updateDoc, deleteDoc, writeBatch, query, where } from 'firebase/firestore';
 import { ref, set } from 'firebase/database';
 
-export const useActivities = (semester) => {
+export const useActivities = (semester, filterStatus) => {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [notification, setNotification] = useState('');
@@ -18,7 +18,14 @@ export const useActivities = (semester) => {
     setNotification('');
     try {
       const activitiesCollectionRef = collection(db, 'users', semester, 'students');
-      const querySnapshot = await getDocs(activitiesCollectionRef);
+      let q = activitiesCollectionRef; // Start with the base collection reference
+
+      // Conditionally add the status filter
+      if (filterStatus && filterStatus !== '') {
+        q = query(q, where('Status', '==', filterStatus));
+      }
+
+      const querySnapshot = await getDocs(q);
       const activitiesList = querySnapshot.docs.map(doc => ({ firestoreDocId: doc.id, ...doc.data() }));
       setActivities(activitiesList);
       setSelectedActivities([]); // Reset selection when semester changes
@@ -28,7 +35,7 @@ export const useActivities = (semester) => {
     } finally {
       setLoading(false);
     }
-  }, [semester]);
+  }, [semester, filterStatus]);
 
   useEffect(() => {
     fetchActivities();

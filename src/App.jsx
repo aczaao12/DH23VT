@@ -63,6 +63,11 @@ function App() {
     return <div>Loading authentication...</div>;
   }
 
+  // Prevent react-router-dom from handling Firebase auth iframe URLs
+  if (window.location.pathname.startsWith('/__/auth/iframe')) {
+    return null;
+  }
+
   return (
     <div className={isDarkMode ? 'dark-mode' : ''}>
       <Suspense fallback={<div>Loading...</div>}>

@@ -42,7 +42,7 @@ export const useActivities = (semester, filterStatus) => {
   const fetchActivityDefinitions = useCallback(() => {
     setLoading(true);
     setError('');
-    const activityDefinitionsRef = ref(rtdb, `activities/${semester}/doc_1`); // Changed path to doc_1
+    const activityDefinitionsRef = ref(rtdb, `activities/${semester}`); // Changed path
     onValue(activityDefinitionsRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
@@ -402,7 +402,7 @@ export const useActivities = (semester, filterStatus) => {
     setError('');
     setNotification('');
     try {
-      const activityRef = ref(rtdb, `activities/${semester}/doc_1/${activityKey}`); // Changed path
+      const activityRef = ref(rtdb, `activities/${semester}/${activityKey}`); // Changed path
       await set(activityRef, {
         name: activityName,
         points: points
@@ -423,7 +423,7 @@ export const useActivities = (semester, filterStatus) => {
     setError('');
     setNotification('');
     try {
-      const activityDefRef = ref(rtdb, `activities/${semester}/doc_1/${id}`); // Changed path
+      const activityDefRef = ref(rtdb, `activities/${semester}/${id}`); // Changed path
       await update(activityDefRef, { [field]: value });
       setNotification(`Activity definition updated successfully.`);
       // No need to call fetchActivityDefinitions here, onValue listener will update state
@@ -442,7 +442,7 @@ export const useActivities = (semester, filterStatus) => {
     setError('');
     setNotification('');
     try {
-      const activityDefRef = ref(rtdb, `activities/${semester}/doc_1/${id}`); // Changed path
+      const activityDefRef = ref(rtdb, `activities/${semester}/${id}`); // Changed path
       await remove(activityDefRef);
       setNotification(`Activity definition deleted successfully.`);
       // No need to call fetchActivityDefinitions here, onValue listener will update state

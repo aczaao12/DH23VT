@@ -52,3 +52,31 @@
 body {
   padding-bottom: 60px; /* Adjust this value to match the height of your nav bar */
 }
+
+/* Desktop styles */
+@media (min-width: 992px) {
+  .bottom-nav-bar {
+    flex-direction: column; /* Stack items vertically */
+    width: 80px; /* Fixed width for the sidebar */
+    height: 100vh; /* Full height */
+    bottom: 0;
+    left: 0;
+    right: auto; /* Remove right positioning */
+    padding: 20px 0; /* Adjust padding for vertical layout */
+    border-top-left-radius: 0; /* Remove top-left radius */
+    border-top-right-radius: var(--neumo-border-radius); /* Rounded top-right corner */
+    border-bottom-right-radius: var(--neumo-border-radius); /* Rounded bottom-right corner */
+    box-shadow: 5px 0 10px var(--neumo-dark-shadow), /* Shadow coming from right */
+                -5px 0 10px var(--neumo-light-shadow); /* Light shadow for depth */
+  }
+
+  .bottom-nav-bar .nav-link {
+    padding: 15px 0; /* Adjust padding for vertical links */
+  }
+
+  /* Adjust body padding for desktop to make space for the sidebar */
+  body {
+    padding-left: 80px; /* Match the width of the sidebar */
+    padding-bottom: 0; /* Remove bottom padding on desktop */
+  }
+}

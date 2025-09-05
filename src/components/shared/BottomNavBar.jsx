@@ -2,10 +2,13 @@ import { NavLink } from 'react-router-dom';
 import './BottomNavBar.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHouse, faCloudArrowUp, faGear, faCalculator, faBell } from '@fortawesome/free-solid-svg-icons';
+import { useResponsive } from '../../hooks/useResponsive'; // Import the hook
 
 const BottomNavBar = () => {
+  const { isDesktopOrLaptop } = useResponsive(); // Use the hook
+
   return (
-    <nav className="bottom-nav-bar">
+    <nav className={`bottom-nav-bar ${isDesktopOrLaptop ? 'desktop-nav' : ''}`}>
       <NavLink to="/dashboard" className="nav-link">
         <FontAwesomeIcon icon={faHouse} />
         <span>Dashboard</span>

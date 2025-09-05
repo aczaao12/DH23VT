@@ -1,13 +1,14 @@
 import { GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "firebase/auth";
 import { auth } from "../../firebase";
 import { useEffect } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 import useInAppBrowserDetection from '../../hooks/useInAppBrowserDetection';
 import BrowserWarningBanner from '../../components/shared/BrowserWarningBanner';
 import './LoginView.css'; // Import the new CSS file
 
 const LoginView = () => {
   const isInAppBrowser = useInAppBrowserDetection();
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     const checkRedirectResult = async () => {
@@ -21,13 +22,14 @@ const LoginView = () => {
           const user = result.user;
           console.log("User from redirect:", user);
           console.log("Token from redirect:", token);
+          navigate("/dashboard"); // Navigate to dashboard after successful login
         }
       } catch (error) {
         console.error("Error during redirect result:", error);
       }
     };
     checkRedirectResult();
-  }, []);
+  }, [navigate]); // Add navigate to dependency array
   const handleGoogleLogin = () => {
     const provider = new GoogleAuthProvider();
     signInWithRedirect(auth, provider);

@@ -1,7 +1,7 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { auth } from './firebase';
-import { signOut } from 'firebase/auth';
+import { signOut, signInWithEmailAndPassword } from 'firebase/auth'; // Import signInWithEmailAndPassword
 import AdminRoute from './components/shared/AdminRoute';
 import BottomNavBar from './components/shared/BottomNavBar';
 import useDarkMode from './hooks/useDarkMode';
@@ -52,6 +52,19 @@ function App() {
           setCurrentUser(user);
         }
       } else {
+        // Auto-login for development environment
+        if (import.meta.env.DEV && import.meta.env.VITE_DEV_AUTO_LOGIN_EMAIL && import.meta.env.VITE_DEV_AUTO_LOGIN_PASSWORD) {
+          try {
+            await signInWithEmailAndPassword(
+              auth,
+              import.meta.env.VITE_DEV_AUTO_LOGIN_EMAIL,
+              import.meta.env.VITE_DEV_AUTO_LOGIN_PASSWORD
+            );
+            console.log("Auto-login successful in development mode.");
+          } catch (error) {
+            console.error("Auto-login failed in development mode:", error);
+          }
+        }
         setCurrentUser(null);
       }
       setLoading(false);

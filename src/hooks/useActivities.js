@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { db } from '../firebase'; // Adjust path as needed
-import { collection, getDocs, doc, updateDoc, deleteDoc, writeBatch, query, where, addDoc } from 'firebase/firestore';
+import { db, rtdb } from '../firebase'; // Adjust path as needed
+import { collection, getDocs, doc, updateDoc, deleteDoc, writeBatch, query, where } from 'firebase/firestore';
+import { ref, set, update, remove, onValue } from 'firebase/database';
 
 export const useActivities = (semester, filterStatus) => {
   const [activities, setActivities] = useState([]);
@@ -37,20 +38,28 @@ export const useActivities = (semester, filterStatus) => {
     }
   }, [semester, filterStatus]);
 
-  // New function to fetch activity definitions
-  const fetchActivityDefinitions = useCallback(async () => {
+  // Modified fetchActivityDefinitions to use RTDB
+  const fetchActivityDefinitions = useCallback(() => {
     setLoading(true);
-    try {
-      const activityDefinitionsCollectionRef = collection(db, 'activities', semester, 'activityDefinitions');
-      const querySnapshot = await getDocs(activityDefinitionsCollectionRef);
-      const definitionsList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setActivityDefinitions(definitionsList);
-    } catch (err) {
-      console.error("Error fetching activity definitions: ", err);
-      setError('Failed to fetch activity definitions.');
-    } finally {
+    setError('');
+    const activityDefinitionsRef = ref(rtdb, `activities/${semester}/activityDefinitions`); // Changed path
+    onValue(activityDefinitionsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const definitionsList = Object.keys(data).map(key => ({
+          id: key, // RTDB key as ID
+          ...data[key]
+        }));
+        setActivityDefinitions(definitionsList);
+      } else {
+        setActivityDefinitions([]);
+      }
       setLoading(false);
-    }
+    }, (err) => {
+      console.error("Error fetching activity definitions from RTDB: ", err);
+      setError('Failed to fetch activity definitions.');
+      setLoading(false);
+    });
   }, [semester]);
 
   useEffect(() => {
@@ -64,7 +73,7 @@ export const useActivities = (semester, filterStatus) => {
         if (activity.firestoreDocId === firestoreDocId) {
           return { ...activity, [field]: value };
         }
-        return activity;
+        return updatedActivities;
       });
       return updatedActivities;
     });
@@ -387,63 +396,63 @@ export const useActivities = (semester, filterStatus) => {
     setError('');
   }, [activities, selectedActivities, semester]);
 
-  // Modified addActivityDefinition to use Firestore
-  const addActivityDefinition = useCallback(async (activityName, points) => {
+  // Modified addActivityDefinition to use RTDB
+  const addActivityDefinition = useCallback(async (activityKey, activityName, points) => { // Added activityKey
     setLoading(true);
     setError('');
     setNotification('');
     try {
-      const activityDefinitionsCollectionRef = collection(db, 'activities', semester, 'activityDefinitions');
-      await addDoc(activityDefinitionsCollectionRef, {
+      const activityRef = ref(rtdb, `activities/${semester}/activityDefinitions/${activityKey}`); // Changed path
+      await set(activityRef, {
         name: activityName,
         points: points
       });
       setNotification(`Activity definition '${activityName}' added successfully.`);
-      fetchActivityDefinitions(); // Refresh the list of definitions
+      // No need to call fetchActivityDefinitions here, onValue listener will update state
     } catch (err) {
-      console.error("Error adding activity definition: ", err);
+      console.error("Error adding activity definition to RTDB: ", err);
       setError(`Failed to add activity definition: ${err.message}`);
     } finally {
       setLoading(false);
     }
-  }, [semester, fetchActivityDefinitions]);
+  }, [semester]);
 
-  // New function to update an activity definition
+  // Modified updateActivityDefinition to use RTDB
   const updateActivityDefinition = useCallback(async (id, field, value) => {
     setLoading(true);
     setError('');
     setNotification('');
     try {
-      const activityDefDocRef = doc(db, 'activities', semester, 'activityDefinitions', id);
-      await updateDoc(activityDefDocRef, { [field]: value });
+      const activityDefRef = ref(rtdb, `activities/${semester}/activityDefinitions/${id}`); // Changed path
+      await update(activityDefRef, { [field]: value });
       setNotification(`Activity definition updated successfully.`);
-      fetchActivityDefinitions(); // Refresh the list of definitions
+      // No need to call fetchActivityDefinitions here, onValue listener will update state
     } catch (err) {
-      console.error("Error updating activity definition: ", err);
+      console.error("Error updating activity definition in RTDB: ", err);
       setError(`Failed to update activity definition: ${err.message}`);
     } finally {
       setLoading(false);
     }
-  }, [semester, fetchActivityDefinitions]);
+  }, [semester]);
 
-  // New function to delete an activity definition
+  // Modified deleteActivityDefinition to use RTDB
   const deleteActivityDefinition = useCallback(async (id) => {
     if (!window.confirm(`Are you sure you want to delete this activity definition?`)) return;
     setLoading(true);
     setError('');
     setNotification('');
     try {
-      const activityDefDocRef = doc(db, 'activities', semester, 'activityDefinitions', id);
-      await deleteDoc(activityDefDocRef);
+      const activityDefRef = ref(rtdb, `activities/${semester}/activityDefinitions/${id}`); // Changed path
+      await remove(activityDefRef);
       setNotification(`Activity definition deleted successfully.`);
-      fetchActivityDefinitions(); // Refresh the list of definitions
+      // No need to call fetchActivityDefinitions here, onValue listener will update state
     } catch (err) {
-      console.error("Error deleting activity definition: ", err);
+      console.error("Error deleting activity definition from RTDB: ", err);
       setError(`Failed to delete activity definition: ${err.message}`);
     } finally {
       setLoading(false);
     }
-  }, [semester, fetchActivityDefinitions]);
+  }, [semester]);
 
 
   return {

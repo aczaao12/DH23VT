@@ -5,13 +5,18 @@ const AddActivityForm = ({ onAddActivity }) => {
   const [activityName, setActivityName] = useState('');
   const [points, setPoints] = useState('');
 
+  const generateKey = (name) => {
+    return name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!activityName || !points) {
       alert('Please fill in all fields.');
       return;
     }
-    onAddActivity(activityName, parseInt(points, 10));
+    const activityKey = generateKey(activityName);
+    onAddActivity(activityKey, activityName, parseInt(points, 10));
     setActivityName('');
     setPoints('');
   };

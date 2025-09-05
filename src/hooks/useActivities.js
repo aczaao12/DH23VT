@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import { db, rtdb } from '../firebase'; // Adjust path as needed
-import { collection, getDocs, doc, updateDoc, deleteDoc, writeBatch, query, where } from 'firebase/firestore';
-import { ref, set } from 'firebase/database';
+import { db } from '../firebase'; // Adjust path as needed
+import { collection, getDocs, doc, updateDoc, deleteDoc, writeBatch, query, where, addDoc } from 'firebase/firestore';
 
 export const useActivities = (semester, filterStatus) => {
   const [activities, setActivities] = useState([]);
+  const [activityDefinitions, setActivityDefinitions] = useState([]); // New state for activity definitions
   const [loading, setLoading] = useState(true);
   const [notification, setNotification] = useState('');
   const [error, setError] = useState('');
@@ -37,9 +37,26 @@ export const useActivities = (semester, filterStatus) => {
     }
   }, [semester, filterStatus]);
 
+  // New function to fetch activity definitions
+  const fetchActivityDefinitions = useCallback(async () => {
+    setLoading(true);
+    try {
+      const activityDefinitionsCollectionRef = collection(db, 'activities', semester, 'activityDefinitions');
+      const querySnapshot = await getDocs(activityDefinitionsCollectionRef);
+      const definitionsList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setActivityDefinitions(definitionsList);
+    } catch (err) {
+      console.error("Error fetching activity definitions: ", err);
+      setError('Failed to fetch activity definitions.');
+    } finally {
+      setLoading(false);
+    }
+  }, [semester]);
+
   useEffect(() => {
     fetchActivities();
-  }, [fetchActivities]);
+    fetchActivityDefinitions(); // Fetch activity definitions on semester change
+  }, [fetchActivities, fetchActivityDefinitions]);
 
   const handleFieldChange = useCallback((firestoreDocId, field, value) => {
     setActivities(prevActivities => {
@@ -370,27 +387,68 @@ export const useActivities = (semester, filterStatus) => {
     setError('');
   }, [activities, selectedActivities, semester]);
 
-  const addActivityDefinition = useCallback(async (activityKey, activityName, points) => {
+  // Modified addActivityDefinition to use Firestore
+  const addActivityDefinition = useCallback(async (activityName, points) => {
     setLoading(true);
     setError('');
     setNotification('');
     try {
-      const activityRef = ref(rtdb, `activities/${activityKey}`);
-      await set(activityRef, {
+      const activityDefinitionsCollectionRef = collection(db, 'activities', semester, 'activityDefinitions');
+      await addDoc(activityDefinitionsCollectionRef, {
         name: activityName,
         points: points
       });
       setNotification(`Activity definition '${activityName}' added successfully.`);
+      fetchActivityDefinitions(); // Refresh the list of definitions
     } catch (err) {
       console.error("Error adding activity definition: ", err);
       setError(`Failed to add activity definition: ${err.message}`);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [semester, fetchActivityDefinitions]);
+
+  // New function to update an activity definition
+  const updateActivityDefinition = useCallback(async (id, field, value) => {
+    setLoading(true);
+    setError('');
+    setNotification('');
+    try {
+      const activityDefDocRef = doc(db, 'activities', semester, 'activityDefinitions', id);
+      await updateDoc(activityDefDocRef, { [field]: value });
+      setNotification(`Activity definition updated successfully.`);
+      fetchActivityDefinitions(); // Refresh the list of definitions
+    } catch (err) {
+      console.error("Error updating activity definition: ", err);
+      setError(`Failed to update activity definition: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }, [semester, fetchActivityDefinitions]);
+
+  // New function to delete an activity definition
+  const deleteActivityDefinition = useCallback(async (id) => {
+    if (!window.confirm(`Are you sure you want to delete this activity definition?`)) return;
+    setLoading(true);
+    setError('');
+    setNotification('');
+    try {
+      const activityDefDocRef = doc(db, 'activities', semester, 'activityDefinitions', id);
+      await deleteDoc(activityDefDocRef);
+      setNotification(`Activity definition deleted successfully.`);
+      fetchActivityDefinitions(); // Refresh the list of definitions
+    } catch (err) {
+      console.error("Error deleting activity definition: ", err);
+      setError(`Failed to delete activity definition: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }, [semester, fetchActivityDefinitions]);
+
 
   return {
     activities,
+    activityDefinitions, // Expose activity definitions
     loading,
     notification,
     error,
@@ -411,5 +469,7 @@ export const useActivities = (semester, filterStatus) => {
     handleImportJson,
     handleExportJson,
     addActivityDefinition,
+    updateActivityDefinition, // Expose new function
+    deleteActivityDefinition, // Expose new function
   };
 };

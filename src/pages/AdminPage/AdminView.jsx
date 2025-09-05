@@ -10,6 +10,7 @@ import Tabs from '../../components/shared/Tabs';
 import Toast from '../../components/shared/Toast';
 import Modal from '../../components/shared/Modal';
 import ActivityDetailModal from '../../components/shared/ActivityDetailModal';
+import ActivityDefinitionManager from '../../components/shared/ActivityDefinitionManager'; // Import the new component
 import './AdminView.css';
 
 const AdminView = () => {
@@ -40,6 +41,7 @@ const AdminView = () => {
   // Use custom hook for activities logic
   const {
     activities,
+    activityDefinitions, // Get activity definitions from the hook
     loading,
     notification,
     error,
@@ -57,7 +59,9 @@ const AdminView = () => {
     setError,
     handleImportJson,
     handleExportJson,
-    addActivityDefinition, // Get the new function from the hook
+    addActivityDefinition,
+    updateActivityDefinition, // Get new function
+    deleteActivityDefinition, // Get new function
   } = useActivities(selectedSemester, filterStatus);
 
   useEffect(() => {
@@ -172,8 +176,18 @@ const AdminView = () => {
       )
     },
     {
-      label: 'Add Activity',
-      content: <AddActivityForm onAddActivity={addActivityDefinition} />
+      label: 'Activity Definitions',
+      content: (
+        <ActivityDefinitionManager
+          activityDefinitions={activityDefinitions}
+          addActivityDefinition={addActivityDefinition}
+          updateActivityDefinition={updateActivityDefinition}
+          deleteActivityDefinition={deleteActivityDefinition}
+          loading={loading}
+          error={error}
+          notification={notification}
+        />
+      ),
     },
     {
       label: 'Post Notification',

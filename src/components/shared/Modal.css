@@ -110,14 +110,13 @@
 /* Mobile layout for form-row */
 @media (max-width: 767px) { /* Assuming 767px is mobile breakpoint */
   .form-row {
-    flex-direction: column; /* Stack vertically */
-    gap: 0; /* Remove gap when stacked */
+    flex-direction: row; /* Arrange horizontally */
+    flex-wrap: wrap; /* Allow items to wrap to the next line */
+    gap: 10px; /* Smaller gap for mobile */
   }
   .form-row .form-group {
-    margin-bottom: 15px; /* Add back margin for stacked items */
-  }
-  .form-row .form-group:last-child {
-    margin-bottom: 0; /* No bottom margin for the last stacked item */
+    flex: 0 0 calc(33.33% - 7px); /* Three columns, accounting for smaller gap */
+    margin-bottom: 0; /* Remove bottom margin from individual form-groups within a row */
   }
 }
 
@@ -130,4 +129,8 @@
   font-size: 1em;
   box-sizing: border-box;
   width: 100%;
+}
+
+.file-upload-section {
+  margin-top: 25px; /* Add space above the file upload section */
 }

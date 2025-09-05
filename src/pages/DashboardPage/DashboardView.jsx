@@ -298,7 +298,23 @@ const DashboardView = ({ handleLogout }) => {
     onValue(activitiesRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        setActivities(data);
+        const transformedActivities = {};
+        Object.keys(data).forEach(semesterKey => {
+          const semesterData = data[semesterKey];
+          Object.keys(semesterData).forEach(activityKey => {
+            const activityDetails = semesterData[activityKey];
+            // Assuming there's only one activity name per activityKey as per the structure
+            const actualActivityName = Object.keys(activityDetails)[0];
+            const points = activityDetails[actualActivityName].points;
+
+            transformedActivities[activityKey] = {
+              id: activityKey,
+              name: actualActivityName,
+              points: points
+            };
+          });
+        });
+        setActivities(transformedActivities);
       }
     });
   }, []);

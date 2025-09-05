@@ -13,27 +13,27 @@
   left: 0;
   right: 0;
   background-color: var(--neumo-bg); /* Use neumorphic background */
-  /* Remove original box-shadow */
-  box-shadow: 0 -5px 10px var(--neumo-dark-shadow), /* Shadow coming from bottom */
-              0 5px 10px var(--neumo-light-shadow); /* Light shadow for depth */
+  box-shadow: 0 -5px 10px var(--neumo-dark-shadow),
+              0 5px 10px var(--neumo-light-shadow);
   justify-content: space-around;
   padding: 10px 0;
   z-index: 1000;
-  border-top-left-radius: var(--neumo-border-radius); /* Rounded top corners */
+  border-top-left-radius: var(--neumo-border-radius);
   border-top-right-radius: var(--neumo-border-radius);
+  transition: transform 0.3s ease-in-out; /* Smooth transition for showing/hiding */
 }
 
 .bottom-nav-bar .nav-link {
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #555; /* Darker text for better contrast */
+  color: #555;
   text-decoration: none;
   font-size: 12px;
   gap: 4px;
-  padding: 8px 12px; /* Add padding for clickable area */
-  border-radius: var(--neumo-border-radius); /* Rounded corners for links */
-  transition: all 0.2s ease-in-out; /* Smooth transition */
+  padding: 8px 12px;
+  border-radius: var(--neumo-border-radius);
+  transition: all 0.2s ease-in-out;
 }
 
 .bottom-nav-bar .nav-link:hover {
@@ -42,8 +42,7 @@
 }
 
 .bottom-nav-bar .nav-link.active {
-  color: #007bff; /* Keep active color for distinction */
-  /* Add inset shadow for active state */
+  color: #007bff;
   box-shadow: inset 2px 2px 5px var(--neumo-dark-shadow),
               inset -2px -2px 5px var(--neumo-light-shadow);
 }
@@ -53,30 +52,61 @@ body {
   padding-bottom: 60px; /* Adjust this value to match the height of your nav bar */
 }
 
-/* Desktop styles */
+/* Desktop styles for bottom sheet */
 @media (min-width: 992px) {
-  .bottom-nav-bar {
-    flex-direction: column; /* Stack items vertically */
-    width: 80px; /* Fixed width for the sidebar */
-    height: 100vh; /* Full height */
-    bottom: 0;
-    left: 0;
-    right: auto; /* Remove right positioning */
-    padding: 20px 0; /* Adjust padding for vertical layout */
-    border-top-left-radius: 0; /* Remove top-left radius */
-    border-top-right-radius: var(--neumo-border-radius); /* Rounded top-right corner */
-    border-bottom-right-radius: var(--neumo-border-radius); /* Rounded bottom-right corner */
-    box-shadow: 5px 0 10px var(--neumo-dark-shadow), /* Shadow coming from right */
-                -5px 0 10px var(--neumo-light-shadow); /* Light shadow for depth */
+  .bottom-nav-bar.desktop-bottom-sheet {
+    width: 80%; /* Make it wider on desktop */
+    left: 50%;
+    transform: translateX(-50%); /* Center it */
+    border-radius: var(--neumo-border-radius) var(--neumo-border-radius) 0 0; /* Rounded top corners only */
+    box-shadow: 0 -5px 10px var(--neumo-dark-shadow),
+                0 5px 10px var(--neumo-light-shadow);
   }
 
-  .bottom-nav-bar .nav-link {
-    padding: 15px 0; /* Adjust padding for vertical links */
+  .bottom-nav-bar.desktop-bottom-sheet.bottom-sheet-hidden {
+    transform: translateX(-50%) translateY(100%); /* Slide out of view */
   }
 
-  /* Adjust body padding for desktop to make space for the sidebar */
+  .bottom-sheet-toggle-button {
+    position: fixed;
+    bottom: 10px; /* Position above the bottom sheet */
+    right: 10%; /* Position on the right side of the bottom sheet */
+    transform: translateX(50%); /* Adjust to align with the right edge */
+    z-index: 1001; /* Above the nav bar */
+    background-color: var(--neumo-bg);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 2px 2px 5px var(--neumo-dark-shadow),
+                -2px -2px 5px var(--neumo-light-shadow);
+    transition: all 0.2s ease-in-out;
+    animation: float 2s ease-in-out infinite; /* Floating animation */
+  }
+
+  .bottom-sheet-toggle-button:hover {
+    box-shadow: inset 2px 2px 5px var(--neumo-dark-shadow),
+                inset -2px -2px 5px var(--neumo-light-shadow);
+  }
+
+  .bottom-sheet-toggle-button svg {
+    color: #555;
+  }
+
+  /* Floating animation */
+  @keyframes float {
+    0% { transform: translateY(0px) translateX(50%); }
+    50% { transform: translateY(-5px) translateX(50%); }
+    100% { transform: translateY(0px) translateX(50%); }
+  }
+
+  /* Adjust body padding for desktop to make space for the bottom sheet */
   body {
-    padding-left: 80px; /* Match the width of the sidebar */
-    padding-bottom: 0; /* Remove bottom padding on desktop */
+    padding-bottom: 60px; /* Keep padding for the bottom sheet */
+    padding-left: 0; /* Remove left padding */
   }
 }

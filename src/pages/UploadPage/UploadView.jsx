@@ -29,14 +29,27 @@ const UploadView = () => {
   const user = auth.currentUser;
 
   useEffect(() => {
-    const activitiesRef = ref(rtdb, 'activities');
+    const activitiesRef = ref(rtdb, `activities/${selectedSemester}`);
     onValue(activitiesRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        setActivities(data);
+        const transformedActivities = {};
+        Object.keys(data).forEach(activityKey => {
+          const activityData = data[activityKey];
+          Object.keys(activityData).forEach(activityName => {
+            transformedActivities[activityKey] = {
+              id: activityKey,
+              name: activityName,
+              points: activityData[activityName].points
+            };
+          });
+        });
+        setActivities(transformedActivities);
+      } else {
+        setActivities({}); // Clear activities if no data for semester
       }
     });
-  }, []);
+  }, [selectedSemester]);
 
   // REMOVED: useEffect to fetch user's uploaded activities
   /*
@@ -267,7 +280,7 @@ const UploadView = () => {
             <p>Điểm cộng: {activities[selectedActivity].points}</p>
             {isDuplicateActivitySelected && (
               <p style={{ color: 'red', marginTop: '5px' }}>
-                Hoạt động "{activities[selectedActivity].name}" đã tồn tại cho bạn trong học kỳ này.
+                Hoạt động "{activities[selectedActivity].name}" đã tồn tại cho bạn trong học kỳ này <br /> Vui lòng quay lại Dashboard để edit nó nhé!
               </p>
             )}
           </div>
@@ -278,7 +291,7 @@ const UploadView = () => {
           <input id="file-upload" type="file" onChange={handleFileChange} className="form-file-input" required />
         </div>
 
-        <button type="submit" className="submit-btn" disabled={loading}>
+        <button type="submit" className="submit-btn" disabled={loading || isDuplicateActivitySelected}>
           {loading ? 'Uploading...' : 'Submit'}
         </button>
       </form>
@@ -311,3 +324,4 @@ const UploadView = () => {
 };
 
 export default UploadView;
+

@@ -5,17 +5,13 @@ const AddActivityForm = ({ onAddActivity }) => {
   const [activityName, setActivityName] = useState('');
   const [points, setPoints] = useState('');
 
-  const generateKey = (name) => {
-    return name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!activityName || !points) {
       alert('Please fill in all fields.');
       return;
     }
-    const activityKey = generateKey(activityName);
+    const activityKey = `ACT-${Date.now()}`;
     onAddActivity(activityKey, activityName, parseInt(points, 10));
     setActivityName('');
     setPoints('');

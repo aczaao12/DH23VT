@@ -92,8 +92,7 @@ const EditActivityModal = ({ isOpen, onClose, activity, onUpdate, activitiesList
           <p className="read-only-field">{editedActivity['Chi tiết'] || ''}</p> {/* Read-only */}
         </div>
 
-        <div className="form-group">
-          <label>Current File:</label>
+        <div className="form-group file-upload-section">
           {editedActivity['File upload'] && (
             <a href={editedActivity['File upload']} target="_blank" rel="noopener noreferrer">
               View Current File

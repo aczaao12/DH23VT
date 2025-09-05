@@ -11,6 +11,27 @@
   margin-bottom: 15px;
 }
 
+.import-activity-definition-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.json-file-input {
+  margin-right: 10px;
+}
+
+.import-btn {
+  margin-top: 10px;
+  margin-right: 10px; /* Add some space between buttons */
+}
+
+.create-sample-btn {
+  margin-top: 10px;
+}
+
 .add-activity-definition-section {
   margin-bottom: 30px;
   padding: 20px;

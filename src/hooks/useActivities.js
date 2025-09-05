@@ -46,10 +46,14 @@ export const useActivities = (semester, filterStatus) => {
     onValue(activityDefinitionsRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        const definitionsList = Object.keys(data).map(key => ({
-          id: key, // RTDB key as ID
-          ...data[key]
-        }));
+        const definitionsList = Object.keys(data).flatMap(activityKey => {
+          const activityData = data[activityKey];
+          return Object.keys(activityData).map(activityName => ({
+            id: activityKey, // RTDB key as ID (e.g., HK1N3)
+            name: activityName, // The activity name (e.g., HUY ĐỘNG LỰC LƯỢNG THAM GIA CHỦ NHẬT XANH)
+            points: activityData[activityName].points
+          }));
+        });
         setActivityDefinitions(definitionsList);
       } else {
         setActivityDefinitions([]);
@@ -397,15 +401,14 @@ export const useActivities = (semester, filterStatus) => {
   }, [activities, selectedActivities, semester]);
 
   // Modified addActivityDefinition to use RTDB
-  const addActivityDefinition = useCallback(async (activityKey, activityName, points) => { // Added activityKey
+  const addActivityDefinition = useCallback(async (activityKey, activityName, points) => { // Reverted to original signature
     setLoading(true);
     setError('');
     setNotification('');
     try {
-      const activityRef = ref(rtdb, `activities/${semester}/${activityKey}`); // Changed path
+      const activityRef = ref(rtdb, `activities/${semester}/${activityKey}/${activityName}`); // Changed path to use activityName
       await set(activityRef, {
-        name: activityName,
-        points: points
+        points: points // Only points stored, name is in path
       });
       setNotification(`Activity definition '${activityName}' added successfully.`);
       // No need to call fetchActivityDefinitions here, onValue listener will update state
@@ -418,12 +421,13 @@ export const useActivities = (semester, filterStatus) => {
   }, [semester]);
 
   // Modified updateActivityDefinition to use RTDB
-  const updateActivityDefinition = useCallback(async (id, field, value) => {
+  // Modified updateActivityDefinition to use RTDB
+  const updateActivityDefinition = useCallback(async (activityKey, activityName, field, value) => {
     setLoading(true);
     setError('');
     setNotification('');
     try {
-      const activityDefRef = ref(rtdb, `activities/${semester}/${id}`); // Changed path
+      const activityDefRef = ref(rtdb, `activities/${semester}/${activityKey}/${activityName}`); // Changed path
       await update(activityDefRef, { [field]: value });
       setNotification(`Activity definition updated successfully.`);
       // No need to call fetchActivityDefinitions here, onValue listener will update state
@@ -436,13 +440,13 @@ export const useActivities = (semester, filterStatus) => {
   }, [semester]);
 
   // Modified deleteActivityDefinition to use RTDB
-  const deleteActivityDefinition = useCallback(async (id) => {
+  const deleteActivityDefinition = useCallback(async (activityKey, activityName) => {
     if (!window.confirm(`Are you sure you want to delete this activity definition?`)) return;
     setLoading(true);
     setError('');
     setNotification('');
     try {
-      const activityDefRef = ref(rtdb, `activities/${semester}/${id}`); // Changed path
+      const activityDefRef = ref(rtdb, `activities/${semester}/${activityKey}/${activityName}`); // Changed path
       await remove(activityDefRef);
       setNotification(`Activity definition deleted successfully.`);
       // No need to call fetchActivityDefinitions here, onValue listener will update state

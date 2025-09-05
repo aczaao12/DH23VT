@@ -64,7 +64,7 @@ function App() {
   }
 
   // Prevent react-router-dom from handling Firebase auth iframe URLs
-  if (window.location.pathname.startsWith('/__/auth/iframe')) {
+  if (window.location.pathname.startsWith('/__/auth/iframe') || window.location.pathname.startsWith('/__/auth/handler')) {
     return null;
   }
 

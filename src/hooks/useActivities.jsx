@@ -4,6 +4,10 @@ import { collection, getDocs, doc, updateDoc, deleteDoc, writeBatch, query, wher
 import { ref, set, update, remove, onValue } from 'firebase/database';
 
 export const useActivities = (semester, filterStatus) => {
+  const sanitizePath = (path) => {
+    return path.replace(/[.#$\[\]]/g, '_');
+  };
+
   const [activities, setActivities] = useState([]);
   const [activityDefinitions, setActivityDefinitions] = useState([]); // New state for activity definitions
   const [loading, setLoading] = useState(true);
@@ -406,7 +410,7 @@ export const useActivities = (semester, filterStatus) => {
     setError('');
     setNotification('');
     try {
-      const activityRef = ref(rtdb, `activities/${semester}/${activityKey}/${activityName}`); // Changed path to use activityName
+      const activityRef = ref(rtdb, `activities/${semester}/${activityKey}/${sanitizePath(activityName)}`); // Changed path to use activityName
       await set(activityRef, {
         points: points // Only points stored, name is in path
       });
@@ -427,7 +431,7 @@ export const useActivities = (semester, filterStatus) => {
     setError('');
     setNotification('');
     try {
-      const activityDefRef = ref(rtdb, `activities/${semester}/${activityKey}/${activityName}`); // Changed path
+      const activityDefRef = ref(rtdb, `activities/${semester}/${activityKey}/${sanitizePath(activityName)}`); // Changed path
       await update(activityDefRef, { [field]: value });
       setNotification(`Activity definition updated successfully.`);
       // No need to call fetchActivityDefinitions here, onValue listener will update state
@@ -446,7 +450,7 @@ export const useActivities = (semester, filterStatus) => {
     setError('');
     setNotification('');
     try {
-      const activityDefRef = ref(rtdb, `activities/${semester}/${activityKey}/${activityName}`); // Changed path
+      const activityDefRef = ref(rtdb, `activities/${semester}/${activityKey}/${sanitizePath(activityName)}`); // Changed path
       await remove(activityDefRef);
       setNotification(`Activity definition deleted successfully.`);
       // No need to call fetchActivityDefinitions here, onValue listener will update state

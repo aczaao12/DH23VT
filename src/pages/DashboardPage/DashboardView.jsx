@@ -342,6 +342,8 @@ const DashboardView = ({ handleLogout }) => {
             const conditionalScore = calculateConditionalScore(approvedDocs);
             const final = calculateFinalScore(approvedDocs, conditionalScore);
             setFinalScore(final);
+
+            
           } else {
             setNotification(`No data found for this user in semester ${selectedSemester}.`);
           }

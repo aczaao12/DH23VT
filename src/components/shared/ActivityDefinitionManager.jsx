@@ -54,9 +54,10 @@ const ActivityDefinitionManager = ({
 
   const handleCreateSampleFile = () => {
     const sampleData = [
-      { "name": "Hoạt động mẫu 1", "points": 10 },
-      { "name": "Hoạt động mẫu 2", "points": 25 },
-      { "name": "Hoạt động mẫu 3", "points": 15 }
+      { "name": "Có tham gia CLB học thuật", "points": 4 },
+      { "name": "Nghiên cứu khoa học (minh chứng rõ ràng nhất quán)", "points": 10 },
+      { "name": "Sinh viên là cán bộ lớp, đoàn, hội, CLB đội, nhóm gương mẫu, hoàn thành tốt nhiệm vụ (được GVCV lớp, các tổ chức Đoàn, Hội đánh giá và công nhận)", "points": 5 },
+      { "name": "Người học đạt được thành tích đặc biệt trong học tập, rèn luyện.", "points": 10 }
     ];
     const jsonString = JSON.stringify(sampleData, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });

@@ -1,0 +1,80 @@
+/* Styles for SearchableSelect Component */
+
+.searchable-select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.searchable-select-input {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--neumo-border-radius); /* Use global border-radius */
+  border: none; /* Remove default border */
+  font-size: 17px;
+  box-sizing: border-box;
+  background-color: var(--neumo-bg); /* Use neumorphic background */
+  color: #333; /* Consistent text color */
+  box-shadow: inset 2px 2px 5px var(--neumo-dark-shadow),
+              inset -3px -3px 7px var(--neumo-light-shadow); /* Recessed effect */
+  transition: all 0.3s ease; /* Smooth transition for all properties */
+  outline: none; /* Remove default outline */
+}
+
+.searchable-select-input:focus {
+  border-color: transparent; /* Ensure no border on focus */
+  box-shadow: inset 2px 2px 5px var(--neumo-dark-shadow),
+              inset -3px -3px 7px var(--neumo-light-shadow),
+              0 0 0 3px rgba(0, 123, 255, 0.25); /* Add a subtle focus ring */
+}
+
+.searchable-select-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: var(--neumo-bg); /* Use neumorphic background */
+  border: none; /* Remove default border */
+  border-radius: var(--neumo-border-radius); /* Use global border-radius */
+  box-shadow: 5px 5px 10px var(--neumo-dark-shadow),
+              -5px -5px 10px var(--neumo-light-shadow); /* Extruded effect */
+  z-index: 1000;
+  max-height: 250px;
+  overflow-y: auto;
+  margin-top: 5px;
+}
+
+.searchable-select-option {
+  padding: 12px 15px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #333; /* Consistent text color */
+  transition: background-color 0.2s ease;
+}
+
+.searchable-select-option:hover {
+  background-color: #d0d0d0; /* Subtle darker background on hover */
+}
+
+.searchable-select-no-results {
+  padding: 12px 15px;
+  color: #888; /* Consistent text color */
+  text-align: center;
+  font-style: italic;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .searchable-select-input {
+    padding: 12px;
+    font-size: 16px;
+  }
+
+  .searchable-select-option {
+    padding: 10px 12px;
+    font-size: 15px;
+  }
+
+  .searchable-select-dropdown {
+    max-height: 200px;
+  }
+}

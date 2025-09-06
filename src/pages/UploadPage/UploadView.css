@@ -6,7 +6,7 @@
   padding: 35px;
   border-radius: 15px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-  background: #ffffff;
+  background: var(--card-background-color);
   font-family: 'Segoe UI', Arial, sans-serif;
   border: 1px solid #eee;
 }
@@ -53,7 +53,7 @@
 
 .form-file-input {
     cursor: pointer;
-    background-color: #f9f9f9;
+    background-color: var(--background-color);
 }
 
 .points-display {
@@ -115,5 +115,54 @@
   .upload-container {
     margin: 20px;
     padding: 25px;
+  }
+  .upload-header {
+    font-size: 1.8em; /* Slightly smaller on tablets */
+    margin-bottom: 25px;
+  }
+  .form-label {
+    font-size: 1em; /* Slightly smaller labels */
+  }
+  .form-select,
+  .form-file-input,
+  .form-input-search {
+    padding: 12px; /* Slightly less padding */
+    font-size: 16px;
+  }
+  .submit-btn {
+    padding: 14px; /* Slightly less padding */
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .upload-container {
+    margin: 10px;
+    padding: 15px;
+    border-radius: 10px; /* Slightly less rounded corners */
+  }
+  .upload-header {
+    font-size: 1.6em; /* Even smaller on phones */
+    margin-bottom: 20px;
+  }
+  .form-group {
+    margin-bottom: 20px; /* Slightly less margin between form groups */
+  }
+  .form-label {
+    font-size: 0.95em; /* Smaller labels on phones */
+  }
+  .form-select,
+  .form-file-input,
+  .form-input-search {
+    padding: 10px; /* Even less padding */
+    font-size: 15px;
+  }
+  .submit-btn {
+    padding: 12px; /* Even less padding */
+    font-size: 15px;
+  }
+  .points-display {
+    padding: 12px;
+    font-size: 0.9em;
   }
 }

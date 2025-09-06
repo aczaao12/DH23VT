@@ -1,0 +1,76 @@
+/* Import global neumorphism variables */
+/* Assuming :root variables are defined in index.css */
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh; /* Full viewport height */
+  background-color: var(--neumo-bg); /* Global neumorphic background */
+  padding: var(--neumo-element-padding);
+}
+
+.login-card {
+  background-color: var(--neumo-bg);
+  padding: 40px;
+  border-radius: var(--neumo-border-radius);
+  box-shadow: 9px 9px 16px var(--neumo-dark-shadow),
+              -9px -9px 16px var(--neumo-light-shadow);
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+}
+
+.login-card h1 {
+  color: #333; /* Consistent text color */
+  margin-bottom: 20px;
+  font-size: 2.5em;
+}
+
+.login-card p {
+  color: #555; /* Slightly lighter text for instructions */
+  margin-bottom: 30px;
+  font-size: 1.1em;
+}
+
+.login-card button {
+  /* Inherits global button styles from index.css */
+  /* Can add specific overrides if needed, but global should be good */
+  padding: 15px 30px;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #007bff; /* Accent color for the button text */
+}
+
+.login-card button:hover {
+  color: #0056b3; /* Darker accent on hover */
+}
+
+.privacy-policy-link-container {
+  margin-top: 20px;
+}
+
+.privacy-policy-link-container a {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 0.9em;
+}
+
+.privacy-policy-link-container a:hover {
+  text-decoration: underline;
+}
+
+.terms-of-service-link-container {
+  margin-top: 10px;
+}
+
+.terms-of-service-link-container a {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 0.9em;
+}
+
+.terms-of-service-link-container a:hover {
+  text-decoration: underline;
+}

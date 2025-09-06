@@ -1,30 +1,70 @@
-import { useState, useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { useState, useEffect, lazy, Suspense } from 'react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { auth } from './firebase';
-// Removed onAuthStateChanged, getRedirectResult, signOut as they are not used directly in App.jsx
-import LoginView from './components/LoginView';
-import DashboardView from './components/DashboardView';
-import UploadView from './components/UploadView';
-import AdminView from './components/AdminView';
-import AdminRoute from './components/AdminRoute';
+import { signOut, signInWithEmailAndPassword } from 'firebase/auth'; // Import signInWithEmailAndPassword
+import AdminRoute from './components/shared/AdminRoute';
+import BottomNavBar from './components/shared/BottomNavBar';
+import useDarkMode from './hooks/useDarkMode';
 import './App.css';
+
+const LoginView = lazy(() => import('./pages/LoginPage/LoginView'));
+const DashboardView = lazy(() => import('./pages/DashboardPage/DashboardView'));
+const UploadView = lazy(() => import('./pages/UploadPage/UploadView'));
+const AdminView = lazy(() => import('./pages/AdminPage/AdminView'));
+const SettingsView = lazy(() => import('./pages/SettingsPage/SettingsView'));
+const ScoreCalculator = lazy(() => import('./pages/DashboardPage/ScoreCalculator'));
+const NotificationView = lazy(() => import('./pages/NotificationPage/NotificationView'));
+const DocsView = lazy(() => import('./pages/DocsPage/DocsView')); // New import
+const PrivacyPolicyView = lazy(() => import('./pages/PrivacyPolicyPage/PrivacyPolicyView'));
+const TermsOfServiceView = lazy(() => import('./pages/TermsOfServicePage/TermsOfServiceView'));
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true); // Fixed initialization
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const [isDarkMode] = useDarkMode();
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async user => { // Added 'async'
+    const loader = document.getElementById('loader');
+    if (loader) {
+      loader.remove();
+    }
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out: ', error);
+    }
+  };
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async user => {
       if (user) {
         try {
-          const idTokenResult = await user.getIdTokenResult(true); // Force refresh
-          const isAdmin = idTokenResult.claims.admin || false; // Get admin claim
-          setCurrentUser({ ...user, isAdmin }); // Set enhanced user object
+          const idTokenResult = await user.getIdTokenResult(true);
+          const isAdmin = idTokenResult.claims.admin || false;
+          setCurrentUser({ ...user, isAdmin });
         } catch (error) {
           console.error("Error getting ID token result:", error);
-          setCurrentUser(user); // Fallback to original user if error
+          setCurrentUser(user);
         }
       } else {
+        // Auto-login for development environment
+        if (import.meta.env.DEV && import.meta.env.VITE_DEV_AUTO_LOGIN_EMAIL && import.meta.env.VITE_DEV_AUTO_LOGIN_PASSWORD) {
+          try {
+            await signInWithEmailAndPassword(
+              auth,
+              import.meta.env.VITE_DEV_AUTO_LOGIN_EMAIL,
+              import.meta.env.VITE_DEV_AUTO_LOGIN_PASSWORD
+            );
+            console.log("Auto-login successful in development mode.");
+          } catch (error) {
+            console.error("Auto-login failed in development mode:", error);
+          }
+        }
         setCurrentUser(null);
       }
       setLoading(false);
@@ -36,15 +76,29 @@ function App() {
     return <div>Loading authentication...</div>;
   }
 
+  // Prevent react-router-dom from handling Firebase auth iframe URLs
+  if (window.location.pathname.startsWith('/__/auth/iframe') || window.location.pathname.startsWith('/__/auth/handler')) {
+    return null;
+  }
+
   return (
-    // Removed <Router> as App is already wrapped by BrowserRouter in main.jsx
-    <Routes>
-      <Route path="/" element={currentUser ? <Navigate to="/dashboard" /> : <LoginView />} />
-      <Route path="/dashboard" element={currentUser ? <DashboardView /> : <Navigate to="/" />} />
-      <Route path="/upload" element={currentUser ? <UploadView /> : <Navigate to="/" />} />
-      <Route path="/admin" element={<AdminRoute user={currentUser}><AdminView /></AdminRoute>} /> {/* Passed user prop */}
-      {/* Add new route here */}
-    </Routes>
+    <div className={isDarkMode ? 'dark-mode' : ''}>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/" element={currentUser ? <Navigate to="/dashboard" /> : <LoginView />} />
+          <Route path="/dashboard" element={currentUser ? <DashboardView handleLogout={handleLogout} /> : <Navigate to="/" />} />
+          <Route path="/upload" element={currentUser ? <UploadView /> : <Navigate to="/" />} />
+          <Route path="/settings" element={currentUser ? <SettingsView handleLogout={handleLogout} /> : <Navigate to="/" />} />
+          <Route path="/admin" element={<AdminRoute user={currentUser}><AdminView /></AdminRoute>} />
+          <Route path="/calculator" element={currentUser ? <ScoreCalculator /> : <Navigate to="/" />} />
+          <Route path="/notifications" element={currentUser ? <NotificationView /> : <Navigate to="/" />} />
+          <Route path="/docs" element={currentUser ? <DocsView /> : <Navigate to="/" />} /> {/* New Route */}
+          <Route path="/privacy-policy" element={<PrivacyPolicyView />} />
+          <Route path="/terms-of-service" element={<TermsOfServiceView />} />
+        </Routes>
+      </Suspense>
+      {currentUser && <BottomNavBar />}
+    </div>
   );
 }
 

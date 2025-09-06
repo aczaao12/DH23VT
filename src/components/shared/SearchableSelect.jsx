@@ -40,7 +40,7 @@ const SearchableSelect = ({ options, value, onChange, placeholder }) => {
   };
 
   const filteredOptions = Object.keys(options).filter(key =>
-    options[key].name.toLowerCase().includes(searchTerm.toLowerCase())
+    options[key] && options[key].name && options[key].name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (

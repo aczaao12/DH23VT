@@ -1,0 +1,127 @@
+.activity-definition-manager {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.activity-definition-manager h3,
+.activity-definition-manager h4 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.import-activity-definition-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.json-file-input {
+  margin-right: 10px;
+}
+
+.import-btn {
+  margin-top: 10px;
+  margin-right: 10px; /* Add some space between buttons */
+}
+
+.create-sample-btn {
+  margin-top: 10px;
+}
+
+.add-activity-definition-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.activity-definitions-list .data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.activity-definitions-list .data-table th,
+.activity-definitions-list .data-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.activity-definitions-list .data-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.activity-definitions-list .data-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.activity-definitions-list .data-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.activity-definitions-list input[type="text"],
+.activity-definitions-list input[type="number"] {
+  width: calc(100% - 16px); /* Adjust for padding */
+  padding: 8px;
+  margin: 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 5px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-edit {
+  background-color: #ffc107;
+  color: #333;
+}
+
+.btn-delete {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.error-message {
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.success-message {
+  color: #28a745;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}

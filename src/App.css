@@ -1,7 +1,27 @@
+html {
+  scroll-behavior: smooth;
+}
+
+/* Remove redundant variables, they are now in index.css */
+/*
+:root {
+  --background-color: #e0e0e0;
+  --text-color: #333333;
+  --card-background-color: #e0e0e0;
+  --neumorphism-light-shadow: #ffffff;
+  --neumorphism-dark-shadow: #a3b1c6;
+}
+*/
+
+body {
+  background-color: var(--neumo-bg); /* Use global neumorphic background */
+  color: #333; /* Use consistent text color */
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0.4rem;
   text-align: center;
 }
 
@@ -35,8 +55,274 @@
 
 .card {
   padding: 2em;
+  background-color: var(--neumo-bg); /* Use global neumorphic background */
+  color: #333; /* Use consistent text color */
+  border-radius: var(--neumo-border-radius); /* Apply global border-radius */
+  box-shadow: 6px 6px 12px var(--neumo-dark-shadow), -6px -6px 12px var(--neumo-light-shadow); /* Apply neumorphic shadow */
 }
 
 .read-the-docs {
   color: #888;
+}
+
+/* NotificationPostForm Styles */
+.notification-post-form {
+  background-color: var(--neumo-bg); /* Use global neumorphic background */
+  padding: 25px;
+  border-radius: var(--neumo-border-radius); /* Apply global border-radius */
+  box-shadow: 6px 6px 12px var(--neumo-dark-shadow), -6px -6px 12px var(--neumo-light-shadow); /* Apply neumorphic shadow */
+  margin-top: 40px;
+  text-align: left;
+}
+
+.notification-post-form h3 {
+  color: #333; /* Use consistent text color */
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.notification-post-form .form-group {
+  margin-bottom: 15px;
+}
+
+.notification-post-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333; /* Use consistent text color */
+}
+
+.notification-post-form input[type="text"],
+.notification-post-form textarea {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: var(--neumo-border-radius); /* Apply global border-radius */
+  font-size: 16px;
+  background-color: var(--neumo-bg); /* Use global neumorphic background */
+  color: #333; /* Use consistent text color */
+  box-sizing: border-box;
+  box-shadow: inset 2px 2px 5px var(--neumo-dark-shadow), inset -3px -3px 7px var(--neumo-light-shadow); /* Apply neumorphic inset shadow */
+}
+
+.notification-post-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.notification-post-form input[type="file"] {
+  padding: 10px 0;
+}
+
+.notification-post-form button {
+  background-color: var(--neumo-bg); /* Use global neumorphic background */
+  color: #333; /* Use consistent text color */
+  padding: 12px 25px;
+  border: none;
+  border-radius: var(--neumo-border-radius); /* Apply global border-radius */
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  margin-top: 10px;
+  box-shadow: 6px 6px 12px var(--neumo-dark-shadow), -6px -6px 12px var(--neumo-light-shadow); /* Apply neumorphic shadow */
+}
+
+.notification-post-form button:hover {
+  box-shadow: inset 2px 2px 5px var(--neumo-dark-shadow), inset -3px -3px 7px var(--neumo-light-shadow); /* Apply neumorphic inset shadow on hover */
+}
+
+.notification-post-form button:disabled {
+  background-color: var(--neumo-bg); /* Use global neumorphic background */
+  cursor: not-allowed;
+  box-shadow: inset 2px 2px 5px var(--neumo-dark-shadow), inset -3px -3px 7px var(--neumo-light-shadow); /* Apply neumorphic inset shadow for disabled */
+  color: #999; /* Lighter text for disabled */
+}
+
+.notification-post-form .success-message {
+  color: #28a745;
+  margin-top: 15px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.notification-post-form .error-message {
+  color: #dc3545;
+  margin-top: 15px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* NotificationView Styles - Facebook Feed Style */
+.notification-view {
+  max-width: 580px;
+  margin: 20px auto;
+  background-color: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+.notification-view h2 {
+  text-align: center;
+  font-size: 1.5rem; /* Reduced header size */
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.notification-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Individual Notification Item as a Post */
+.notification-item {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  padding: 0; /* Padding moved to inner elements */
+}
+
+/* Post Header */
+.notification-header {
+  position: relative; /* For positioning the dropdown */
+  display: flex;
+  align-items: center;
+  padding: 15px 15px 0;
+}
+
+.notification-author-info {
+  flex-grow: 1; /* Allow author info to take up space */
+  display: flex; /* Bật chế độ sắp xếp linh hoạt */
+  flex-direction: column; /* Sắp xếp các phần tử con theo chiều dọc (cột) */
+  align-items: flex-start; /* Căn lề trái*/
+}
+
+.menu-container {
+  position: relative;
+}
+
+.menu-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem; /* Make button larger */
+  color: #65676b;
+  padding: 5px;
+  border-radius: 50%;
+  line-height: 1;
+}
+.menu-button:hover {
+  background-color: #f0f2f5;
+}
+
+.inline-menu-actions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid #e4e6eb;
+    border-radius: 20px;
+    padding: 2px 8px;
+}
+
+.inline-menu-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    font-size: 0.9rem;
+}
+
+.inline-menu-actions .close-button {
+    font-weight: bold;
+    font-size: 1rem;
+    color: #65676b;
+    border-left: 1px solid #e4e6eb;
+    padding-left: 8px;
+}
+
+.notification-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.notification-author-name {
+  font-weight: 600;
+  color: #050505;
+}
+
+/* Post Body */
+.notification-body-container {
+    padding: 15px;
+}
+
+.notification-body-container .notification-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.notification-body-container .notification-body {
+  margin: 0 0 15px 0;
+  line-height: 1.5;
+  color: #050505;
+  text-align: left; /* Ensure left alignment */
+}
+
+.notification-image {
+  display: block;
+  max-width: 100%;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+/* Post Footer */
+.notification-footer {
+    padding: 0 15px 10px;
+}
+
+.notification-stats {
+  display: flex;
+  gap: 15px;
+  padding: 10px 0;
+  font-size: 0.9rem;
+  color: #65676b;
+}
+
+.notification-divider {
+  border: none;
+  border-top: 1px solid #e4e6eb;
+  margin: 5px 0;
+}
+
+.notification-actions {
+  display: flex;
+  justify-content: space-around;
+  padding: 5px 0;
+}
+
+.action-button {
+  background: none;
+  border: none;
+  color: #8A8D91; /* Lighter, more subtle color */
+  font-weight: 500; /* Thinner font weight */
+  font-size: 0.9rem;
+  padding: 10px;
+  cursor: pointer;
+  flex-grow: 1;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.action-button:hover {
+  background-color: #f0f2f5;
+}
+
+.notification-timestamp {
+  font-size: 0.8rem;
+  color: #65676b;
+  align-self: initial;
 }

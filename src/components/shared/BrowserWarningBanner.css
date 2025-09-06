@@ -1,0 +1,14 @@
+.browser-warning-banner {
+  background-color: #ffeb3b; /* Yellow */
+  color: #333;
+  padding: 10px 20px;
+  text-align: center;
+  font-size: 0.9em;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.browser-warning-banner p {
+  margin: 0;
+}

@@ -26,4 +26,20 @@ export default defineConfig([
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
     },
   },
+  // New configuration for Firebase Functions
+  {
+    files: ['functions/**/*.js'], // Target JavaScript files in the functions directory
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.node, // Set Node.js globals
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'commonjs', // Functions typically use CommonJS modules
+      },
+    },
+    rules: {
+      // Temporarily ignore 'context' for no-unused-vars in functions/index.js
+      'no-unused-vars': ['error', { argsIgnorePattern: '^context$' }],
+    },
+  },
 ])

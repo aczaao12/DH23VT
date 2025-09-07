@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { useActivities } from '../../hooks/useActivities'; // Adjust path as needed
+import { useActivities } from '../../hooks/useActivities.jsx'; // Adjust path as needed
 import NotificationPostForm from '../../pages/NotificationPage/NotificationPostForm';
 import ActivityTable from '../../components/shared/ActivityTable';
 import AdminToolbar from '../../components/shared/AdminToolbar';
@@ -11,6 +11,7 @@ import Toast from '../../components/shared/Toast';
 import Modal from '../../components/shared/Modal';
 import ActivityDetailModal from '../../components/shared/ActivityDetailModal';
 import ActivityDefinitionManager from '../../components/shared/ActivityDefinitionManager'; // Import the new component
+import CentralizedStatisticsTab from './CentralizedStatisticsTab'; // Import the new statistics tab
 import './AdminView.css';
 
 const AdminView = () => {
@@ -221,6 +222,10 @@ const AdminView = () => {
           </table>
         </div>
       )
+    },
+    {
+      label: 'Centralized Statistics',
+      content: <CentralizedStatisticsTab selectedSemester={selectedSemester} />
     }
   ];
 

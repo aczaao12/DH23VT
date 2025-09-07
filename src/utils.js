@@ -58,10 +58,10 @@ export const calculateConditionalScore = (approvedDocs) => {
   const activityNames = approvedDocs.map(doc => doc['Tên hoạt động']);
 
   // Define the key activity names
-  const CLUB_ACTIVITY = "Có tham gia CLB học thuật";
-  const RESEARCH_ACTIVITY = "Nghiên cứu khoa học (minh chứng rõ ràng nhất quán)";
-  const OFFICER_ACTIVITY = "Sinh viên là cán bộ lớp, đoàn, hội, CLB đội, nhóm gương mẫu, hoàn thành tốt nhiệm vụ (được GVCV lớp, các tổ chức Đoàn, Hội đánh giá và công nhận)";
-  const SPECIAL_ACHIEVEMENT = "Người học đạt được thành tích đặc biệt trong học tập, rèn luyện.";
+  const CLUB_ACTIVITY = "Có tham gia CLB học thuật";//points:4
+  const RESEARCH_ACTIVITY = "Nghiên cứu khoa học (minh chứng rõ ràng nhất quán)";//points:10
+  const OFFICER_ACTIVITY = "Sinh viên là cán bộ lớp, đoàn, hội, CLB đội, nhóm gương mẫu, hoàn thành tốt nhiệm vụ (được GVCV lớp, các tổ chức Đoàn, Hội đánh giá và công nhận)";//points:5
+  const SPECIAL_ACHIEVEMENT = "Người học đạt được thành tích đặc biệt trong học tập, rèn luyện.";//points:10
 
   const hasActivity = (activityName, threshold = 0.8) => {
     return activityNames.some(name => calculateSimilarity(name, activityName) >= threshold);

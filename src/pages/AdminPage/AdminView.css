@@ -110,6 +110,15 @@ body {
   background-color: #c0c0c0; /* More pronounced selection */
 }
 
+/* Add border-bottom to table rows */
+.data-table tbody tr {
+  border-bottom: 1px solid var(--neumo-light-shadow); /* Subtle separator */
+}
+
+.data-table tbody tr:last-child {
+  border-bottom: none; /* No border for the last row */
+}
+
 .table-input,
 .table-textarea {
   width: 100%;
@@ -333,4 +342,59 @@ input[type="checkbox"]:checked::after {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+/* Styles for CentralizedStatisticsTab inputs */
+.filter-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  padding: var(--neumo-element-padding);
+  border-radius: var(--neumo-border-radius);
+  background-color: var(--neumo-bg);
+  box-shadow: inset 5px 5px 10px var(--neumo-dark-shadow),
+              inset -5px -5px 10px var(--neumo-light-shadow);
+}
+
+.search-bar,
+.stt-filter-input {
+  padding: 10px;
+  border: none; /* Remove default border */
+  border-radius: var(--neumo-border-radius);
+  font-size: 1em;
+  flex: 1;
+  min-width: 200px;
+  background-color: var(--neumo-bg);
+  box-shadow: inset 2px 2px 5px var(--neumo-dark-shadow),
+              inset -2px -2px 5px var(--neumo-light-shadow);
+  color: #333;
+  outline: none; /* Remove default outline */
+}
+
+.search-bar:focus,
+.stt-filter-input:focus {
+  box-shadow: inset 2px 2px 5px var(--neumo-light-shadow),
+              inset -2px -2px 5px var(--neumo-dark-shadow);
+}
+
+.conditions-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.conditions-checkboxes label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.9em;
+  color: #555;
+}
+
+.conditions-checkboxes input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  min-width: 16px; /* Ensure it doesn't shrink */
+  min-height: 16px;
 }

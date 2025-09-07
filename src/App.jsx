@@ -4,6 +4,7 @@ import { auth } from './firebase';
 import { signOut, signInWithEmailAndPassword } from 'firebase/auth'; // Import signInWithEmailAndPassword
 import AdminRoute from './components/shared/AdminRoute';
 import BottomNavBar from './components/shared/BottomNavBar';
+import NetworkStatusIndicator from './components/shared/NetworkStatusIndicator';
 import useDarkMode from './hooks/useDarkMode';
 import './App.css';
 
@@ -98,6 +99,7 @@ function App() {
         </Routes>
       </Suspense>
       {currentUser && <BottomNavBar />}
+      <NetworkStatusIndicator />
     </div>
   );
 }

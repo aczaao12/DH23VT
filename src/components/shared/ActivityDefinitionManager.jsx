@@ -93,8 +93,10 @@ const ActivityDefinitionManager = ({
     <div className="activity-definition-manager">
       <h3>Manage Activity Definitions</h3>
 
+      
+
       <div className="add-activity-definition-section">
-        <h4>Add New Activity Definition</h4>
+        
         <AddActivityForm onAddActivity={addActivityDefinition} />
       </div>
 

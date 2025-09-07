@@ -1,0 +1,36 @@
+
+.network-status-container {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+}
+
+.network-status-tooltip {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 12px; /* Slightly more padding */
+  border-radius: 10px; /* More rounded corners */
+  font-size: 0.8em;
+  white-space: nowrap;
+  z-index: 1001;
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
+  margin-left: 15px; /* More space for the tail */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Add shadow */
+}
+
+.network-status-tooltip::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 100%; /* Position to the left of the tooltip */
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent; /* Size of the triangle */
+  border-bottom: 8px solid transparent;
+  border-right: 8px solid rgba(0, 0, 0, 0.8); /* Color of the triangle, matching background */
+}
